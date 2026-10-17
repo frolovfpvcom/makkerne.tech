@@ -6,8 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { EMAIL, TEAM } from "@/lib/content";
 import { ACCENT } from "@/lib/accent";
 import { useLang } from "./lang";
-import { BrowserSite, WorkshopScreen } from "./live-site";
-import { IPhone } from "./phone-preview";
+import { BrowserSite } from "./live-site";
 import { Logo } from "./header";
 import { Calculator } from "./calculator";
 import { setTrade, useTrade } from "./trade-store";
@@ -21,135 +20,23 @@ function SectionHead({ title, lead, light = false }: { title: string; lead?: str
   );
 }
 
-function Check({ light = false }: { light?: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" className={`mt-0.5 size-5 shrink-0 ${light ? "text-brand" : "text-ink"}`} fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-      <path d="M5 12.5l4.5 4.5L19 7.5" />
-    </svg>
-  );
-}
-
 /** Landing page: the examples as a carousel, one at a time, so the page stays short. */
 export function Examples() {
   const { t } = useLang();
   const e = t.examples;
+  // Coming straight to /#eksempler, the browser jumps before the hero has its final height on a
+  // phone; jump again once it has, so the heading is not left under the header.
+  useEffect(() => {
+    if (window.location.hash !== "#eksempler") return;
+    const id = requestAnimationFrame(() => document.getElementById("eksempler")?.scrollIntoView({ behavior: "instant" }));
+    return () => cancelAnimationFrame(id);
+  }, []);
   return (
-    <section id="eksempler" className="scroll-mt-18 bg-[#f3f2ef]">
+    <section id="eksempler" className="bg-[#f3f2ef]">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 sm:py-24">
         <SectionHead title={e.title} lead={e.lead} />
         <ExampleCarousel />
         <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>
-      </div>
-    </section>
-  );
-}
-
-/**
- * The examples page: pick your trade, and see that site on a computer and on a phone side by
- * side, with what it can do next to it. Rawer than the landing page on purpose.
- */
-export function ExamplesByIndustry() {
-  const { t } = useLang();
-  const e = t.examples;
-  const [sel, setSel] = useState(0);
-  const item = e.items[sel];
-
-  // Responsive phone and laptop size so the mockups stay fully visible on laptops and desktop screens.
-  const [phoneSize, setPhoneSize] = useState({ width: 200, height: 410 });
-
-  useEffect(() => {
-    const update = () => {
-      const vh = window.innerHeight;
-      const vw = window.innerWidth;
-      if (vw < 768) {
-        setPhoneSize({ width: 200, height: 410 });
-      } else if (vh < 680) {
-        setPhoneSize({ width: 175, height: 355 });
-      } else if (vh < 800) {
-        setPhoneSize({ width: 195, height: 395 });
-      } else {
-        setPhoneSize({ width: 215, height: 435 });
-      }
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  const laptopMaxWidth = Math.round((phoneSize.height - 33) * 1.6);
-
-  return (
-    <section className="border-b border-ink/15 pt-24 pb-12 sm:pt-28 sm:pb-16">
-      <div className="mx-auto max-w-6xl px-4 sm:px-8">
-        <div className="max-w-4xl">
-          <h1 className="text-balance font-cond text-4xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl">
-            {e.pageTitle}
-          </h1>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink/75 sm:text-lg">
-            {e.pageLead}
-          </p>
-        </div>
-
-        <div className="mt-6 sm:mt-8">
-          <p className="font-cond text-base font-bold uppercase tracking-wide text-ink/55 sm:text-lg">{e.pick}</p>
-          <div role="tablist" aria-label={e.pick} className="-mx-4 mt-2.5 flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
-            {e.items.map((it, i) => (
-              <button
-                key={it.slug}
-                type="button"
-                role="tab"
-                aria-selected={i === sel}
-                aria-controls="eksempel-panel"
-                onClick={() => setSel(i)}
-                className={`flex shrink-0 items-baseline gap-2 border-2 border-ink px-3.5 py-2 font-cond text-lg font-bold uppercase transition sm:px-4 sm:py-2.5 sm:text-xl ${
-                  i === sel ? "bg-brand" : "bg-card hover:bg-paper-2"
-                }`}
-              >
-                <span className="text-xs text-ink/45 sm:text-sm">{String(i + 1).padStart(2, "0")}</span>
-                {it.trade}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div id="eksempel-panel" role="tabpanel" className="mt-8 sm:mt-10">
-          {/* Computer and phone next to each other, never on top of each other. */}
-          <div className="flex flex-col items-center gap-8 md:flex-row md:items-end md:justify-center md:gap-8 lg:gap-10">
-            <div className="w-full min-w-0 md:flex-1" style={{ maxWidth: laptopMaxWidth }}>
-              <WorkshopScreen src={item.href} title={item.name} tryLabel={e.try} />
-            </div>
-            <div className="shrink-0">
-              <IPhone src={item.href} title={`${item.name} på telefonen`} width={phoneSize.width} height={phoneSize.height} />
-            </div>
-          </div>
-
-          <div className="mt-12 grid gap-10 border-t-2 border-ink pt-8 sm:mt-14 lg:grid-cols-12">
-            <div className="lg:col-span-6">
-              <p className="text-sm text-ink/60">
-                {item.industry} · {item.place}
-              </p>
-              <h2 className="mt-1 font-cond text-4xl font-extrabold uppercase leading-none sm:text-5xl">{item.name}</h2>
-              <p className="mt-4 max-w-lg leading-relaxed text-ink/75">{item.long}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a href={item.href} target="_blank" rel="noopener" className="bg-ink px-5 py-3 font-cond text-lg font-bold uppercase text-paper transition hover:bg-ink/85">
-                  {e.open} ↗
-                </a>
-                <a href="#kontakt" className="border-2 border-ink px-5 py-3 font-cond text-lg font-bold uppercase transition hover:bg-brand">
-                  {e.want}
-                </a>
-              </div>
-            </div>
-            <ul className="space-y-3 lg:col-span-6 lg:pt-6">
-              {item.features.map((f) => (
-                <li key={f} className="flex gap-2.5 text-lg">
-                  <Check />
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <p className="mt-12 text-sm text-ink/55 sm:mt-14">{e.disclaimer}</p>
       </div>
     </section>
   );
@@ -419,7 +306,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8">
         <Logo light />
         <nav className="flex flex-wrap gap-x-6 gap-y-2 font-cond text-lg font-bold uppercase text-paper/70">
-          <Link href="/eksempler/" className="hover:text-brand">{t.nav.examples}</Link>
+          <Link href="/#eksempler" className="hover:text-brand">{t.nav.examples}</Link>
           <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>

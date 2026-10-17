@@ -32,7 +32,7 @@ export function Header() {
   }, [pathname]);
 
   const links = [
-    { href: "/eksempler/", label: t.nav.examples },
+    { href: "/#eksempler", label: t.nav.examples },
     { href: "/pris/", label: t.nav.price },
     { href: "/proces/", label: t.nav.process },
     { href: "/faq/", label: t.nav.faq },

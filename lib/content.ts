@@ -49,8 +49,6 @@ const da = {
     want: "Jeg vil have en som denne",
     all: "Se alle eksempler",
     disclaimer: "Firmaerne er opdigtede. Siderne viser, hvad vi kan bygge, de er ikke rigtige kundeprojekter.",
-    pageTitle: "Se hvad vi kan lave til dit firma",
-    pageLead: `Eksempler på hjemmesider til håndværkere. Alle sider er bygget fra bunden og virker på telefonen. Firmanavnene er opdigtede.`,
     items: [
       {
         slug: "vvs",
@@ -337,8 +335,6 @@ const en: Dict = {
     want: "I want one like this",
     all: "See all examples",
     disclaimer: "The businesses are made up. The sites show what we can build, they are not real client projects.",
-    pageTitle: "See what we can make for your business",
-    pageLead: "Example websites for tradespeople. Every site is built from scratch and works on phones. The business names are made up.",
     items: [
       {
         ...da.examples.items[0],

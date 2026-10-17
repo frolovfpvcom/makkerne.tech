@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Example } from "@/lib/content";
 import { useTrade } from "./trade-store";
 
@@ -102,24 +102,29 @@ export function IPhone({ src, title, width = 300, height = 600 }: { src: string;
   );
 }
 
+function onResize(cb: () => void) {
+  window.addEventListener("resize", cb);
+  return () => window.removeEventListener("resize", cb);
+}
+
+/**
+ * A smaller phone on small screens, and on a low laptop screen one that fits under the header.
+ * Read straight from the window, so the hero has its final height on the first render after a
+ * menu click and a jump to #eksempler lands in the right place.
+ */
+function phoneHeight() {
+  if (window.innerWidth < 640) return 460;
+  if (window.innerWidth >= 1024) return Math.max(460, Math.min(560, window.innerHeight - 200));
+  return 540;
+}
+
 /**
  * Front page: the phone with one of the example sites on screen, Holm VVS until a trade is
  * picked in the examples below.
  */
 export function PhonePreview({ items, title, cta }: { items: Example[]; title: string; cta?: string }) {
   const item = items[useTrade()] ?? items[0];
-  // A smaller phone on small screens, and on a low laptop screen one that fits under the header.
-  const [height, setHeight] = useState(560);
-  useEffect(() => {
-    const update = () => {
-      if (window.innerWidth < 640) setHeight(460);
-      else if (window.innerWidth >= 1024) setHeight(Math.max(460, Math.min(560, window.innerHeight - 200)));
-      else setHeight(540);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
+  const height = useSyncExternalStore(onResize, phoneHeight, () => 560);
   return (
     <div className="flex flex-col items-center">
       <IPhone src={item.href} title={`${title}: ${item.name}`} width={height / 2} height={height} />

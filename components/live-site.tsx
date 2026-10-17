@@ -17,9 +17,8 @@ const PHONE_WIDTH = 390;
 
 /**
  * Renders a page at desktop (or phone) width and scales it down to fit its box.
- * With `alwaysDesktop` it keeps the desktop layout however narrow the box gets.
  */
-function useScaledFrame(alwaysDesktop = false) {
+function useScaledFrame() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: DESKTOP_WIDTH, h: 800, scale: 0.5 });
   useEffect(() => {
@@ -27,7 +26,7 @@ function useScaledFrame(alwaysDesktop = false) {
     if (!box) return;
     const measure = () => {
       if (!box.clientWidth) return;
-      const w = alwaysDesktop || box.clientWidth >= 500 ? DESKTOP_WIDTH : PHONE_WIDTH;
+      const w = box.clientWidth >= 500 ? DESKTOP_WIDTH : PHONE_WIDTH;
       const scale = box.clientWidth / w;
       setSize({ w, h: Math.ceil(box.clientHeight / scale), scale });
     };
@@ -35,7 +34,7 @@ function useScaledFrame(alwaysDesktop = false) {
     const ro = new ResizeObserver(measure);
     ro.observe(box);
     return () => ro.disconnect();
-  }, [alwaysDesktop]);
+  }, []);
   return { boxRef, size };
 }
 
@@ -93,48 +92,6 @@ export function BrowserSite({ src, title, tryLabel, accent }: { src: string; tit
         </a>
       </div>
       <div className="h-1.5" style={{ background: accent }} aria-hidden />
-    </div>
-  );
-}
-
-/**
- * The examples page's version: a raw, square screen with a thick black frame and a hard
- * offset shadow, like a sign on the workshop wall. Clicking it opens the real site.
- */
-export function WorkshopScreen({ src, title, tryLabel }: { src: string; title: string; tryLabel: string }) {
-  const { boxRef, size } = useScaledFrame(true);
-  const path = src.replace(/^\//, "makkerne.tech/").replace(/\/$/, "");
-
-  return (
-    <div className="group border-[3px] border-ink bg-ink shadow-[10px_10px_0_0_var(--color-brand)]">
-      <div className="flex items-center gap-3 px-3 py-2">
-        <span className="flex gap-1.5" aria-hidden>
-          <span className="size-2.5 bg-paper/25" />
-          <span className="size-2.5 bg-paper/25" />
-          <span className="size-2.5 bg-paper/25" />
-        </span>
-        <a href={src} target="_blank" rel="noopener" className="min-w-0 flex-1 truncate text-center font-mono text-xs text-paper/60 transition hover:text-paper">
-          {path} ↗
-        </a>
-      </div>
-      <div ref={boxRef} className="relative aspect-[16/10] overflow-hidden bg-paper">
-        <iframe
-          key={src}
-          src={src}
-          title={title}
-          loading="lazy"
-          tabIndex={-1}
-          aria-hidden
-          onLoad={hideScrollbar}
-          className="pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-paper"
-          style={{ width: size.w, height: size.h, transform: `scale(${size.scale})` }}
-        />
-        <a href={src} target="_blank" rel="noopener" className="absolute inset-0 flex items-end justify-center pb-6">
-          <span className="bg-ink px-5 py-2.5 font-cond text-lg font-bold uppercase text-paper opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
-            {tryLabel} ↗
-          </span>
-        </a>
-      </div>
     </div>
   );
 }

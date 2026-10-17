@@ -1,7 +1,7 @@
 "use client";
 
 import { useLang } from "./lang";
-import { Comparison, Contact, ExamplesByIndustry, Faq, Footer, PageIntro, PriceSection, Process } from "./sections";
+import { Comparison, Contact, Faq, Footer, PageIntro, PriceSection, Process } from "./sections";
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
@@ -12,14 +12,6 @@ function Shell({ children }: { children: React.ReactNode }) {
       </main>
       <Footer />
     </>
-  );
-}
-
-export function ExamplesPage() {
-  return (
-    <Shell>
-      <ExamplesByIndustry />
-    </Shell>
   );
 }
 
