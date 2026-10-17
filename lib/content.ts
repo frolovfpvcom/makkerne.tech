@@ -38,12 +38,6 @@ const da = {
     cta: "Se 10 eksempler",
     calcCta: "Beregn din pris",
     phone: "Sådan ser en af vores sider ud på telefonen",
-    liveBadge: "Live eksempel",
-    points: [
-      { bold: "Gratis udkast først", text: "se siden før du beslutter dig" },
-      { bold: "Vi klarer alt", text: "tekster, billeder og domæne sat op" },
-      { bold: "Ingen binding", text: "du ejer altid selv dit domæne" },
-    ],
   },
   examples: {
     title: "Sådan kan din side se ud",
@@ -304,12 +298,6 @@ const en: Dict = {
     cta: "See 10 examples",
     calcCta: "Get your price",
     phone: "What one of our sites looks like on a phone",
-    liveBadge: "Live example",
-    points: [
-      { bold: "Free draft first", text: "see the site before you decide" },
-      { bold: "We handle everything", text: "copy, photos, and domain set up" },
-      { bold: "No lock-in", text: "you always own your own domain" },
-    ],
   },
   examples: {
     title: "This is what your site could look like",

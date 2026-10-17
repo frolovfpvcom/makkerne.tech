@@ -3,18 +3,9 @@
 import { useLang } from "./lang";
 import { PhonePreview } from "./phone-preview";
 
-function HeroCheck() {
-  return (
-    <svg viewBox="0 0 24 24" className="mt-0.5 size-5 shrink-0 text-brand-dark" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-      <path d="M5 12.5l4.5 4.5L19 7.5" />
-    </svg>
-  );
-}
-
 /**
- * First view: what we make and for whom, balanced according to the golden ratio.
- * Concrete value propositions on the left balance the phone on the right, keeping
- * eye tracking natural and purposeful above the fold.
+ * First view: what we make and for whom, a button to the examples and one to the price, and a
+ * real example site on a phone. On a computer it fills the screen, so the examples start below the fold.
  */
 export function Hero() {
   const { t } = useLang();
@@ -45,21 +36,10 @@ export function Hero() {
               {h.calcCta}
             </a>
           </div>
-
-          <ul className="mt-8 space-y-2.5 border-t border-ink/15 pt-6 text-sm text-ink/80 sm:text-base">
-            {h.points?.map((p) => (
-              <li key={p.bold} className="flex items-center gap-2.5">
-                <HeroCheck />
-                <span>
-                  <strong className="font-semibold text-ink">{p.bold}</strong> – {p.text}
-                </span>
-              </li>
-            ))}
-          </ul>
         </div>
 
         <div className="flex justify-center lg:col-span-5">
-          <PhonePreview items={t.examples.items} title={h.phone} badge={h.liveBadge} />
+          <PhonePreview items={t.examples.items} title={h.phone} />
         </div>
       </div>
     </section>
