@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
+import { Bodoni_Moda, Instrument_Sans } from "next/font/google";
 import { MalerSite } from "@/components/examples/maler";
 
-// A lively grotesk for the headings and a calm, even sans for the colour codes, prices and body text.
-const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-kulor-display" });
+// A Bodoni for the headlines and room stories, like a home magazine, and an even sans for codes, prices and forms.
+const serif = Bodoni_Moda({ subsets: ["latin"], variable: "--font-kulor-serif" });
 const sans = Instrument_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-kulor" });
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className={`${display.variable} ${sans.variable}`}>
+    <div className={`${serif.variable} ${sans.variable}`}>
       <MalerSite />
     </div>
   );

@@ -2,173 +2,146 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import heroPhoto from "@/public/examples/maler-hero.jpg";
-import { DemoNote, Img, SampleReviewsNote, Stars } from "./shared";
+import painterPhoto from "@/public/examples/maler-hero.jpg";
+import { DemoNote, Img } from "./shared";
 
 /*
- * Malerfirmaet Kulør, built like a colour card on a white wall: neutral paper and ink so the
- * customers' own colours carry the page, every finished room written down with its NCS code and
- * gloss level, and a calculator that prices a room from its measurements the way a painter would.
- * Masking tape is the one decoration. No cards, no shadows, no motion.
+ * Malerfirmaet Kulør in Odense, set like a home magazine: a fine Bodoni over warm white walls,
+ * finished rooms large, and the colour written next to each one so you can buy it again. The
+ * page takes its tones from the rooms: one dark spread in the umbra of an office, the calculator
+ * on pale plaster. Chips only where a colour code is the point.
  */
 
 const PHONE = "34 56 78 90";
 const TEL = "tel:+4534567890";
 const ADDRESS = "Svendborgvej 214, 5260 Odense S";
 
-const display = "font-(family-name:--font-kulor-display)";
+const NAV = [
+  ["#rum", "Rum"],
+  ["#pris", "Pris på et rum"],
+  ["#kontakt", "Kontakt"],
+] as const;
 
-/** Colours from recent jobs. Hex values are screen approximations of the NCS codes. */
-const ROOMS: {
-  code: string;
-  hex: string;
-  dark: boolean;
-  name: string;
-  room: string;
-  place: string;
-  when: string;
-  gloss: string;
-  note: string;
-  photo: string | null;
-  alt: string;
-}[] = [
+type Room = { place: string; room: string; code: string; name: string; hex: string; gloss: string; before: string; text: string; photo: string; alt: string };
+
+const HUNDERUP: Room = {
+  place: "Hunderup",
+  room: "Stue",
+  code: "NCS S 5020-G30Y",
+  name: "Mosgrøn",
+  hex: "#6F7A57",
+  gloss: "glans 5",
+  before: "Tapet med gule striber",
+  text: "Hun ville have en mørk stue, der ikke blev tung. Vi malede to prøver op på hver væg og så på dem morgen og aften, før hun valgte.",
+  photo: "1676136449197-babffb1125f0",
+  alt: "Stue med grønne vægge og en gul sofa",
+};
+
+const PAIR: Room[] = [
   {
-    code: "NCS S 5020-G30Y",
-    hex: "#6F7A57",
-    dark: true,
-    name: "Mosgrøn",
-    room: "Stue",
-    place: "Hunderup",
-    when: "september 2026",
-    gloss: "Glans 5",
-    note: "Kunden ville have en mørk stue uden at den blev tung. Vi lagde to prøver op på hver væg og kiggede på dem morgen og aften, før hun valgte.",
-    photo: "1676136449197-babffb1125f0",
-    alt: "Stue med grønne vægge og en gul sofa",
-  },
-  {
-    code: "NCS S 1510-G10Y",
-    hex: "#C8D3BE",
-    dark: false,
-    name: "Lys mynte",
-    room: "Køkken-alrum",
     place: "Bolbro",
-    when: "august 2026",
-    gloss: "Glans 25",
-    note: "Glans 25 i køkkenet, fordi væggen skal kunne tåle at blive vasket. Vægge og loft helspartlet først, 3 dage i alt.",
+    room: "Køkken-alrum",
+    code: "NCS S 1510-G10Y",
+    name: "Lys mynte",
+    hex: "#C8D3BE",
+    gloss: "glans 25",
+    before: "Hvid, glans 5",
+    text: "Glans 25, så væggen bag spisebordet kan vaskes. Vægge og loft blev helspartlet først.",
     photo: "1758945631095-fff5c72fa3ed",
     alt: "Stue med lyse mintgrønne vægge og billeder",
   },
   {
-    code: "NCS S 3020-B",
-    hex: "#8EA2B4",
-    dark: false,
-    name: "Dueblå",
-    room: "Soveværelse",
     place: "Dalum",
-    when: "juni 2026",
-    gloss: "Glans 5",
-    note: "Mat blå vægge og hvidt loft. Vi skiftede også fire gamle stikkontaktrammer, som var malet over flere gange.",
+    room: "Soveværelse",
+    code: "NCS S 3020-B",
+    name: "Dueblå",
+    hex: "#8EA2B4",
+    gloss: "glans 5",
+    before: "Brækket hvid",
+    text: "Mat blå vægge og hvidt loft. Fire stikkontaktrammer, der var malet over flere gange, blev skiftet.",
     photo: "1634207523205-cf9ef97a31d1",
     alt: "Soveværelse med blå vægge og en hvid seng",
   },
-  {
-    code: "NCS S 0502-Y",
-    hex: "#F1EEE5",
-    dark: false,
-    name: "Varm hvid",
-    room: "Hele 1. salen",
-    place: "Fruens Bøge",
-    when: "maj 2026",
-    gloss: "Glans 5",
-    note: "Tre værelser og en gang i et hus fra 1936. Revner over dørene blev skåret op og fyldt med elastisk fugemasse, før vi spartlede.",
-    photo: "1774437290582-1e859402001f",
-    alt: "Lyst soveværelse med en redt seng",
-  },
-  {
-    code: "NCS S 7010-Y70R",
-    hex: "#4C4541",
-    dark: true,
-    name: "Mørk umbra",
-    room: "Kontor",
-    place: "Odense C",
-    when: "marts 2026",
-    gloss: "Glans 10",
-    note: "Mørke vægge og reoler i samme farve. Træværket fik glans 40, så det tåler bøger, der bliver taget ud og sat ind.",
-    photo: "1767020990995-64203b0a9cb4",
-    alt: "Mørkt rum med en stor reol og en sofa",
-  },
-  {
-    code: "NCS S 0500-N",
-    hex: "#F4F4F1",
-    dark: false,
-    name: "Loftshvid",
-    room: "Lofter",
-    place: "alle opgaverne",
-    when: "",
-    gloss: "Glans 2",
-    note: "Den hvide, vi bruger på lofter, hvis du ikke vælger andet. Helt mat, så samlinger og lys fra vinduet ikke kaster skygger.",
-    photo: null,
-    alt: "",
-  },
 ];
 
-/** Prices per m², incl. moms and paint, two coats. The firm's own list. */
+const UMBRA: Room = {
+  place: "Odense C",
+  room: "Kontor",
+  code: "NCS S 7010-Y70R",
+  name: "Mørk umbra",
+  hex: "#4C4541",
+  gloss: "glans 10",
+  before: "Hvide vægge, fyrretræsreoler",
+  text: "Vægge og reoler i samme farve, så rummet bliver roligt. Reolerne fik glans 40, så de tåler bøger, der bliver taget ud og sat ind.",
+  photo: "1767020990995-64203b0a9cb4",
+  alt: "Mørkt rum med en stor reol og en sofa",
+};
+
+/** Prices per m², incl. moms and paint, two coats. */
 const WALL = { 5: 95, 10: 95, 25: 115 } as const;
 type Gloss = keyof typeof WALL;
-const GLOSS: { value: Gloss; label: string; where: string }[] = [
-  { value: 5, label: "Glans 5", where: "Stue og soveværelse. Mat og roligt." },
-  { value: 10, label: "Glans 10", where: "Gang og børneværelse. Tåler en klud." },
-  { value: 25, label: "Glans 25", where: "Køkken og bryggers. Kan vaskes." },
+const GLOSS: { value: Gloss; where: string }[] = [
+  { value: 5, where: "Stue og soveværelse" },
+  { value: 10, where: "Gang og børneværelse" },
+  { value: 25, where: "Køkken og bryggers" },
 ];
 const FILL = [
-  { label: "Ingen", where: "Væggene er hele", rate: 0 },
-  { label: "Pletspartling", where: "Huller efter søm og små revner", rate: 35 },
-  { label: "Helspartling", where: "Ujævne vægge eller efter tapet", rate: 145 },
+  { label: "Ingen", rate: 0 },
+  { label: "Pletspartling", rate: 35 },
+  { label: "Helspartling", rate: 145 },
 ];
 const CEILING = 115;
 const DOOR = 1150;
 const SETUP = 900;
 
-const PRICES: { what: string; note?: string; price: string }[] = [
-  { what: "Opmåling og farveprøver", note: "trækkes fra, hvis du siger ja", price: "450 kr." },
+const PRICES: { what: string; price: string }[] = [
+  { what: "Opmåling og farveprøver", price: "450 kr." },
   { what: "Timepris, malersvend", price: "545 kr." },
-  { what: "Dør med karm, begge sider", price: "1.150 kr." },
   { what: "Vindue indvendigt, med kitning", price: "650–900 kr." },
-  { what: "Facade og udvendigt træværk", note: "afhænger af stillads og stand", price: "Efter opmåling" },
+  { what: "Facade og udvendigt træværk", price: "Efter opmåling" },
 ];
-
-const REVIEWS: { stars: number; date: string; text: string; name: string; reply?: string }[] = [
-  { stars: 5, date: "22. sep. 2026", text: "Søren tog prøver med ud og satte dem op på væggen i stedet for at vise os en vifte. Det gjorde det meget lettere at vælge.", name: "Signe, Hunderup" },
-  {
-    stars: 4,
-    date: "18. aug. 2026",
-    text: "Flot arbejde i køkkenet. Men vi fik ikke at vide, at spartelmassen skulle tørre en ekstra dag, så vi var uden køkken længere end planlagt.",
-    name: "Morten, Bolbro",
-    reply: "Det skulle vi have sagt fra starten. Nu står tørretiden i tilbuddet, når der skal helspartles.",
-  },
-  { stars: 5, date: "30. jun. 2026", text: "Alt blev dækket af, også klaveret. Og vi fik et lille kort med farverne, så vi kan købe den rigtige maling til pletterne.", name: "Hanne og Ole, Dalum" },
-  { stars: 5, date: "12. maj 2026", text: "Prisen var den, der stod i tilbuddet. De var færdige en dag før.", name: "Jakob, Fruens Bøge" },
-];
-
-const NAV = [
-  ["#farver", "Farver"],
-  ["#pris", "Pris på et rum"],
-  ["#om", "Om os"],
-  ["#kontakt", "Kontakt"],
-] as const;
 
 const kr = (n: number) => `${(Math.round(n / 100) * 100).toLocaleString("da-DK")} kr.`;
 const num = (s: string) => Math.max(0, Number(s.replace(",", ".")) || 0);
 
-const wrap = "mx-auto max-w-[1180px] px-4 sm:px-8";
-const h2 = `${display} text-[32px] font-semibold leading-[1.05] tracking-[-0.025em] sm:text-[44px]`;
-const btn = "items-center justify-center whitespace-nowrap rounded-[2px] bg-[#22211F] font-semibold text-[#FAF9F6] transition-colors hover:bg-[#3A3835]";
-const field = "w-full rounded-[2px] border border-[#B4AFA6] bg-white px-3 py-2.5 text-base text-[#22211F] placeholder:text-[#8C877E]";
-/** A strip of paper masking tape with torn ends. */
-const tape = "bg-[#E6DDBE] [clip-path:polygon(0_8%,3%_0,97%_6%,100%_0,99%_92%,96%_100%,2%_94%,0_100%)]";
+// Warm white #FBF8F3, ink #22201E, warm grey #6B6660, plaster #F1E4DA; the rooms bring the rest.
+const wrap = "mx-auto w-full max-w-[1320px] px-5 sm:px-10";
+const serif = "font-(family-name:--font-kulor-serif)";
+const h2 = `${serif} text-[38px] font-medium leading-[1.05] tracking-[-0.02em] sm:text-[52px]`;
+const btn = "inline-flex items-center justify-center whitespace-nowrap bg-[#22201E] font-semibold text-[#FBF8F3] transition-colors hover:bg-[#45413C]";
+const field = "w-full border-0 border-b border-[#22201E]/40 bg-transparent px-0 py-2 text-lg text-[#22201E] placeholder:text-[#6B6660] focus:border-[#22201E] focus:outline-none";
+const seg = (on: boolean) =>
+  `flex min-h-11 cursor-pointer items-center justify-center whitespace-nowrap border px-3 text-[15px] font-medium transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-[#22201E] ${
+    on ? "border-[#22201E] bg-[#22201E] text-[#FBF8F3]" : "border-[#22201E]/25 hover:border-[#22201E]"
+  }`;
+
+/** The colour as it was written on the job card, with a chip because the code is the point. */
+function Colour({ room, dark = false }: { room: Room; dark?: boolean }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span aria-hidden className={`size-10 shrink-0 border ${dark ? "border-white/30" : "border-[#22201E]/15"}`} style={{ background: room.hex }} />
+      <p className="text-[14px] leading-snug">
+        <span className="font-semibold">{room.name}</span>, {room.gloss}
+        <span className={`block tabular-nums ${dark ? "text-[#CFC6BE]" : "text-[#6B6660]"}`}>{room.code}</span>
+      </p>
+    </div>
+  );
+}
+
+function RoomText({ room, dark = false, className = "" }: { room: Room; dark?: boolean; className?: string }) {
+  return (
+    <div className={`flex flex-col gap-4 ${className}`}>
+      <p className={`text-[13px] font-medium uppercase tracking-[0.12em] ${dark ? "text-[#CFC6BE]" : "text-[#6B6660]"}`}>
+        {room.room} · {room.place}
+      </p>
+      <p className={`${serif} text-[24px] leading-[1.3] sm:text-[28px]`}>{room.text}</p>
+      <p className={`text-[15px] ${dark ? "text-[#CFC6BE]" : "text-[#6B6660]"}`}>Før: {room.before.toLowerCase()}</p>
+      <Colour room={room} dark={dark} />
+    </div>
+  );
+}
 
 export function MalerSite() {
-  const [pick, setPick] = useState(0);
   const [menu, setMenu] = useState(false);
   const [len, setLen] = useState("4,5");
   const [wid, setWid] = useState("3,5");
@@ -202,8 +175,6 @@ export function MalerSite() {
   ];
   const total = lines.reduce((s, l) => s + l[2], 0);
   const valid = L > 0 && B > 0 && H > 0 && L <= 15 && B <= 15 && H <= 5;
-  const days = Math.max(1, Math.ceil(total / 5500)) + (fill === 2 ? 1 : 0);
-  const room = ROOMS[pick];
 
   const useNumbers = () => {
     setMessage(
@@ -214,28 +185,26 @@ export function MalerSite() {
   };
 
   return (
-    <div className="min-h-dvh overflow-x-clip bg-[#FAF9F6] font-(family-name:--font-kulor) text-[#22211F] [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#22211F]">
-      <DemoNote className="bg-[#22211F] text-[#D9D5CC]" />
+    <div className="min-h-dvh overflow-x-clip bg-[#FBF8F3] font-(family-name:--font-kulor) text-[#22201E] [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#22201E]">
+      <DemoNote className="bg-[#22201E] text-[#DDD6CD]" />
 
-      <header className="relative z-40 border-b border-[#DDD9D0] bg-[#FAF9F6] sm:sticky sm:top-0">
-        <div className={`${wrap} flex items-center justify-between gap-4 py-3`}>
-          <a href="#top" className="flex min-w-0 flex-col leading-tight">
-            <span className={`${display} whitespace-nowrap text-[22px] font-bold tracking-[-0.02em] sm:text-2xl`}>Kulør</span>
-            <span className="whitespace-nowrap text-xs text-[#66625A]">Malerfirma i Odense · siden 1998</span>
-          </a>
-          <nav aria-label="Hovedmenu" className="hidden gap-7 whitespace-nowrap text-[15px] font-medium lg:flex">
+      {/* A masthead: the name in the middle, like the cover of a home magazine */}
+      <header className="border-b border-[#22201E]/12">
+        <div className={`${wrap} flex items-center justify-between gap-4 py-4 sm:py-5 lg:grid lg:grid-cols-[1fr_auto_1fr]`}>
+          <nav aria-label="Hovedmenu" className="hidden gap-8 text-[15px] font-medium lg:flex">
             {NAV.map(([href, label]) => (
-              <a key={href} href={href} className="underline-offset-4 hover:underline">
+              <a key={href} href={href} className="underline-offset-[6px] hover:underline">
                 {label}
               </a>
             ))}
           </nav>
-          <div className="flex shrink-0 items-center gap-4">
+          <a href="#top" className="flex flex-col leading-none lg:items-center">
+            <span className={`${serif} text-[32px] font-medium tracking-[-0.01em] sm:text-[40px]`}>Kulør</span>
+            <span className="mt-1 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.16em] text-[#6B6660]">Malerfirma i Odense</span>
+          </a>
+          <div className="flex items-center justify-end gap-5">
             <a href={TEL} className="hidden whitespace-nowrap font-semibold sm:inline">
               {PHONE}
-            </a>
-            <a href="#kontakt" className={`${btn} hidden px-5 py-2.5 md:inline-flex`}>
-              Book opmåling
             </a>
             <button
               type="button"
@@ -243,354 +212,241 @@ export function MalerSite() {
               aria-expanded={menu}
               aria-controls="kulor-menu"
               onClick={() => setMenu((m) => !m)}
-              className="grid size-11 place-items-center rounded-[2px] border border-[#B4AFA6] lg:hidden"
+              className="-mr-2 grid size-11 place-items-center lg:hidden"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-                {menu ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                {menu ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M3 9h18M3 15h18" />}
               </svg>
             </button>
           </div>
         </div>
         {menu && (
-          <nav id="kulor-menu" aria-label="Menu" className="border-t border-[#DDD9D0] lg:hidden">
-            <ul className={`${wrap} py-2`}>
+          <nav id="kulor-menu" aria-label="Menu" className="border-t border-[#22201E]/12 lg:hidden">
+            <ul className={`${wrap} py-3`}>
               {NAV.map(([href, label]) => (
                 <li key={href}>
-                  <a href={href} onClick={() => setMenu(false)} className="block border-b border-[#DDD9D0] py-3.5 text-lg font-medium">
+                  <a href={href} onClick={() => setMenu(false)} className={`${serif} block py-3 text-[30px]`}>
                     {label}
                   </a>
                 </li>
               ))}
-              <li>
-                <a href={TEL} className="block py-3.5 text-lg font-semibold">
-                  Ring {PHONE}
-                </a>
-              </li>
             </ul>
           </nav>
         )}
       </header>
 
       <main>
-        {/* Hero: what we do and what you get afterwards, beside the painter */}
-        <section id="top" className={`${wrap} grid gap-8 pb-14 pt-6 sm:pt-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-16 lg:pb-24 lg:pt-16`}>
-          <div className="flex flex-col gap-6 lg:pt-6">
-            <h1 className={`${display} max-w-[15ch] text-[42px] font-semibold leading-[1.02] tracking-[-0.03em] sm:text-[60px] lg:text-[72px]`}>
-              Vi maler. Du får farverne skrevet ned.
-            </h1>
-            <p className="max-w-[46ch] text-lg leading-[1.55] text-[#3D3A35] sm:text-xl">
-              Indvendigt og udvendigt i Odense og omegn. Når vi går, får du et kort med farvekode og glans for hvert rum, så du kan købe den rigtige maling, når der skal tages en plet.
-            </p>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-              <a href="#kontakt" className={`${btn} inline-flex px-6 py-4 text-[17px]`}>
-                Book opmåling
-              </a>
-              <p className="text-[#66625A]">
-                eller ring{" "}
-                <a href={TEL} className="whitespace-nowrap font-semibold text-[#22211F] underline underline-offset-2">
-                  {PHONE}
-                </a>
-                , hverdage 7–16
-              </p>
-            </div>
-            <dl className="mt-2 grid max-w-[560px] gap-x-8 gap-y-3 border-t border-[#DDD9D0] pt-5 text-[15px] sm:grid-cols-2">
-              <div>
-                <dt className="text-[#66625A]">Opmåling hjemme hos dig</dt>
-                <dd className="font-semibold">450 kr. inkl. moms, trækkes fra</dd>
-              </div>
-              <div>
-                <dt className="text-[#66625A]">Vi kan starte</dt>
-                <dd className="font-semibold">Om ca. 2 uger</dd>
-              </div>
-            </dl>
-          </div>
-          <figure className="relative max-lg:-mx-4 max-lg:order-first sm:max-lg:mx-0 sm:max-lg:max-w-[420px]">
-            <Image
-              src={heroPhoto}
-              alt="Maler i hvidt arbejdstøj med malerrulle og spand foran et hvidt hus og en varevogn"
-              sizes="(min-width: 1024px) 420px, (min-width: 640px) 420px, 100vw"
-              priority
-              fetchPriority="high"
-              loading="eager"
-              className="aspect-[4/5] w-full object-cover object-[50%_25%] max-sm:aspect-[5/4] sm:rounded-[2px]"
-            />
-            <figcaption className={`${tape} absolute -bottom-3 left-5 rotate-[-1.5deg] px-4 py-2 text-[13px] text-[#3D3A35]`}>
-              Pladsholderfoto · her kommer mesterens eget portræt
+        {/* One finished room, large, and the sample patches that came before it */}
+        <section id="top" className={`${wrap} grid gap-10 pb-24 pt-8 sm:pt-12 lg:grid-cols-12 lg:gap-x-10 lg:pb-32 lg:pt-14`}>
+          <figure className="-mx-5 sm:mx-0 lg:col-span-7 lg:row-span-2">
+            <Img priority id={HUNDERUP.photo} w={1800} alt={HUNDERUP.alt} className="aspect-[4/5] w-full object-cover sm:aspect-[5/4] lg:aspect-[4/5]" />
+            <figcaption className="mt-4 px-5 sm:px-0">
+              <Colour room={HUNDERUP} />
             </figcaption>
+          </figure>
+          <div className="flex flex-col max-lg:order-first lg:col-span-5 lg:col-start-8 lg:pt-6">
+            <h1 className={`${serif} text-[44px] font-medium leading-[1.04] tracking-[-0.025em] sm:text-[64px] lg:text-[clamp(52px,4.8vw,72px)]`}>
+              Vi maler prøven op på din væg, før du vælger.
+            </h1>
+            <p className="mt-6 max-w-[36ch] text-lg leading-[1.55] sm:text-xl">
+              Indvendigt, træværk og facader i Odense og omegn. Opmåling og farveprøver koster 450 kr. og trækkes fra, hvis vi maler.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <a href="#kontakt" className={`${btn} h-14 px-7 text-[17px]`}>
+                Book opmåling og prøver
+              </a>
+              <a href={TEL} className="whitespace-nowrap font-semibold underline underline-offset-4">
+                {PHONE}
+              </a>
+            </div>
+          </div>
+          <figure className="ml-auto w-2/3 sm:w-1/2 lg:col-span-5 lg:col-start-8 lg:w-full lg:self-end">
+            <Img id="1760101187116-fa8409c3d9ac" w={900} alt="Farveprøver malet op på en gammel væg ved siden af en dør" className="aspect-[3/2] w-full object-cover" />
+            <figcaption className="mt-2 text-[13px] text-[#6B6660]">Prøverne bliver hængende, til du har set dem i både morgen- og aftenlys.</figcaption>
           </figure>
         </section>
 
-        {/* The colour card: recent rooms with their codes */}
-        <section id="farver" className="scroll-mt-20 border-y border-[#DDD9D0] bg-white">
-          <div className={`${wrap} py-14 sm:py-20`}>
-            <div className="flex flex-col gap-3">
-              <h2 className={h2}>Farver fra de seneste opgaver</h2>
-              <p className="max-w-[60ch] text-[17px] leading-[1.55] text-[#3D3A35]">
-                Det står på kortet, kunden fik. Tryk på en farve for at se rummet. Farverne på skærmen er kun omtrentlige, så se altid en prøve på din egen væg.
-              </p>
-            </div>
-
-            <div role="group" aria-label="Vælg en farve" className="mt-8 grid grid-cols-3 border border-[#DDD9D0] sm:grid-cols-6">
-              {ROOMS.map((r, i) => (
-                <div key={r.code} className={`flex flex-col ${i % 3 ? "border-l" : ""} ${i >= 3 ? "max-sm:border-t" : ""} ${i ? "sm:border-l" : ""} border-[#DDD9D0] ${pick === i ? "bg-[#F1EFEA]" : ""}`}>
-                  <button type="button" aria-pressed={pick === i} onClick={() => setPick(i)} className="group flex flex-col text-left">
-                    <span
-                      className={`relative block h-24 w-full border-b border-[#DDD9D0] sm:h-36 ${pick === i ? `after:absolute after:left-2 after:top-2 after:h-1.5 after:w-8 ${r.dark ? "after:bg-[#FAF9F6]" : "after:bg-[#22211F]"}` : ""}`}
-                      style={{ background: r.hex }}
-                    />
-                    <span className="truncate whitespace-nowrap px-2.5 pt-2.5 text-sm font-semibold group-hover:underline sm:px-3 sm:text-[15px]">{r.name}</span>
-                  </button>
-                  <p className="px-2.5 pb-2.5 text-[11px] tabular-nums leading-snug text-[#66625A] sm:px-3 sm:text-xs">{r.code.replace("NCS ", "")}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-12" aria-live="polite">
-              {room.photo ? (
-                <Img id={room.photo} w={1200} alt={room.alt} className="aspect-[3/2] w-full rounded-[2px] object-cover" />
-              ) : (
-                <div className="grid aspect-[3/2] w-full place-items-center rounded-[2px] border border-[#DDD9D0]" style={{ background: room.hex }}>
-                  <span className="text-sm text-[#66625A]">Lofter fotograferer sig dårligt</span>
-                </div>
-              )}
-              <div className="flex flex-col gap-4">
-                <p className="text-sm text-[#66625A]">
-                  {room.room}, {room.place}
-                  {room.when && ` · ${room.when}`}
-                </p>
-                <h3 className={`${display} text-[30px] font-semibold leading-tight tracking-[-0.02em]`}>{room.name}</h3>
-                <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-2 border-y border-[#DDD9D0] py-4 text-[15px]">
-                  <dt className="text-[#66625A]">Farvekode</dt>
-                  <dd className="font-semibold tabular-nums">{room.code}</dd>
-                  <dt className="text-[#66625A]">Glans</dt>
-                  <dd className="font-semibold">{room.gloss}</dd>
-                </dl>
-                <p className="max-w-[48ch] leading-[1.6] text-[#3D3A35]">{room.note}</p>
-              </div>
-            </div>
-            <p className="mt-6 text-[13px] text-[#66625A]">Fotos fra Unsplash som pladsholdere, og farverne i dem passer ikke præcist til koderne. På din side bruger vi dine egne billeder fra opgaverne.</p>
+        {/* Two rooms side by side, at different heights, like a spread */}
+        <section id="rum" className={`${wrap} pb-24 sm:pb-36`}>
+          <div className="grid gap-4 lg:grid-cols-12 lg:gap-x-10">
+            <h2 className={`${h2} lg:col-span-6`}>Rum, vi har malet</h2>
+            <p className="max-w-[40ch] text-[15px] leading-[1.55] text-[#6B6660] lg:col-span-4 lg:col-start-9 lg:self-end">
+              Koden står ved hvert rum, så du kan købe den samme maling til en plet. Farverne på skærmen er kun omtrentlige.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-16 sm:mt-16 lg:grid-cols-12 lg:gap-x-10">
+            <figure className="lg:col-span-5">
+              <Img id={PAIR[0].photo} w={1200} alt={PAIR[0].alt} className="aspect-[4/5] w-full object-cover" />
+              <figcaption className="mt-6">
+                <RoomText room={PAIR[0]} />
+              </figcaption>
+            </figure>
+            <figure className="lg:col-span-6 lg:col-start-7 lg:mt-40">
+              <Img id={PAIR[1].photo} w={1400} alt={PAIR[1].alt} className="aspect-[4/3] w-full object-cover" />
+              <figcaption className="mt-6">
+                <RoomText room={PAIR[1]} />
+              </figcaption>
+            </figure>
           </div>
         </section>
 
-        {/* Calculator: one room from its measurements */}
-        <section id="pris" className={`${wrap} grid scroll-mt-20 gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16`}>
-          <div className="flex flex-col gap-7">
-            <div className="flex flex-col gap-3">
-              <h2 className={h2}>Hvad koster et rum?</h2>
-              <p className="max-w-[48ch] text-[17px] leading-[1.55] text-[#3D3A35]">
-                Mål rummet op med en tommestok. Vi regner, som vi gør, når vi står hos dig, bare uden at have set væggene.
-              </p>
+        {/* The dark room gets a dark spread, in its own colour */}
+        <section className="bg-[#4C4541] text-[#F3EEE8] [&_:focus-visible]:outline-[#F3EEE8]">
+          <div className="grid lg:grid-cols-2">
+            <Img id={UMBRA.photo} w={1600} alt={UMBRA.alt} className="aspect-[4/3] w-full object-cover lg:order-last lg:aspect-auto lg:h-full lg:min-h-[680px]" />
+            <div className="flex items-center px-5 py-16 sm:px-10 sm:py-24 lg:px-16 xl:px-24">
+              <RoomText room={UMBRA} dark className="max-w-[30rem]" />
             </div>
+          </div>
+        </section>
+        <p className={`${wrap} mt-4 text-[13px] text-[#6B6660]`}>Rummene er eksempler, og fotos er pladsholdere fra Unsplash. På din side står jeres egne opgaver.</p>
 
-            <fieldset className="flex flex-col gap-2">
-              <legend className="mb-2 font-semibold">Rummets mål i meter</legend>
-              <div className="grid grid-cols-3 gap-3">
-                {(
-                  [
-                    ["Længde", len, setLen],
-                    ["Bredde", wid, setWid],
-                    ["Til loftet", hgt, setHgt],
-                  ] as const
-                ).map(([label, v, set]) => (
-                  <label key={label} className="flex flex-col gap-1 text-sm text-[#66625A]">
-                    {label}
-                    <input inputMode="decimal" value={v} onChange={(e) => set(e.target.value.replace(/[^\d,.]/g, ""))} className={`${field} tabular-nums`} />
-                  </label>
-                ))}
+        {/* What a room costs, worked out the way we would on the day */}
+        <section id="pris" className="mt-24 bg-[#F1E4DA] sm:mt-32">
+          <div className={`${wrap} grid gap-14 py-20 sm:py-28 lg:grid-cols-12 lg:gap-x-10`}>
+            <div className="flex flex-col gap-8 lg:col-span-6">
+              <div className="flex flex-col gap-4">
+                <h2 className={h2}>Hvad koster et rum?</h2>
+                <p className="max-w-[40ch] text-lg leading-[1.55]">Mål rummet med en tommestok. Vi regner, som vi gør, når vi står hos dig.</p>
               </div>
-            </fieldset>
 
-            <fieldset>
-              <legend className="mb-2 font-semibold">Glans på væggene</legend>
-              <div className="flex flex-col border-t border-[#DDD9D0]">
-                {GLOSS.map((g) => (
-                  <div key={g.value} className="flex flex-wrap items-baseline gap-x-3 border-b border-[#DDD9D0] py-2.5">
-                    <label className="flex w-[104px] shrink-0 cursor-pointer items-baseline gap-3 whitespace-nowrap font-medium">
-                      <input type="radio" name="glans" checked={gloss === g.value} onChange={() => setGloss(g.value)} aria-describedby={`glans-${g.value}`} className="translate-y-0.5 accent-[#22211F]" />
-                      {g.label}
+              <fieldset>
+                <legend className="mb-1 font-semibold">Rummets mål i meter</legend>
+                <div className="grid grid-cols-3 gap-4 sm:gap-6">
+                  {(
+                    [
+                      ["Længde", len, setLen],
+                      ["Bredde", wid, setWid],
+                      ["Til loftet", hgt, setHgt],
+                    ] as const
+                  ).map(([label, v, set]) => (
+                    <label key={label} className="flex flex-col text-sm text-[#6B6660]">
+                      {label}
+                      <input inputMode="decimal" value={v} onChange={(e) => set(e.target.value.replace(/[^\d,.]/g, ""))} className={`${field} tabular-nums`} />
                     </label>
-                    <p id={`glans-${g.value}`} className="text-[15px] text-[#66625A] max-sm:basis-full max-sm:pl-[25px]">
-                      {g.where}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </fieldset>
+                  ))}
+                </div>
+              </fieldset>
 
-            <fieldset>
-              <legend className="mb-2 font-semibold">Spartling</legend>
-              <div className="flex flex-col border-t border-[#DDD9D0]">
-                {FILL.map((f, i) => (
-                  <div key={f.label} className="flex flex-wrap items-baseline gap-x-3 border-b border-[#DDD9D0] py-2.5">
-                    <label className="flex w-[140px] shrink-0 cursor-pointer items-baseline gap-3 whitespace-nowrap font-medium">
-                      <input type="radio" name="spartel" checked={fill === i} onChange={() => setFill(i)} aria-describedby={`spartel-${i}`} className="translate-y-0.5 accent-[#22211F]" />
-                      {f.label}
+              <fieldset>
+                <legend className="mb-3 font-semibold">Glans på væggene</legend>
+                <div className="grid grid-cols-3 gap-2">
+                  {GLOSS.map((g) => (
+                    <label key={g.value} className={seg(gloss === g.value)}>
+                      <input type="radio" name="glans" checked={gloss === g.value} onChange={() => setGloss(g.value)} className="sr-only" />
+                      Glans {g.value}
                     </label>
-                    <p id={`spartel-${i}`} className="text-[15px] text-[#66625A] max-sm:basis-full max-sm:pl-[25px]">
-                      {f.where}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </fieldset>
+                  ))}
+                </div>
+                <p className="mt-2 text-sm text-[#6B6660]">{GLOSS.find((g) => g.value === gloss)?.where}</p>
+              </fieldset>
 
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-              <label className="flex cursor-pointer items-center gap-2.5 font-medium">
-                <input type="checkbox" checked={ceiling} onChange={(e) => setCeiling(e.target.checked)} className="size-4 accent-[#22211F]" />
-                Loftet skal også males
-              </label>
-              <div className="flex items-center gap-3">
-                <span id="kulor-doors" className="font-medium">
-                  Døre
-                </span>
-                <div role="group" aria-labelledby="kulor-doors" className="flex items-center border border-[#B4AFA6]">
-                  <button type="button" aria-label="Færre døre" onClick={() => setDoors((d) => Math.max(0, d - 1))} className="grid size-10 place-items-center text-lg">
-                    −
-                  </button>
-                  <span className="w-8 text-center font-semibold tabular-nums" aria-live="polite">
-                    {doors}
+              <fieldset>
+                <legend className="mb-3 font-semibold">Spartling</legend>
+                <div className="grid grid-cols-3 gap-2">
+                  {FILL.map((f, i) => (
+                    <label key={f.label} className={seg(fill === i)}>
+                      <input type="radio" name="spartel" checked={fill === i} onChange={() => setFill(i)} className="sr-only" />
+                      <span className="max-[380px]:hidden">{f.label}</span>
+                      <span className="min-[381px]:hidden">{["Ingen", "Plet", "Hel"][i]}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
+                <label className="flex cursor-pointer items-center gap-3 font-medium">
+                  <input type="checkbox" checked={ceiling} onChange={(e) => setCeiling(e.target.checked)} className="size-5 accent-[#22201E]" />
+                  Loftet skal også males
+                </label>
+                <div className="flex items-center gap-3">
+                  <span id="kulor-doors" className="font-medium">
+                    Døre
                   </span>
-                  <button type="button" aria-label="Flere døre" onClick={() => setDoors((d) => Math.min(6, d + 1))} className="grid size-10 place-items-center text-lg">
-                    +
-                  </button>
+                  <div role="group" aria-labelledby="kulor-doors" className="flex items-center border border-[#22201E]/25">
+                    <button type="button" aria-label="Færre døre" onClick={() => setDoors((d) => Math.max(0, d - 1))} className="grid size-11 place-items-center text-lg">
+                      −
+                    </button>
+                    <span className="w-8 text-center font-semibold tabular-nums" aria-live="polite">
+                      {doors}
+                    </span>
+                    <button type="button" aria-label="Flere døre" onClick={() => setDoors((d) => Math.min(6, d + 1))} className="grid size-11 place-items-center text-lg">
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* The worksheet: line by line, like the offer you would get */}
-          <div className="flex flex-col gap-5 lg:sticky lg:top-24 lg:self-start">
-            <div className="border border-[#22211F] bg-white">
-              <p className="border-b border-[#22211F] px-5 py-3 text-sm font-semibold">Overslag på ét rum</p>
+            {/* The estimate, line by line, like the offer you would get */}
+            <div className="flex flex-col gap-6 lg:sticky lg:top-10 lg:col-span-5 lg:col-start-8 lg:self-start">
               {valid ? (
                 <>
+                  <div aria-live="polite">
+                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[#6B6660]">Typisk pris for rummet</p>
+                    <p className={`${serif} mt-2 whitespace-nowrap text-[40px] font-medium leading-none tracking-[-0.02em] min-[400px]:text-[48px] sm:text-[60px]`}>{kr(total)}</p>
+                    <p className="mt-2 text-[15px] text-[#6B6660]">
+                      Mellem {kr(total * 0.9)} og {kr(total * 1.1)}, inkl. moms og maling.
+                    </p>
+                  </div>
                   <table className="w-full border-collapse text-[15px]">
                     <caption className="sr-only">Overslag linje for linje</caption>
                     <tbody>
                       {lines.map(([what, calc, sum]) => (
-                        <tr key={what} className="border-b border-[#DDD9D0]">
-                          <th scope="row" className="px-5 py-2.5 text-left align-top font-medium">
+                        <tr key={what} className="border-t border-[#22201E]/15">
+                          <th scope="row" className="py-2.5 pr-4 text-left align-top font-medium">
                             {what}
-                            <span className="block text-[13px] font-normal tabular-nums text-[#66625A]">{calc}</span>
+                            <span className="block text-[13px] font-normal tabular-nums text-[#6B6660]">{calc}</span>
                           </th>
-                          <td className="whitespace-nowrap px-5 py-2.5 text-right align-top tabular-nums">{sum.toLocaleString("da-DK")} kr.</td>
+                          <td className="whitespace-nowrap py-2.5 text-right align-top tabular-nums">{sum.toLocaleString("da-DK")} kr.</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pb-2 pt-4">
-                    <span className="font-semibold">Typisk pris</span>
-                    <span className={`${display} whitespace-nowrap text-[28px] font-semibold tabular-nums tracking-[-0.02em] sm:text-[32px]`}>
-                      {kr(total * 0.9)} – {kr(total * 1.1)}
-                    </span>
-                  </div>
-                  <p className="px-5 pb-5 text-sm text-[#66625A]">
-                    Inkl. moms og maling. Ca. {days} {days === 1 ? "arbejdsdag" : "arbejdsdage"} for én maler{fill === 2 && ", fordi spartlen skal tørre"}.
-                  </p>
                 </>
               ) : (
-                <p className="px-5 py-8 text-[#66625A]">Skriv rummets mål i meter, fx 4,5. Rum over 15 meter regner vi på, når vi har set dem.</p>
+                <p className="text-lg text-[#6B6660]">Skriv rummets mål i meter, fx 4,5. Rum over 15 meter regner vi på, når vi har set dem.</p>
               )}
+              <button type="button" disabled={!valid} onClick={useNumbers} className={`${btn} h-14 self-start px-6 disabled:opacity-40`}>
+                Send målene med i en besked
+              </button>
+              <details className="group border-t border-[#22201E]/15">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-medium [&::-webkit-details-marker]:hidden">
+                  Andre priser
+                  <span aria-hidden className="text-xl leading-none transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <dl className="pb-2 text-[15px]">
+                  {PRICES.map((p) => (
+                    <div key={p.what} className="flex justify-between gap-4 border-t border-[#22201E]/10 py-2.5">
+                      <dt>{p.what}</dt>
+                      <dd className="whitespace-nowrap text-right">{p.price}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="pb-4 text-[13px] text-[#6B6660]">Eksempelpriser inkl. moms. På din side står dine egne.</p>
+              </details>
             </div>
-            <button type="button" disabled={!valid} onClick={useNumbers} className={`${btn} inline-flex self-start px-6 py-3.5 disabled:opacity-40`}>
-              Send målene med i en besked
-            </button>
-            <p className="text-sm leading-normal text-[#66625A]">
-              Almindeligt malerarbejde giver ikke håndværkerfradrag i 2026. Se reglerne på skat.dk.
-            </p>
           </div>
         </section>
 
-        {/* Price list, the master and the facts */}
-        <section id="om" className="scroll-mt-20 bg-[#22211F] text-[#FAF9F6] [&_:focus-visible]:outline-[#FAF9F6]">
-          <div className={`${wrap} grid gap-12 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16`}>
-            <div className="flex flex-col gap-5">
-              <h2 className={h2}>Søren Kragh, malermester</h2>
-              <p className="max-w-[52ch] text-[17px] leading-[1.6] text-[#D9D5CC]">
-                Jeg overtog firmaet efter min far i 2014. Vi er fire malere og en lærling, og det er os selv, der maler. Vi tager ikke opgaver, hvor vi skal leje folk ind.
-              </p>
-              <p className="max-w-[52ch] text-[17px] leading-[1.6] text-[#D9D5CC]">
-                Om vinteren maler vi mest indenfor. Facader og vinduer tager vi fra april til september, når træet er tørt.
-              </p>
-              <dl className="mt-3 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-2.5 border-t border-[#4A4743] pt-5 text-[15px]">
-                <dt className="text-[#A8A399]">Adresse</dt>
-                <dd>{ADDRESS}</dd>
-                <dt className="text-[#A8A399]">Telefon</dt>
-                <dd>
-                  <a href={TEL} className="underline underline-offset-2">
-                    {PHONE}
-                  </a>
-                  , man–fre kl. 7–16
-                </dd>
-                <dt className="text-[#A8A399]">CVR</dt>
-                <dd>00 00 00 00 (eksempel)</dd>
-                <dt className="text-[#A8A399]">Medlem af</dt>
-                <dd>Danske Malermestre (eksempel)</dd>
-                <dt className="text-[#A8A399]">Område</dt>
-                <dd>Odense, Kerteminde, Nyborg og Faaborg</dd>
-              </dl>
-            </div>
-            <table className="w-full self-start border-collapse">
-              <caption className="pb-3 text-left text-sm text-[#A8A399]">Vejledende priser inkl. moms, oktober 2026</caption>
-              <tbody>
-                {PRICES.map((p) => (
-                  <tr key={p.what} className="border-y border-[#4A4743]">
-                    <th scope="row" className="py-3.5 pr-4 text-left align-top font-medium">
-                      {p.what}
-                      {p.note && <span className="block text-sm font-normal text-[#A8A399]">{p.note}</span>}
-                    </th>
-                    <td className="whitespace-nowrap py-3.5 text-right align-top tabular-nums">{p.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* Reviews */}
-        <section className={`${wrap} grid gap-8 py-14 sm:py-20 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-16`}>
-          <div className="flex flex-col gap-3">
-            <h2 className={h2}>Det skriver kunderne</h2>
-            <SampleReviewsNote className="text-[#66625A]" />
-          </div>
-          <ul className="flex flex-col">
-            {REVIEWS.map((r) => (
-              <li key={r.name} className="grid gap-2 border-t border-[#DDD9D0] py-6 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6">
-                <p className="flex gap-3 text-sm text-[#66625A] sm:flex-col sm:gap-1">
-                  <Stars n={r.stars} className="text-[#22211F]" />
-                  <span>{r.date}</span>
-                </p>
-                <figure className="flex flex-col gap-2">
-                  <blockquote className="max-w-[60ch] text-[17px] leading-[1.6]">{r.text}</blockquote>
-                  <figcaption className="text-[15px] text-[#66625A]">{r.name}</figcaption>
-                  {r.reply && (
-                    <p className="mt-1 max-w-[60ch] border-l-2 border-[#B4AFA6] pl-3.5 text-[15px] leading-[1.55] text-[#3D3A35]">
-                      <b className="font-semibold">Svar fra Søren:</b> {r.reply}
-                    </p>
-                  )}
-                </figure>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Contact */}
-        <section id="kontakt" className="scroll-mt-20 border-t border-[#DDD9D0] bg-white">
-          <div className={`${wrap} grid gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16`}>
-            <div className="flex flex-col gap-4">
-              <h2 className={h2}>Skal vi komme og måle op?</h2>
-              <p className="max-w-[44ch] text-[17px] leading-[1.6] text-[#3D3A35]">
-                Ring, hvis du har spørgsmål. Skriv, hvis du vil have en tid. Vi tager farveprøver med, så du kan se dem på dine egne vægge.
-              </p>
-              <p className={`${display} text-[30px] font-semibold`}>
-                <a href={TEL} className="whitespace-nowrap underline-offset-4 hover:underline">
-                  {PHONE}
-                </a>
-              </p>
-              <p className="text-sm text-[#66625A]">Man–fre kl. 7–16 · {ADDRESS}</p>
-            </div>
+        {/* Contact, with the people who come out */}
+        <section id="kontakt" className={`${wrap} grid gap-14 py-24 sm:py-32 lg:grid-cols-12 lg:gap-x-10`}>
+          <figure className="order-last w-2/3 sm:w-1/2 lg:order-none lg:col-span-4 lg:w-full">
+            <Image
+              src={painterPhoto}
+              alt="Maler i hvidt arbejdstøj med malerrulle og spand foran et hvidt hus"
+              sizes="(min-width: 1024px) 400px, 66vw"
+              className="aspect-[3/4] w-full object-cover object-[50%_25%]"
+            />
+            <figcaption className="mt-2 text-[13px] text-[#6B6660]">Pladsholderfoto. Her kommer et billede af jer selv.</figcaption>
+          </figure>
+          <div className="lg:col-span-7 lg:col-start-6">
+            <h2 className={h2}>Book opmåling og prøver</h2>
+            <p className="mt-4 max-w-[44ch] text-lg leading-[1.55]">Vi kommer med farveprøverne og maler dem op på dine vægge. Det koster 450 kr., som trækkes fra, hvis vi maler.</p>
             <form
-              className="flex flex-col gap-4"
+              className="mt-10 flex flex-col gap-7"
               onSubmit={(e) => {
                 e.preventDefault();
                 setSent(true);
@@ -598,65 +454,74 @@ export function MalerSite() {
                 e.currentTarget.reset();
               }}
             >
-              {sent && (
-                <p role="status" className="border-l-4 border-[#22211F] bg-[#F1EFEA] p-4 leading-normal">
-                  Tak. På en rigtig side ville Søren ringe dig op inden for en hverdag og aftale en tid til opmåling. Dette er et eksempel, så der er ikke sendt noget.
-                </p>
-              )}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Navn
-                  <input required name="navn" autoComplete="name" className={field} />
-                </label>
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Telefon
-                  <input required name="telefon" type="tel" autoComplete="tel" pattern="[0-9 +]{8,}" title="Skriv et telefonnummer på mindst 8 cifre" className={field} />
-                </label>
-              </div>
-              <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                Adresse, hvor der skal males
-                <input required name="adresse" autoComplete="street-address" placeholder="Fx Hunderupvej 40, 5230 Odense M" className={field} />
-              </label>
-              <label className="flex flex-col gap-1.5 text-[15px] font-medium">
+              <label className="flex flex-col gap-1 font-semibold">
                 Hvad skal males?
                 <textarea
                   id="kulor-besked"
                   required
                   name="besked"
-                  rows={4}
+                  rows={3}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Fx stue og gang, vægge og loft. Der er revner over døren."
-                  className={`${field} resize-y`}
+                  placeholder="Fx stue og gang, ca. 60 m² vægge"
+                  className={`${field} resize-y font-normal`}
                 />
               </label>
-              <button type="submit" className={`${btn} inline-flex self-start px-6 py-3.5 text-[17px]`}>
-                Send forespørgsel
-              </button>
+              <label className="flex flex-col gap-1 font-semibold">
+                Telefon
+                <input required name="telefon" type="tel" autoComplete="tel" inputMode="tel" pattern="[0-9 +]{8,}" title="Skriv et telefonnummer på mindst 8 cifre" className={`${field} font-normal`} />
+              </label>
+              <div className="flex flex-col items-start gap-4">
+                <button type="submit" className={`${btn} h-14 px-8 text-[17px]`}>
+                  Send
+                </button>
+                {sent && (
+                  <p role="status" className="text-[15px] leading-[1.5]">
+                    Tak. På en rigtig side ville vi ringe dig op og finde en tid. Dette er et eksempel, så der er ikke sendt noget.
+                  </p>
+                )}
+              </div>
             </form>
+            <dl className="mt-14 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-2.5 border-t border-[#22201E]/15 pt-6 text-[15px]">
+              <dt className="text-[#6B6660]">Telefon</dt>
+              <dd>
+                <a href={TEL} className="font-semibold underline underline-offset-2">
+                  {PHONE}
+                </a>
+                , hverdage kl. 7–16
+              </dd>
+              <dt className="text-[#6B6660]">Værksted</dt>
+              <dd>{ADDRESS}</dd>
+              <dt className="text-[#6B6660]">Område</dt>
+              <dd>Odense, Nyborg og Assens</dd>
+              <dt className="text-[#6B6660]">Garanti</dt>
+              <dd>Byg Garanti (eksempel)</dd>
+              <dt className="text-[#6B6660]">CVR</dt>
+              <dd>00 00 00 00 (eksempel)</dd>
+            </dl>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-[#DDD9D0] pb-24 sm:pb-0">
-        <div className={`${wrap} flex flex-wrap justify-between gap-x-8 gap-y-2 py-8 text-sm text-[#66625A]`}>
-          <span className="font-semibold text-[#22211F]">Malerfirmaet Kulør</span>
+      <footer className="border-t border-[#22201E]/12 pb-24 sm:pb-0">
+        <div className={`${wrap} flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 py-10 text-sm text-[#6B6660]`}>
+          <span className={`${serif} text-2xl text-[#22201E]`}>Kulør</span>
           <span>{ADDRESS}</span>
           <span>CVR 00 00 00 00 (eksempel)</span>
-          <a href={TEL} className="text-[#22211F] underline underline-offset-2">
+          <a href={TEL} className="font-semibold text-[#22201E] underline underline-offset-2">
             {PHONE}
           </a>
         </div>
       </footer>
 
-      {/* Phone: call or book, always within thumb's reach */}
-      <div className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 gap-2.5 border-t border-[#DDD9D0] bg-[#FAF9F6] px-4 pb-4 pt-3 sm:hidden">
-        <a href={TEL} className="grid h-[52px] place-items-center whitespace-nowrap rounded-[2px] border border-[#22211F] font-semibold">
-          Ring til Søren
+      {/* Phone: call, or book the samples */}
+      <div className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-[auto_1fr] gap-2 border-t border-[#22201E]/12 bg-[#FBF8F3] px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 sm:hidden">
+        <a href={TEL} className="grid h-[52px] place-items-center whitespace-nowrap border border-[#22201E] px-5 font-semibold">
+          Ring
         </a>
-        <a href="#kontakt" className={`${btn} inline-flex h-[52px]`}>
-          <span className="min-[360px]:hidden">Book tid</span>
-          <span className="hidden min-[360px]:inline">Book opmåling</span>
+        <a href="#kontakt" className={`${btn} h-[52px]`}>
+          <span className="min-[360px]:hidden">Book prøver</span>
+          <span className="hidden min-[360px]:inline">Book opmåling og prøver</span>
         </a>
       </div>
     </div>
