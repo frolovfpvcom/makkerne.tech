@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Work_Sans, Zilla_Slab } from "next/font/google";
+import { Epilogue } from "next/font/google";
 import { MurerSite } from "@/components/examples/murer";
 
-// A slab serif like the stamp on a brick for headings, and a plain, sturdy sans for the facts.
-const slab = Zilla_Slab({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-teglgaard-slab" });
-const sans = Work_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-teglgaard" });
+// One grotesk with real weight: extra bold for the headlines, like letters cut in a lintel, plain for the rest.
+const epilogue = Epilogue({ subsets: ["latin"], variable: "--font-teglgaard" });
 
 export const metadata: Metadata = {
   title: { absolute: "Teglgaard Murer – murer i Aarhus (eksempel)" },
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className={`${slab.variable} ${sans.variable}`}>
+    <div className={epilogue.variable}>
       <MurerSite />
     </div>
   );

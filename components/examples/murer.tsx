@@ -1,110 +1,84 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DemoNote, Img, SampleReviewsNote, Stars } from "./shared";
+import { DemoNote, Img } from "./shared";
 
 /*
- * Teglgaard Murer, built like a new joint in an old wall: lime white and brick red, a faint
- * running bond behind the quiet parts, a slab serif like the stamp on a brick, and a facade log
- * written as a table with house year and m². The diagnosis tool stays, but it says plainly that a
- * photo is not a survey. No cards, no shadows, no motion.
+ * Teglgaard Murer in Aarhus, for old houses. Heavy type that sits like a stone lintel, lime white,
+ * yellow brick and dark wet slate. The wall comes first as material: one wide facade and two
+ * close-ups. Then what is wrong with your wall, the houses we have worked on ordered by the year
+ * they were built, and prices on a field of yellow brick.
  */
 
 const PHONE = "78 90 12 34";
 const TEL = "tel:+4578901234";
 const ADDRESS = "Bødkervej 7, 8361 Hasselager";
 
-const slab = "font-(family-name:--font-teglgaard-slab)";
+const NAV = [
+  ["#mur", "Hvad fejler muren?"],
+  ["#huse", "Huse"],
+  ["#priser", "Priser"],
+  ["#kontakt", "Kontakt"],
+] as const;
 
-/** Running bond in thin lines: one tile is two courses, the head joints offset by half a brick. */
-const bond = (stroke: string) =>
-  ({
-    backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="40"><g stroke="${stroke}" stroke-width="1" fill="none"><path d="M0 .5H96M0 20.5H96M.5 0V20M48.5 20V40"/></g></svg>`,
-    )}")`,
-    backgroundSize: "96px 40px",
-  }) as React.CSSProperties;
-
-const LOG: { place: string; house: string; year: number; job: string; m2: string; time: string; when: string }[] = [
-  { place: "Højbjerg", house: "Murermestervilla", year: 1934, job: "Omfugning med kalkmørtel, hele facaden", m2: "140", time: "9 dage", when: "sep. 2026" },
-  { place: "Risskov", house: "Villa", year: 1928, job: "Afskallet cementpuds på soklen skiftet til kalkpuds", m2: "32", time: "4 dage", when: "aug. 2026" },
-  { place: "Viby J", house: "Parcelhus", year: 1958, job: "Revne over stuevindue syet, 18 sten skiftet", m2: "6", time: "2 dage", when: "jul. 2026" },
-  { place: "Frederiksbjerg", house: "Etageejendom", year: 1902, job: "Gavl omfuget fra lift", m2: "210", time: "3 uger", when: "jun. 2026" },
-  { place: "Åbyhøj", house: "Villa", year: 1912, job: "Skorsten omfuget og ny afdækning", m2: "–", time: "1 dag", when: "maj 2026" },
-  { place: "Lystrup", house: "Parcelhus", year: 1974, job: "Frostsprængte sten skiftet, facaden renset", m2: "95", time: "5 dage", when: "apr. 2026" },
-];
-
-/** "What's wrong with my wall?": the four things people ring a bricklayer about. */
+/** What people ring a bricklayer about, with a close-up of each. */
 const PROBLEMS = [
   {
     label: "Fugerne smuldrer",
     photo: "1612529505363-07a363324da7",
     alt: "Murværk med slidte og udvaskede fuger",
-    cause: "Gamle kalkfuger bliver slidt af regn og frost. Når de er hule, trænger vandet ind, og stenene begynder at skalle.",
-    fix: "Vi kradser de gamle fuger ud i 15–20 mm dybde og fuger om med en mørtel, der passer til husets alder.",
-    price: "Fra 650 kr./m²",
+    cause: "Kalkfuger bliver slidt af regn og frost. Når de er hule, trænger vandet ind bag stenene.",
+    fix: "Vi kradser fugerne ud i 15–20 mm dybde og fuger om med en mørtel, der passer til husets alder.",
+    price: "Fra 650 kr. pr. m²",
   },
   {
     label: "Revner i muren",
     photo: "1746606512371-e14d7cb6e45a",
     alt: "Revne gennem fugerne i en murstensvæg",
-    cause: "Revner kommer tit af sætninger, rustne murbindere eller en overligger over et vindue, der har givet sig.",
-    fix: "Vi finder årsagen først. Er revnen stille, syr vi den med rustfri armering og murer de løse sten om.",
+    cause: "Tit en sætning, rustne murbindere eller en overligger over et vindue, der har givet sig.",
+    fix: "Vi finder årsagen først. Står revnen stille, syr vi den med rustfri armering og murer de løse sten om.",
     price: "Fra 4.500 kr. pr. revne",
   },
   {
     label: "Pudsen skaller af",
     photo: "1533738630286-f1f4a61705f8",
     alt: "Mur med afskallet grå puds og røde sten bagved",
-    cause: "Puds med for stærk cementmørtel kan ikke ånde. Fugten bliver fanget bag pudsen, og så slipper den.",
-    fix: "Vi banker den løse puds af og pudser op igen med kalkmørtel, som muren kan tørre ud igennem.",
-    price: "Fra 850 kr./m²",
+    cause: "Cementpuds kan ikke ånde. Fugten bliver fanget bagved, og så slipper pudsen.",
+    fix: "Vi banker den løse puds af og pudser op med kalk, som muren kan tørre ud igennem.",
+    price: "Fra 850 kr. pr. m²",
   },
   {
-    label: "Fugt og hvide pletter",
+    label: "Hvide pletter",
     photo: "1616282836245-5d98abee8d98",
-    alt: "Brun og grå murstensvæg med lyse pletter",
-    cause: "Hvide pletter er salte, som fugten trækker ud af muren. Der kommer vand ind et sted, tit fra sokkel, tag eller et utæt nedløb.",
-    fix: "Vi går huset igennem og finder vandvejen. Nogle gange er det et nedløb, og så er det ikke murerarbejde.",
+    alt: "Murstensvæg med lyse saltpletter",
+    cause: "Pletterne er salte, som fugten trækker ud. Vandet kommer ind et sted, tit ved sokkel, tag eller nedløb.",
+    fix: "Vi finder vandvejen. Er det et utæt nedløb, siger vi det, for så er det ikke murerarbejde.",
     price: "Gennemgang 850 kr.",
   },
 ];
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
-const FACADE_MONTHS = [3, 4, 5, 6, 7, 8, 9];
+const HOUSES: { year: number; place: string; house: string; job: string; facts: string; photo?: string; alt?: string }[] = [
+  { year: 1902, place: "Frederiksbjerg", house: "Etageejendom", job: "Gavlen omfuget fra lift", facts: "210 m² · 3 uger · juni 2026" },
+  { year: 1912, place: "Åbyhøj", house: "Villa", job: "Skorstenen omfuget og ny afdækning", facts: "1 dag · maj 2026", photo: "1782565076449-a977ce04bd84", alt: "Gammelt rødt tegltag med skorstene" },
+  { year: 1928, place: "Risskov", house: "Villa", job: "Cementpuds på soklen skiftet til kalkpuds", facts: "32 m² · 4 dage · august 2026" },
+  { year: 1934, place: "Højbjerg", house: "Murermestervilla", job: "Hele facaden omfuget med kalkmørtel", facts: "140 m² · 9 dage · september 2026", photo: "1592795694703-24f1814cfb0a", alt: "Murværk med nye lyse fuger" },
+  { year: 1958, place: "Viby J", house: "Parcelhus", job: "Revne over stuevinduet syet og 18 sten skiftet", facts: "2 dage · juli 2026" },
+];
 
 const PRICES: { what: string; note?: string; price: string }[] = [
-  { what: "Besigtigelse", note: "i Aarhus Kommune, trækkes fra ved accept", price: "850 kr." },
+  { what: "Gennemgang af muren", note: "Trækkes fra, hvis du siger ja til tilbuddet.", price: "850 kr." },
   { what: "Timepris, murersvend", price: "585 kr." },
-  { what: "Omfugning, facade", note: "uden stillads", price: "650–950 kr./m²" },
-  { what: "Kalkpuds på sokkel", price: "850–1.100 kr./m²" },
-  { what: "Stillads til 1½-plans hus", note: "opstilling og leje i 3 uger", price: "9.000–14.000 kr." },
+  { what: "Omfugning af facade", note: "Uden stillads.", price: "650–950 kr. pr. m²" },
+  { what: "Kalkpuds på sokkel", price: "850–1.100 kr. pr. m²" },
+  { what: "Stillads til et 1½-plans hus", note: "Opstilling og tre ugers leje.", price: "9.000–14.000 kr." },
 ];
 
-const REVIEWS: { stars: number; date: string; text: string; name: string; reply?: string }[] = [
-  { stars: 5, date: "29. sep. 2026", text: "Jens sagde selv, at vores revne ikke var farlig, og at vi godt kunne vente et par år. Det sætter jeg pris på.", name: "Anne og Jakob, Viby J" },
-  {
-    stars: 4,
-    date: "3. sep. 2026",
-    text: "Fugerne ser ud, som da huset var nyt. Men stilladset stod en uge længere end aftalt, fordi det regnede, og det blev ikke sagt før til sidst.",
-    name: "Lene, Højbjerg",
-    reply: "Vi må ikke fuge i regnvejr, men vi skulle have ringet, da vi kunne se, at det trak ud. Det har vi lovet hinanden at gøre fremover.",
-  },
-  { stars: 5, date: "14. aug. 2026", text: "Soklen var pudset med cement af den forrige ejer. Nu er den kalket, og kælderen lugter ikke længere af fugt.", name: "Peter, Risskov" },
-  { stars: 5, date: "22. maj 2026", text: "Skorstenen klaret på en dag, og de fejede taget bagefter.", name: "Mette, Åbyhøj" },
-];
-
-const NAV = [
-  ["#facader", "Facader"],
-  ["#mur", "Hvad fejler muren?"],
-  ["#priser", "Priser"],
-  ["#kontakt", "Kontakt"],
-] as const;
-
-const wrap = "mx-auto max-w-[1200px] px-4 sm:px-8";
-const h2 = `${slab} text-[34px] font-semibold leading-[1.05] tracking-[-0.01em] sm:text-[46px]`;
-const btn = "items-center justify-center whitespace-nowrap bg-[#9E3B26] font-semibold text-white transition-colors hover:bg-[#82301E]";
-const field = "w-full border border-[#A79E92] bg-white px-3 py-2.5 text-base text-[#2A221E] placeholder:text-[#8A8076]";
+// Lime white #F3F1EC, wet slate #24221F, yellow brick #D9AE57, mortar grey #6B655C.
+const wrap = "mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12";
+const label = "text-xs font-bold uppercase tracking-[0.14em]";
+const h2 = "text-[40px] font-extrabold leading-[0.95] tracking-[-0.035em] sm:text-[56px] lg:text-[64px]";
+const btn = "inline-flex items-center justify-center whitespace-nowrap bg-[#24221F] font-bold text-[#F3F1EC] transition-colors hover:bg-[#45413B]";
+const field = "w-full border-2 border-[#24221F] bg-[#FBFAF7] px-4 py-3 text-lg text-[#24221F] placeholder:text-[#6B655C]";
 
 export function MurerSite() {
   const [menu, setMenu] = useState(false);
@@ -119,397 +93,261 @@ export function MurerSite() {
   }, [menu]);
 
   const p = PROBLEMS[problem];
-  const now = 9; // October: the page is dated by its price list
 
   return (
-    <div className="min-h-dvh overflow-x-clip bg-[#F2EEE6] font-(family-name:--font-teglgaard) text-[#2A221E] [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#9E3B26]">
-      <DemoNote className="bg-[#2A221E] text-[#D8D0C4]" />
+    <div className="min-h-dvh overflow-x-clip bg-[#F3F1EC] font-(family-name:--font-teglgaard) text-[#24221F] [&_:focus-visible]:outline-[3px] [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#B8862B]">
+      <DemoNote className="bg-[#24221F] text-[#CFCAC1]" />
 
-      <header className="relative z-40 border-b border-[#D6CEC2] bg-[#F2EEE6] sm:sticky sm:top-0">
-        <div className={`${wrap} flex items-center justify-between gap-4 py-3`}>
-          <a href="#top" className="flex min-w-0 flex-col leading-tight">
-            <span className={`${slab} whitespace-nowrap text-[23px] font-bold sm:text-[26px]`}>Teglgaard Murer</span>
-            <span className="whitespace-nowrap text-xs text-[#655A51]">Murermester i Aarhus · siden 1998</span>
+      <header className={`${wrap} flex items-center justify-between gap-6 py-4 sm:py-5`}>
+        <a href="#top" className="flex items-baseline gap-3 whitespace-nowrap">
+          <span className="text-[24px] font-black uppercase tracking-[-0.02em] sm:text-[28px]">Teglgaard</span>
+          <span className="hidden text-sm font-medium text-[#6B655C] sm:inline">Murer i Aarhus</span>
+        </a>
+        <nav aria-label="Hovedmenu" className="hidden gap-8 text-[15px] font-semibold lg:flex">
+          {NAV.map(([href, text]) => (
+            <a key={href} href={href} className="underline-offset-[6px] hover:underline">
+              {text}
+            </a>
+          ))}
+        </nav>
+        <div className="flex items-center gap-5">
+          <a href={TEL} className="hidden whitespace-nowrap text-lg font-extrabold sm:inline">
+            {PHONE}
           </a>
-          <nav aria-label="Hovedmenu" className="hidden gap-7 whitespace-nowrap text-[15px] font-medium lg:flex">
-            {NAV.map(([href, label]) => (
-              <a key={href} href={href} className="underline-offset-4 hover:text-[#9E3B26] hover:underline">
-                {label}
-              </a>
-            ))}
-          </nav>
-          <div className="flex shrink-0 items-center gap-4">
-            <a href={TEL} className="hidden whitespace-nowrap font-semibold sm:inline">
-              {PHONE}
-            </a>
-            <a href="#kontakt" className={`${btn} hidden px-5 py-2.5 md:inline-flex`}>
-              Book besigtigelse
-            </a>
-            <button
-              type="button"
-              aria-label={menu ? "Luk menu" : "Åbn menu"}
-              aria-expanded={menu}
-              aria-controls="teglgaard-menu"
-              onClick={() => setMenu((m) => !m)}
-              className="grid size-11 place-items-center border border-[#A79E92] lg:hidden"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                {menu ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-              </svg>
-            </button>
-          </div>
+          <button
+            type="button"
+            aria-label={menu ? "Luk menu" : "Åbn menu"}
+            aria-expanded={menu}
+            aria-controls="teglgaard-menu"
+            onClick={() => setMenu((m) => !m)}
+            className="-mr-2 grid size-11 place-items-center lg:hidden"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
+              {menu ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M3 7h18M3 12h18M3 17h18" />}
+            </svg>
+          </button>
         </div>
-        {menu && (
-          <nav id="teglgaard-menu" aria-label="Menu" className="border-t border-[#D6CEC2] lg:hidden">
-            <ul className={`${wrap} py-2`}>
-              {NAV.map(([href, label]) => (
-                <li key={href}>
-                  <a href={href} onClick={() => setMenu(false)} className="block border-b border-[#D6CEC2] py-3.5 text-lg font-medium">
-                    {label}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <a href={TEL} className="block py-3.5 text-lg font-semibold">
-                  Ring {PHONE}
+      </header>
+      {menu && (
+        <nav id="teglgaard-menu" aria-label="Menu" className="bg-[#24221F] text-[#F3F1EC] [&_:focus-visible]:outline-[#D9AE57] lg:hidden">
+          <ul className={`${wrap} py-4`}>
+            {NAV.map(([href, text]) => (
+              <li key={href}>
+                <a href={href} onClick={() => setMenu(false)} className="block py-3 text-[28px] font-extrabold tracking-[-0.02em]">
+                  {text}
                 </a>
               </li>
-            </ul>
-          </nav>
-        )}
-      </header>
+            ))}
+          </ul>
+        </nav>
+      )}
 
       <main>
-        {/* Hero on the bond */}
-        <section id="top" style={bond("rgba(42,34,30,0.055)")}>
-          <div className={`${wrap} grid items-center gap-8 pb-14 pt-6 sm:pt-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16 lg:pb-24 lg:pt-16`}>
-            <div className="flex flex-col gap-6">
-              <h1 className={`${slab} max-w-[17ch] text-[42px] font-semibold leading-[1.02] sm:text-[58px] lg:text-[66px]`}>Gamle huse i Aarhus, fuget og pudset med kalk.</h1>
-              <p className="max-w-[46ch] text-lg leading-[1.6] text-[#4A3F38] sm:text-xl">
-                Vi er tre murere og en lærling. Det meste, vi laver, er huse fra før 1950, hvor muren skal kunne ånde. Så bruger vi kalkmørtel og ikke cement.
+        {/* The words, heavy, then the wall as material */}
+        <section id="top">
+          <div className={`${wrap} pb-10 pt-8 sm:pb-14 sm:pt-14 lg:pt-16`}>
+            <h1 className="text-[56px] font-extrabold leading-[0.9] tracking-[-0.045em] min-[400px]:text-[64px] sm:text-[104px] lg:text-[clamp(112px,11vw,168px)]">
+              Murer til
+              <br />
+              gamle huse.
+            </h1>
+            <div className="mt-8 grid gap-8 sm:mt-12 lg:grid-cols-12 lg:items-end lg:gap-x-8">
+              <p className="max-w-[36ch] text-lg leading-[1.5] sm:text-xl lg:col-span-5">
+                Omfugning, kalkpuds, revner og skorstene i Aarhus og omegn. Vi bruger den slags mørtel, huset blev bygget med.
               </p>
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-                <a href="#kontakt" className={`${btn} inline-flex px-6 py-4 text-[17px]`}>
-                  Book besigtigelse
+              <div className="flex flex-col items-start gap-3 lg:col-span-5 lg:col-start-8">
+                <a href="#kontakt" className={`${btn} h-14 px-7 text-[17px]`}>
+                  Få muren set efter
                 </a>
-                <p className="text-[#655A51]">
-                  eller ring til Jens på{" "}
-                  <a href={TEL} className="whitespace-nowrap font-semibold text-[#2A221E] underline underline-offset-2">
-                    {PHONE}
-                  </a>
-                </p>
+                <p className="text-[15px] text-[#6B655C]">Gennemgang 850 kr. Trækkes fra, hvis vi laver opgaven.</p>
               </div>
-              <p className="max-w-[48ch] border-t border-[#CFC6B9] pt-4 text-[15px] leading-normal text-[#4A3F38]">
-                Besigtigelse koster 850 kr. inkl. moms i Aarhus Kommune. Siger du ja til tilbuddet, trækker vi beløbet fra. Næste ledige tid til facader er april 2027.
-              </p>
             </div>
-            <figure className="flex flex-col gap-2 max-lg:order-first max-sm:-mx-4">
-              <Img priority id="1701850009190-2859ba2aeea6" w={1400} alt="Murer lægger mørtel på en ny række mursten" className="aspect-[4/3] w-full object-cover lg:aspect-[5/6]" />
-              <figcaption className="flex flex-wrap justify-between gap-x-3 text-[13px] text-[#655A51] max-sm:px-4">
-                <span>Ny gavl, Tilst</span>
-                <span>Marts 2026 · 48 m²</span>
-              </figcaption>
-            </figure>
           </div>
+
+          <div className={`${wrap} grid grid-cols-[3fr_2fr] items-start gap-3 lg:grid-cols-12 lg:gap-4`}>
+            <Img
+              priority
+              id="1759057059370-25e721c3408f"
+              w={1800}
+              alt="Hus i gule mursten med vedbend omkring vinduerne"
+              className="col-span-2 -mx-5 aspect-[4/5] w-[calc(100%+2.5rem)] max-w-none object-cover sm:-mx-8 sm:aspect-[16/10] sm:w-[calc(100%+4rem)] lg:col-span-8 lg:row-span-2 lg:mx-0 lg:aspect-auto lg:h-full lg:w-full"
+            />
+            <Img id="1522171856693-d07aeb685da8" w={900} alt="Nærbillede af røde mursten og fuger" className="aspect-square w-full object-cover lg:col-span-4" />
+            <Img id="1704005445445-2747074be8ac" w={900} alt="Murske og mørtel på en mur under arbejde" className="mt-12 aspect-[4/5] w-full object-cover lg:col-span-4 lg:mt-0 lg:aspect-square" />
+          </div>
+          <p className={`${wrap} mt-3 text-[13px] text-[#6B655C]`}>Fotos er pladsholdere fra Unsplash. På din side bruger vi billeder af jeres egne mure.</p>
         </section>
 
-        {/* The facade log */}
-        <section id="facader" className="scroll-mt-20 border-y border-[#D6CEC2] bg-[#FBF9F5]">
-          <div className={`${wrap} py-14 sm:py-20`}>
-            <div className="flex max-w-[640px] flex-col gap-3">
-              <h2 className={h2}>Facader og mure i år</h2>
-              <p className="text-[17px] leading-[1.6] text-[#4A3F38]">Husets alder betyder mere end noget andet for, hvordan vi gør. Derfor står byggeåret ved hver opgave.</p>
-            </div>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-              <figure className="flex flex-col gap-2">
-                <Img id="1592795694703-24f1814cfb0a" w={1000} alt="Murværk med nye lyse fuger" className="aspect-[16/10] w-full object-cover" />
-                <figcaption className="text-[13px] text-[#655A51]">Højbjerg, 1934 · 140 m² omfuget</figcaption>
-              </figure>
-              <figure className="flex flex-col gap-2">
-                <Img id="1682366278673-71e92ce4f503" w={700} alt="Murer arbejder på en murstensvæg" className="aspect-[16/10] w-full object-cover sm:aspect-auto sm:h-full sm:min-h-0 sm:flex-1" />
-                <figcaption className="text-[13px] text-[#655A51]">Viby J, 1958 · revne syet</figcaption>
-              </figure>
-            </div>
-
-            <table className="mt-10 w-full border-collapse text-[15px]">
-              <caption className="sr-only">Opgaver i 2026 med byggeår, areal og tid</caption>
-              <thead className="max-md:sr-only">
-                <tr className="border-y-2 border-[#2A221E] text-left text-[13px] text-[#655A51]">
-                  <th scope="col" className="py-2.5 pr-4 font-semibold">Hus</th>
-                  <th scope="col" className="py-2.5 pr-4 font-semibold">Bygget</th>
-                  <th scope="col" className="py-2.5 pr-4 font-semibold">Opgave</th>
-                  <th scope="col" className="py-2.5 pr-4 text-right font-semibold">m²</th>
-                  <th scope="col" className="py-2.5 pr-4 text-right font-semibold">Tid</th>
-                  <th scope="col" className="py-2.5 text-right font-semibold">Måned</th>
-                </tr>
-              </thead>
-              <tbody>
-                {LOG.map((l) => (
-                  <tr key={l.place} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 border-b border-[#D6CEC2] py-4 max-md:first:border-t-2 max-md:first:border-t-[#2A221E] md:table-row md:py-0">
-                    <th scope="row" className="text-left font-semibold md:py-3.5 md:pr-4">
-                      {l.house}, {l.place}
-                    </th>
-                    <td className={`${slab} text-right text-lg font-semibold tabular-nums md:py-3.5 md:pr-4 md:text-left`}>{l.year}</td>
-                    <td className="col-span-2 leading-snug md:py-3.5 md:pr-4">{l.job}</td>
-                    <td className="col-span-2 text-sm text-[#655A51] md:hidden">
-                      {l.m2 !== "–" && `${l.m2} m² · `}
-                      {l.time} · {l.when}
-                    </td>
-                    <td className="text-right tabular-nums max-md:hidden md:py-3.5 md:pr-4">{l.m2}</td>
-                    <td className="whitespace-nowrap text-right max-md:hidden md:py-3.5 md:pr-4">{l.time}</td>
-                    <td className="whitespace-nowrap text-right text-[#655A51] max-md:hidden md:py-3.5">{l.when}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="mt-5 text-[13px] text-[#655A51]">Fotos fra Unsplash som pladsholdere. På din side bruger vi dine egne billeder fra stilladset.</p>
-          </div>
-        </section>
-
-        {/* What's wrong with the wall? */}
-        <section id="mur" className="scroll-mt-20 bg-[#2A221E] text-[#F2EEE6] [&_:focus-visible]:outline-[#F2EEE6]">
-          <div className={`${wrap} py-14 sm:py-20`}>
-            <div className="flex max-w-[620px] flex-col gap-3">
+        {/* What's wrong with my wall? Pick what you see */}
+        <section id="mur" className="mt-24 bg-[#24221F] text-[#F3F1EC] [&_:focus-visible]:outline-[#D9AE57] sm:mt-32">
+          <div className={`${wrap} grid gap-10 py-20 sm:py-28 lg:grid-cols-12 lg:gap-x-8`}>
+            <div className="lg:col-span-5">
               <h2 className={h2}>Hvad fejler muren?</h2>
-              <p className="text-[17px] leading-[1.6] text-[#D8D0C4]">
-                Vælg det, der ligner din mur mest. Det er et bud, ikke en diagnose. Vi skal se muren, før vi siger noget sikkert.
-              </p>
-            </div>
-            <div role="group" aria-label="Vælg skade" className="mt-8 flex flex-wrap border-b border-[#5A4E46]">
-              {PROBLEMS.map((pr, i) => (
-                <button
-                  key={pr.label}
-                  type="button"
-                  aria-pressed={problem === i}
-                  onClick={() => setProblem(i)}
-                  className={`-mb-px border-b-[3px] px-1 py-3 text-[15px] font-semibold mr-6 sm:text-base ${problem === i ? "border-[#D9785A] text-white" : "border-transparent text-[#B8AEA2] hover:text-white"}`}
-                >
-                  {pr.label}
-                </button>
-              ))}
-            </div>
-            <div aria-live="polite" className="mt-8 grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:gap-12">
-              <Img id={p.photo} w={1000} alt={p.alt} className="aspect-[4/3] w-full object-cover" />
-              <div className="flex flex-col gap-5">
-                <h3 className={`${slab} text-[30px] font-semibold leading-tight`}>{p.label}</h3>
-                <dl className="flex flex-col gap-4 leading-[1.6]">
-                  <div>
-                    <dt className="font-semibold text-white">Hvorfor sker det?</dt>
-                    <dd className="text-[#D8D0C4]">{p.cause}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-white">Det gør vi</dt>
-                    <dd className="text-[#D8D0C4]">{p.fix}</dd>
-                  </div>
-                  <div className="border-t border-[#5A4E46] pt-4">
-                    <dt className="text-sm text-[#B8AEA2]">Typisk pris inkl. moms</dt>
-                    <dd className={`${slab} text-[26px] font-semibold`}>{p.price}</dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Season and prices */}
-        <section id="priser" className="scroll-mt-20" style={bond("rgba(42,34,30,0.06)")}>
-          <div className={`${wrap} grid gap-12 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16`}>
-            <div className="flex flex-col gap-4">
-              <h2 className={h2}>Hvornår kan vi komme?</h2>
-              <p className="max-w-[46ch] text-[17px] leading-[1.6] text-[#4A3F38]">
-                Mørtel må ikke få frost, før den er hærdet. Derfor fuger vi facader fra april til oktober. Om vinteren laver vi badeværelser og murerarbejde indenfor.
-              </p>
-              <div className="mt-2 bg-[#FBF9F5] p-4 sm:p-5">
-                <ol className="grid grid-cols-6 gap-px bg-[#D6CEC2] sm:grid-cols-12" aria-label="Facadesæson">
-                  {MONTHS.map((m, i) => {
-                    const on = FACADE_MONTHS.includes(i);
-                    return (
-                      <li key={m} className={`relative flex h-14 items-end justify-center pb-1.5 text-[13px] ${on ? "bg-[#9E3B26] text-white" : "bg-[#FBF9F5] text-[#655A51]"}`}>
-                        {i === now && <span className="absolute inset-x-0 top-0 h-1 bg-[#2A221E]" aria-hidden />}
-                        <span>
-                          {m}
-                          {i === now && <span className="sr-only"> (nu)</span>}
-                          {on && <span className="sr-only">, facadesæson</span>}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ol>
-                <p className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[13px] text-[#655A51]">
-                  <span className="inline-flex items-center gap-2">
-                    <span className="size-3 bg-[#9E3B26]" aria-hidden /> Facader og fuger
-                  </span>
-                  <span className="inline-flex items-center gap-2">
-                    <span className="h-1 w-3 bg-[#2A221E]" aria-hidden /> Nu
-                  </span>
-                </p>
-              </div>
-              <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-2 text-[15px]">
-                <dt className="text-[#655A51]">Facader</dt>
-                <dd>Vi booker nu til april 2027</dd>
-                <dt className="text-[#655A51]">Bad og indvendigt</dt>
-                <dd>Ca. 4 ugers ventetid</dd>
-              </dl>
-            </div>
-            <table className="w-full self-start border-collapse bg-[#FBF9F5]">
-              <caption className={`${slab} pb-3 text-left text-[22px] font-semibold`}>
-                Priser
-                <span className="block font-(family-name:--font-teglgaard) text-sm font-normal text-[#655A51]">Vejledende priser inkl. moms, oktober 2026</span>
-              </caption>
-              <tbody>
-                {PRICES.map((pr) => (
-                  <tr key={pr.what} className="border-b border-[#D6CEC2] first:border-t-2 first:border-t-[#2A221E]">
-                    <th scope="row" className="px-4 py-3.5 text-left align-top font-medium">
-                      {pr.what}
-                      {pr.note && <span className="block text-sm font-normal text-[#655A51]">{pr.note}</span>}
-                    </th>
-                    <td className="whitespace-nowrap px-4 py-3.5 text-right align-top tabular-nums">{pr.price}</td>
-                  </tr>
+              <p className="mt-5 max-w-[34ch] text-lg leading-[1.5] text-[#CFCAC1]">Vælg det, du kan se. Vi siger, hvad det plejer at være, og hvad det koster.</p>
+              <div role="group" aria-label="Hvad kan du se på muren?" className="mt-10 flex flex-col border-b border-[#F3F1EC]/15">
+                {PROBLEMS.map((x, i) => (
+                  <button
+                    key={x.label}
+                    type="button"
+                    aria-pressed={i === problem}
+                    onClick={() => setProblem(i)}
+                    className={`flex items-center justify-between gap-4 border-t border-[#F3F1EC]/15 py-4 text-left text-[26px] font-extrabold leading-tight tracking-[-0.02em] transition-colors sm:text-[32px] ${
+                      i === problem ? "text-[#D9AE57]" : "text-[#F3F1EC]/60 hover:text-[#F3F1EC]"
+                    }`}
+                  >
+                    {x.label}
+                    <span aria-hidden className={`text-xl ${i === problem ? "" : "invisible"}`}>
+                      →
+                    </span>
+                  </button>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* The master */}
-        <section className="border-y border-[#D6CEC2] bg-[#FBF9F5]">
-          <div className={`${wrap} grid items-start gap-8 py-14 sm:py-20 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-16`}>
-            <figure className="flex flex-col gap-2">
-              <Img id="1682366278869-6c01b1517319" w={700} alt="Pladsholderfoto af en murer, der arbejder på en mur" className="aspect-[4/5] w-full object-cover max-md:aspect-[16/10]" />
-              <figcaption className="text-[13px] text-[#655A51]">Pladsholderfoto · her kommer mesterens eget portræt</figcaption>
-            </figure>
-            <div className="flex max-w-[580px] flex-col gap-5">
-              <h2 className={h2}>Jens Teglgaard, murermester</h2>
-              <p className="text-[17px] leading-[1.65] text-[#4A3F38]">
-                Jeg blev udlært i 1991 hos en murer i Trøjborg, der kun arbejdede med kalk. Det har jeg holdt fast i. Jeg kommer selv ud til besigtigelsen, og jeg er på pladsen hver dag, mens vi arbejder.
-              </p>
-              <p className="text-[17px] leading-[1.65] text-[#4A3F38]">Er det noget, der kan vente, siger jeg det. Er det et nedløb og ikke muren, siger jeg også det.</p>
-              <dl className="mt-1 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-2.5 border-t border-[#D6CEC2] pt-5 text-[15px]">
-                <dt className="text-[#655A51]">Adresse</dt>
-                <dd>{ADDRESS}</dd>
-                <dt className="text-[#655A51]">Telefon</dt>
-                <dd>
-                  <a href={TEL} className="font-semibold underline underline-offset-2">
-                    {PHONE}
-                  </a>
-                  , hverdage 7–15.30
-                </dd>
-                <dt className="text-[#655A51]">CVR</dt>
-                <dd>00 00 00 00 (eksempel)</dd>
-                <dt className="text-[#655A51]">Garanti</dt>
-                <dd>Byg Garanti (eksempel)</dd>
-                <dt className="text-[#655A51]">Område</dt>
-                <dd>Aarhus Kommune, Skanderborg og Hinnerup</dd>
+              </div>
+            </div>
+            <div aria-live="polite" className="lg:col-span-6 lg:col-start-7">
+              <Img id={p.photo} w={1200} alt={p.alt} className="aspect-[4/3] w-full object-cover" />
+              <dl className="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-8">
+                <div>
+                  <dt className={`${label} text-[#B3ADA3]`}>Det er tit</dt>
+                  <dd className="mt-2 text-lg leading-[1.5]">{p.cause}</dd>
+                </div>
+                <div>
+                  <dt className={`${label} text-[#B3ADA3]`}>Det gør vi</dt>
+                  <dd className="mt-2 text-lg leading-[1.5]">{p.fix}</dd>
+                </div>
+                <div className="border-t border-[#F3F1EC]/15 pt-5 sm:col-span-2">
+                  <dt className="sr-only">Typisk pris</dt>
+                  <dd className="text-[32px] font-extrabold tracking-[-0.02em] sm:text-[40px]">{p.price}</dd>
+                </div>
               </dl>
+              <p className="mt-4 text-[15px] leading-[1.5] text-[#B3ADA3]">Et foto er ikke en besigtigelse. Vi ser altid muren, før du får en fast pris.</p>
             </div>
           </div>
         </section>
 
-        {/* Reviews */}
-        <section className={`${wrap} py-14 sm:py-20`}>
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <h2 className={h2}>Det skriver kunderne</h2>
-            <SampleReviewsNote className="text-[#655A51]" />
+        {/* Houses by the year they were built */}
+        <section id="huse" className={`${wrap} py-20 sm:py-32`}>
+          <div className="grid gap-4 lg:grid-cols-12 lg:gap-x-8">
+            <h2 className={`${h2} lg:col-span-7`}>Huse, vi har arbejdet på</h2>
+            <p className="max-w-[34ch] text-lg leading-[1.5] text-[#6B655C] lg:col-span-4 lg:col-start-9 lg:self-end">Ordnet efter det år, huset blev bygget. Jo ældre mur, jo blødere mørtel.</p>
           </div>
-          <div className="mt-8 grid gap-x-12 md:grid-cols-2">
-            {REVIEWS.map((r, i) => (
-              <figure key={r.name} className={`flex flex-col gap-3 border-t-2 border-[#2A221E] py-6 ${i % 2 ? "md:mt-12" : ""}`}>
-                <blockquote className={`${slab} text-[21px] font-medium leading-[1.4]`}>{r.text}</blockquote>
-                <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[15px] text-[#655A51]">
-                  <span className="font-semibold text-[#2A221E]">{r.name}</span>
-                  <span>{r.date}</span>
-                  <Stars n={r.stars} className="text-[#9E3B26]" />
-                </figcaption>
-                {r.reply && (
-                  <p className="border-l-2 border-[#9E3B26] pl-3.5 text-[15px] leading-[1.55] text-[#4A3F38]">
-                    <b className="font-semibold">Svar fra Jens:</b> {r.reply}
+          <ol className="mt-12 border-b-2 border-[#24221F] sm:mt-16">
+            {HOUSES.map((h) => (
+              <li key={h.year} className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-5 border-t-2 border-[#24221F] py-6 sm:gap-x-8 sm:py-8 lg:grid-cols-12">
+                <p className="text-[44px] font-extrabold leading-[0.85] tracking-[-0.045em] sm:text-[72px] lg:col-span-3 lg:text-[80px] xl:text-[104px]">{h.year}</p>
+                <div className="flex flex-col gap-1.5 pt-0.5 lg:col-span-5 lg:pt-2">
+                  <p className={`${label} text-[#6B655C]`}>
+                    {h.place} · {h.house}
                   </p>
-                )}
-              </figure>
+                  <p className="text-xl font-bold leading-snug sm:text-2xl">{h.job}</p>
+                  <p className="text-[15px] text-[#6B655C]">{h.facts}</p>
+                </div>
+                {h.photo && <Img id={h.photo} w={800} alt={h.alt ?? ""} className="col-span-2 mt-5 aspect-[16/10] w-full object-cover sm:col-start-2 sm:col-span-1 lg:col-span-4 lg:col-start-9 lg:mt-0" />}
+              </li>
             ))}
+          </ol>
+          <p className="mt-4 text-[13px] text-[#6B655C]">Husene er eksempler. På din side står jeres egne opgaver.</p>
+        </section>
+
+        {/* Prices and the season, on yellow brick */}
+        <section id="priser" className="bg-[#D9AE57] [&_:focus-visible]:outline-[#24221F]">
+          <div className={`${wrap} grid gap-12 py-20 sm:py-28 lg:grid-cols-12 lg:gap-x-8`}>
+            <div className="flex flex-col gap-5 lg:col-span-5">
+              <h2 className={h2}>Priser</h2>
+              <p className="max-w-[36ch] text-lg leading-[1.5]">
+                Facader fuger vi fra april til oktober. Mørtlen tåler ikke frost, før den er hærdet, så om vinteren laver vi det, der er indenfor.
+              </p>
+            </div>
+            <div className="lg:col-span-7">
+              <dl className="border-b-2 border-[#24221F]">
+                {PRICES.map((x) => (
+                  <div key={x.what} className="grid gap-x-6 gap-y-1 border-t-2 border-[#24221F] py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:py-5">
+                    <dt className="text-lg font-bold sm:text-xl">{x.what}</dt>
+                    <dd className="text-lg font-extrabold tracking-[-0.01em] sm:text-right sm:text-2xl">{x.price}</dd>
+                    {x.note && <dd className="text-[15px] sm:col-span-2">{x.note}</dd>}
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-4 text-[13px]">Eksempelpriser inkl. moms. På din side står dine egne.</p>
+            </div>
           </div>
         </section>
 
-        {/* Contact */}
-        <section id="kontakt" className="scroll-mt-20 bg-[#9E3B26] text-white [&_:focus-visible]:outline-white">
-          <div className={`${wrap} grid gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16`}>
-            <div className="flex flex-col gap-4">
-              <h2 className={h2}>Book en besigtigelse</h2>
-              <p className="max-w-[44ch] text-[17px] leading-[1.6] text-[#F4DDD5]">
-                Skriv, hvad du har set på muren, og hvornår huset er bygget, hvis du ved det. Jens ringer dig op inden for to hverdage og finder en tid. Haster det, så ring.
-              </p>
-              <p className={`${slab} text-[32px] font-semibold`}>
-                <a href={TEL} className="whitespace-nowrap underline-offset-4 hover:underline">
-                  {PHONE}
-                </a>
-              </p>
-              <p className="text-sm text-[#F4DDD5]">Hverdage 7–15.30 · Besigtigelse 850 kr., trækkes fra</p>
-            </div>
-            <form
-              className="flex flex-col gap-4 bg-[#F2EEE6] p-5 text-[#2A221E] sm:p-7 [&_:focus-visible]:outline-[#9E3B26]"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSent(true);
-                e.currentTarget.reset();
-              }}
-            >
-              {sent && (
-                <p role="status" className="border-l-4 border-[#9E3B26] bg-white p-4 leading-normal">
-                  Tak. På en rigtig side ville Jens ringe dig op inden for to hverdage og aftale en tid. Dette er et eksempel, så der er ikke sendt noget.
-                </p>
-              )}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Navn
-                  <input required name="navn" autoComplete="name" className={field} />
-                </label>
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Telefon
-                  <input required name="telefon" type="tel" autoComplete="tel" pattern="[0-9 +]{8,}" title="Skriv et telefonnummer på mindst 8 cifre" className={field} />
-                </label>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_140px]">
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Adresse
-                  <input required name="adresse" autoComplete="street-address" className={field} />
-                </label>
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Byggeår, ca.
-                  <input name="byggeaar" inputMode="numeric" pattern="\d{4}" maxLength={4} title="Fire cifre, fx 1934" placeholder="1934" className={field} />
-                </label>
-              </div>
-              <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                Hvad har du set?
-                <textarea required name="besked" rows={4} placeholder="Fx fugerne drysser på vestsiden, og der er en revne over køkkenvinduet" className={`${field} resize-y`} />
-              </label>
-              <button type="submit" className={`${btn} inline-flex self-start px-6 py-3.5 text-[17px]`}>
-                Book besigtigelse
-              </button>
-            </form>
+        {/* Contact: one line to fill in, and the facts underneath */}
+        <section id="kontakt" className={`${wrap} py-20 sm:py-28`}>
+          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+            <h2 className={h2}>Skal vi se på muren?</h2>
+            <a href={TEL} className="whitespace-nowrap text-[32px] font-extrabold tracking-[-0.03em] underline-offset-[6px] hover:underline sm:text-[44px]">
+              {PHONE}
+            </a>
           </div>
+          <form
+            className="mt-10 grid gap-4 sm:mt-14 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)_auto] lg:items-end"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSent(true);
+              e.currentTarget.reset();
+            }}
+          >
+            <label className="flex flex-col gap-2 font-semibold">
+              Hvad ser du på muren?
+              <input required name="opgave" type="text" placeholder="Fx revne over vinduet" className={field} />
+            </label>
+            <label className="flex flex-col gap-2 font-semibold">
+              Telefon
+              <input required name="telefon" type="tel" autoComplete="tel" inputMode="tel" pattern="[0-9 +]{8,}" title="Skriv et telefonnummer på mindst 8 cifre" className={field} />
+            </label>
+            <button type="submit" className={`${btn} h-[56px] px-8 text-[17px]`}>
+              Send
+            </button>
+            {sent && (
+              <p role="status" className="text-[15px] leading-[1.5] lg:col-span-3">
+                Tak. På en rigtig side ville vi ringe dig op. Dette er et eksempel, så der er ikke sendt noget.
+              </p>
+            )}
+          </form>
+          <dl className="mt-14 grid grid-cols-2 gap-x-6 gap-y-6 border-t-2 border-[#24221F] pt-6 text-[15px] sm:grid-cols-3 lg:grid-cols-5">
+            <div>
+              <dt className={`${label} text-[#6B655C]`}>Telefon</dt>
+              <dd className="mt-1.5">Hverdage kl. 7–15.30</dd>
+            </div>
+            <div>
+              <dt className={`${label} text-[#6B655C]`}>Værksted</dt>
+              <dd className="mt-1.5">{ADDRESS}</dd>
+            </div>
+            <div>
+              <dt className={`${label} text-[#6B655C]`}>Område</dt>
+              <dd className="mt-1.5">Aarhus, Skanderborg og Odder</dd>
+            </div>
+            <div>
+              <dt className={`${label} text-[#6B655C]`}>Garanti</dt>
+              <dd className="mt-1.5">Byg Garanti (eksempel)</dd>
+            </div>
+            <div>
+              <dt className={`${label} text-[#6B655C]`}>CVR</dt>
+              <dd className="mt-1.5">00 00 00 00 (eksempel)</dd>
+            </div>
+          </dl>
         </section>
       </main>
 
-      <footer className="bg-[#2A221E] pb-24 text-[#D8D0C4] sm:pb-0">
-        <div className={`${wrap} flex flex-wrap justify-between gap-x-8 gap-y-2 py-8 text-sm`}>
-          <span className={`${slab} text-base font-semibold text-white`}>Teglgaard Murer</span>
+      <footer className="bg-[#24221F] pb-24 text-[#CFCAC1] sm:pb-0">
+        <div className={`${wrap} flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 py-10 text-sm`}>
+          <span className="text-lg font-black uppercase tracking-[-0.01em] text-[#F3F1EC]">Teglgaard</span>
           <span>{ADDRESS}</span>
           <span>CVR 00 00 00 00 (eksempel)</span>
-          <a href={TEL} className="text-white underline underline-offset-2">
+          <a href={TEL} className="font-bold text-[#F3F1EC] underline underline-offset-2">
             {PHONE}
           </a>
         </div>
       </footer>
 
-      {/* Phone: call or book, always within thumb's reach */}
-      <div className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 gap-2.5 border-t border-[#D6CEC2] bg-[#F2EEE6] px-4 pb-4 pt-3 sm:hidden">
-        <a href={TEL} className="grid h-[52px] place-items-center whitespace-nowrap border border-[#2A221E] font-semibold">
-          Ring til Jens
+      {/* Phone: call, or jump to the form */}
+      <div className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-[1fr_auto] gap-2 bg-[#24221F] px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 [&_:focus-visible]:outline-[#D9AE57] sm:hidden">
+        <a href={TEL} className="grid h-[52px] place-items-center whitespace-nowrap bg-[#D9AE57] text-[17px] font-extrabold text-[#24221F]">
+          Ring {PHONE}
         </a>
-        <a href="#kontakt" className={`${btn} inline-flex h-[52px]`}>
-          <span className="min-[360px]:hidden">Book tid</span>
-          <span className="hidden min-[360px]:inline">Book besigtigelse</span>
+        <a href="#kontakt" className="grid h-[52px] place-items-center whitespace-nowrap border-2 border-[#F3F1EC]/60 px-5 font-bold text-[#F3F1EC]">
+          Skriv
         </a>
       </div>
     </div>
