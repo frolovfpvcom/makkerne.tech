@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Makkerne – forslag C: Lokalavisen</title>
+<!--
+  Forslag C: "Lokalavisen". The page reads like the local paper's front page:
+  masthead, a big news photo, the story, a yellow ad with a red price stamp,
+  short news with photos, and the example sites as pictures with captions.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Sans+Narrow:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #efebe1;
+    --paper: #f8f5ed;
+    --ink: #1a1917;
+    --muted: #57544d;
+    --rule: #b5ae9f;
+    --red: #c4211a;
+    --red-dark: #9a1912;
+    --yellow: #ffdf3d;
+    --head: "Old Standard TT", Georgia, serif;
+    --body: "PT Serif", Georgia, serif;
+    --label: "PT Sans Narrow", "Arial Narrow", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 18px/1.6 var(--body); }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+  .wrap { width: min(1180px, 100% - 32px); margin-inline: auto; }
+  h1, h2, h3 { margin: 0; font-family: var(--head); font-weight: 700; line-height: 1.04; letter-spacing: -0.01em; text-wrap: balance; }
+  p { margin: 0; }
+  .kicker { display: inline-block; font-family: var(--label); font-size: 0.95rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--red); color: #fff; padding: 2px 8px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 10px 24px; border: 2px solid var(--ink); border-radius: 2px; font-family: var(--label); font-size: 1.15rem; letter-spacing: 0.02em; text-decoration: none; transition: background-color 150ms ease, color 150ms ease; }
+  .btn-red { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn-red:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .btn-ink { background: var(--ink); color: var(--paper); }
+  .btn-ink:hover { background: var(--red); border-color: var(--red); }
+
+  /* Masthead */
+  .mast { padding-top: 18px; }
+  .mast .line { display: flex; justify-content: space-between; gap: 16px; font-family: var(--label); font-size: 0.95rem; color: var(--muted); border-bottom: 1px solid var(--ink); padding-bottom: 8px; }
+  .mast .line b { color: var(--red); }
+  .mast .name { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding-block: 12px 8px; }
+  .mast .name a { grid-column: 2; font-family: var(--head); font-weight: 700; font-size: clamp(2.8rem, 1rem + 8vw, 6.4rem); text-decoration: none; line-height: 1; }
+  .mast .ear { font-family: var(--label); font-size: 0.95rem; line-height: 1.25; border: 2px solid var(--ink); padding: 8px 10px; max-width: 170px; }
+  .mast .ear b { display: block; font-family: var(--head); font-size: 1.6rem; color: var(--red); }
+  .mast .ear.r { justify-self: end; text-align: right; }
+  .mast .sub { text-align: center; font-style: italic; color: var(--muted); padding-bottom: 10px; }
+  .mast nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 28px; border-block: 3px double var(--ink); padding-block: 4px; font-family: var(--label); font-size: 1.1rem; }
+  .mast nav a { text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .mast nav a:hover { color: var(--red); }
+  @media (max-width: 760px) { .mast .ear { display: none; } .mast .name { grid-template-columns: 1fr; text-align: center; } .mast .name a { grid-column: 1; } .mast .line span + span { display: none; } }
+
+  /* Front page */
+  .front { display: grid; grid-template-columns: 1.7fr 1fr; padding-block: 28px 56px; }
+  .story { padding-right: 32px; border-right: 1px solid var(--rule); }
+  .story h1 { margin-top: 10px; font-size: clamp(2.4rem, 1.2rem + 4vw, 4.6rem); }
+  .story .stand { margin-top: 14px; font-size: 1.3rem; line-height: 1.45; }
+  .story figure { margin: 22px 0 0; }
+  .story figure img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 50% 40%; filter: saturate(0.9) contrast(1.05); }
+  .story figcaption { margin-top: 6px; font-size: 0.9rem; color: var(--muted); font-style: italic; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+  .story .by { margin-top: 14px; font-family: var(--label); color: var(--muted); }
+  .story .cols { margin-top: 14px; columns: 2; column-gap: 28px; column-rule: 1px solid var(--rule); }
+  .story .cols p + p { margin-top: 12px; }
+  .story .cols p:first-child::first-letter { float: left; font-family: var(--head); font-weight: 700; font-size: 3.6rem; line-height: 0.85; padding: 4px 4px 0 0; color: var(--red); }
+
+  .side { padding-left: 32px; display: grid; gap: 28px; align-content: start; }
+  .ad { position: relative; background: var(--yellow); border: 3px solid var(--ink); padding: 26px 22px 24px; text-align: center; }
+  .ad .tab { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--yellow); font-family: var(--label); letter-spacing: 0.1em; padding: 2px 12px; font-size: 0.9rem; }
+  .ad h2 { font-size: 1.9rem; }
+  .ad .stamp { width: 170px; height: 170px; margin: 16px auto 4px; border-radius: 50%; border: 4px double var(--red); color: var(--red); display: grid; place-content: center; transform: rotate(-8deg); background: rgba(255,255,255,0.35); }
+  .ad .stamp b { font-family: var(--head); font-size: 3.4rem; line-height: 1; }
+  .ad .stamp span { font-family: var(--label); font-size: 0.95rem; letter-spacing: 0.05em; }
+  .ad ul { list-style: none; margin: 14px 0 0; padding: 12px 0 0; border-top: 2px solid var(--ink); text-align: left; }
+  .ad li { padding: 4px 0 4px 26px; position: relative; }
+  .ad li::before { content: "✓"; position: absolute; left: 2px; color: var(--red); font-weight: 700; }
+  .ad .btn { margin-top: 16px; width: 100%; }
+  .ad .small { margin-top: 10px; font-size: 0.92rem; }
+
+  .brief h3 { font-size: 1.45rem; }
+  .brief img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; margin-top: 10px; }
+  .brief p { margin-top: 8px; color: var(--muted); font-size: 1rem; }
+  .brief + .brief { border-top: 1px solid var(--rule); padding-top: 22px; }
+  @media (max-width: 900px) {
+    .front { grid-template-columns: 1fr; }
+    .story { padding-right: 0; border-right: 0; }
+    .side { padding-left: 0; margin-top: 40px; }
+    .story .cols { columns: 1; }
+  }
+
+  /* Photo strip of trades */
+  .strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 3px double var(--ink); }
+  .strip figure { margin: 0; padding: 14px; }
+  .strip figure + figure { border-left: 1px solid var(--rule); }
+  .strip img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .strip figcaption { margin-top: 6px; font-family: var(--label); font-size: 1.05rem; }
+  @media (max-width: 760px) { .strip { grid-template-columns: 1fr 1fr; } .strip figure:nth-child(3) { border-left: 0; } .strip figure:nth-child(n+3) { border-top: 1px solid var(--rule); } }
+
+  section.block { padding-block: clamp(44px, 6vw, 80px); }
+  .block + .block { border-top: 3px double var(--ink); }
+  .block h2 { font-size: clamp(2rem, 1.3rem + 2.4vw, 3.2rem); margin-top: 10px; }
+  .block .intro { margin-top: 8px; color: var(--muted); max-width: 60ch; }
+
+  .photos { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: auto auto; gap: 28px 32px; }
+  .photos li:first-child { grid-row: span 2; }
+  .photos a { text-decoration: none; display: block; }
+  .photos .pic { position: relative; border: 1px solid var(--ink); background: var(--paper); padding: 8px; }
+  .photos .pic img { width: 100%; aspect-ratio: 5 / 3; object-fit: cover; object-position: top left; }
+  .photos li:first-child .pic img { aspect-ratio: 4 / 3; }
+  .photos .pic .mob { position: absolute; right: 18px; bottom: -18px; width: 26%; aspect-ratio: auto; border: 4px solid var(--ink); border-radius: 12px; }
+  .photos a:hover .pic { border-color: var(--red); outline: 2px solid var(--red); }
+  .photos figcaption { margin-top: 26px; font-size: 0.98rem; color: var(--muted); }
+  .photos figcaption b { color: var(--ink); font-family: var(--head); font-size: 1.25rem; display: block; }
+  .photos figcaption u { color: var(--red); text-underline-offset: 3px; font-weight: 700; }
+  .photos figure { margin: 0; }
+  .block .note { margin-top: 26px; font-size: 0.92rem; color: var(--muted); font-style: italic; }
+  .block .note a { color: var(--ink); font-style: normal; font-weight: 700; }
+  @media (max-width: 860px) { .photos { grid-template-columns: 1fr; } .photos li:first-child { grid-row: auto; } }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; }
+  .two > div:first-child { padding-right: 32px; border-right: 1px solid var(--rule); }
+  .two > div:last-child { padding-left: 32px; }
+  .steps { list-style: none; margin: 20px 0 0; padding: 0; counter-reset: s; }
+  .steps li { position: relative; padding-left: 64px; min-height: 52px; }
+  .steps li + li { margin-top: 18px; }
+  .steps li::before { counter-increment: s; content: counter(s); position: absolute; left: 0; top: 0; width: 46px; height: 46px; border-radius: 50%; background: var(--ink); color: var(--yellow); font-family: var(--head); font-weight: 700; font-size: 1.5rem; display: grid; place-items: center; }
+  .steps b { font-family: var(--head); font-size: 1.15rem; display: block; }
+  .qa { margin-top: 20px; }
+  .qa dt { font-weight: 700; }
+  .qa dd { margin: 2px 0 14px; color: var(--muted); }
+  @media (max-width: 860px) {
+    .two { grid-template-columns: 1fr; }
+    .two > div:first-child { padding-right: 0; border-right: 0; }
+    .two > div:last-child { padding-left: 0; margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--rule); }
+  }
+
+  .contact { background: var(--ink); color: var(--paper); text-align: center; }
+  .contact h2 { margin-inline: auto; max-width: 20ch; color: var(--paper); }
+  .contact .intro { margin-inline: auto; color: #cfc9bb; }
+  .contact .actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  .contact .mail { margin-top: 12px; color: #cfc9bb; word-break: break-all; }
+  .contact .kicker { background: var(--yellow); color: var(--ink); }
+
+  footer { padding-block: 16px 28px; font-family: var(--label); color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="mast wrap">
+  <div class="line"><span>Torsdag den 15. oktober 2026</span><span><b>Nyhed:</b> Hjemmesider til håndværkere for 999,-</span></div>
+  <div class="name">
+    <div class="ear"><b>999,-</b>Hele siden, én gang</div>
+    <a href="#">Makkerne</a>
+    <div class="ear r"><b>0,-</b>for et udkast til dig</div>
+  </div>
+  <p class="sub">Du klarer håndværket. Vi klarer siden.</p>
+  <nav aria-label="Menu">
+    <a href="#eksempler">Eksempler</a>
+    <a href="#saadan">Sådan foregår det</a>
+    <a href="#kontakt">Få et udkast</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div class="front">
+    <article class="story">
+      <span class="kicker">Håndværk</span>
+      <h1>Vi laver din hjemmeside for 999,-</h1>
+      <p class="stand">Vi skriver teksterne, sætter domænet op og gør siden klar til telefonen og Google. Du ser et udkast først og betaler kun, hvis du vil beholde den.</p>
+      <figure>
+        <img src="../makkerne/img/vvs-work.jpg" width="1400" height="933" alt="VVS'er i gang på et badeværelse" fetchpriority="high">
+        <figcaption>Kunderne leder efter dig på telefonen. Hjemmesiden skal fortælle, hvad du laver, og hvordan de får fat i dig.</figcaption>
+      </figure>
+      <p class="by">Af Makkerne. Vi er to iværksættere.</p>
+      <div class="cols">
+        <p>De fleste håndværkere har travlt nok med det, de er gode til. Hjemmesiden bliver skubbet, og når kunderne søger efter en VVS'er eller en tømrer, finder de en side, der ikke er rørt i årevis, eller ingen side overhovedet.</p>
+        <p>Derfor laver vi siden for dig. Du sender os dit firmanavn, dit fag og din by, og gerne et par billeder af dit arbejde. Så bygger vi et udkast, som du kan se, før du beslutter dig.</p>
+        <p>Siden har det, kunderne leder efter: hvad du laver, hvor du kører, hvordan de får fat i dig, og billeder af dit arbejde. Forespørgsler lander direkte i din mail.</p>
+        <p>Prisen er 999,- én gang. Der er intet abonnement og ingen binding, og domænet ejer du selv.</p>
+      </div>
+    </article>
+
+    <aside class="side">
+      <div class="ad" aria-label="Annonce: pris">
+        <span class="tab">ANNONCE</span>
+        <h2>Ny hjemmeside, alt sat op</h2>
+        <div class="stamp"><b>999,-</b><span>ÉN GANG</span></div>
+        <ul>
+          <li>Tekster skrevet til dit fag</li>
+          <li>Dit logo og dine billeder</li>
+          <li>Ring-knap og tilbudsformular</li>
+          <li>Virker på telefonen</li>
+          <li>Klar til Google</li>
+          <li>Domæne og hængelås sat op</li>
+        </ul>
+        <a class="btn btn-red" href="#kontakt">Få et udkast</a>
+        <p class="small">Intet abonnement. Du betaler kun, hvis du vil beholde siden.</p>
+      </div>
+
+      <div class="brief">
+        <span class="kicker">Kort nyt</span>
+        <h3>Maleren fik en side, kunderne kan regne pris ud på</h3>
+        <img src="../makkerne/img/maler-work.jpg" width="1400" height="934" alt="Maler med rulle" loading="lazy">
+        <p>En prisberegner, farver vist i rigtige rum og en formular, der tager prisen med. Firmaet i eksemplet er opdigtet.</p>
+      </div>
+      <div class="brief">
+        <h3>Tagfirmaet har tilbudsformularen helt i toppen</h3>
+        <p>Kunden kan bede om et tilbud uden at scrolle. <a href="/examples/tag/">Se siden</a></p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="wrap">
+  <div class="strip" aria-label="Fag vi laver sider til">
+    <figure><img src="../makkerne/img/tomrer-work.jpg" width="1400" height="933" alt="Tømrer med værktøjsbælte" loading="lazy"><figcaption>Tømrere</figcaption></figure>
+    <figure><img src="../makkerne/img/tag-work.jpg" width="1400" height="933" alt="Tegltag" loading="lazy"><figcaption>Tagfolk</figcaption></figure>
+    <figure><img src="../makkerne/img/skelet.jpg" width="1400" height="933" alt="Hus i træskelet" loading="lazy"><figcaption>Byggefirmaer</figcaption></figure>
+    <figure><img src="../makkerne/img/murer-work.jpg" width="1400" height="933" alt="Håndværker med vinkelsliber" loading="lazy"><figcaption>Smede og alle andre</figcaption></figure>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="block" id="eksempler">
+    <span class="kicker">Eksempler</span>
+    <h2>Sådan kan din side se ud</h2>
+    <p class="intro">Tre af de sider, vi har bygget som eksempler. Klik på en og prøv den, også på telefonen.</p>
+    <ul class="photos">
+      <li><a href="/examples/vvs/"><figure><div class="pic"><img src="../makkerne/img/vvs.jpg" width="1200" height="720" alt="Forsiden af Holm VVS"><img class="mob" src="../makkerne/img/vvs-m.jpg" width="450" height="1000" alt="" loading="lazy"></div><figcaption><b>Holm VVS, Herlev</b>Døgnvagt og ring-knap i toppen, typiske priser og tjek af postnummer. <u>Se siden</u></figcaption></figure></a></li>
+      <li><a href="/examples/tomrer/"><figure><div class="pic"><img src="../makkerne/img/tomrer.jpg" width="1200" height="720" alt="Forsiden af Egholm Tømrer" loading="lazy"></div><figcaption><b>Egholm Tømrer, Roskilde</b>Store billeder af arbejdet. <u>Se siden</u></figcaption></figure></a></li>
+      <li><a href="/examples/tag/"><figure><div class="pic"><img src="../makkerne/img/tag.jpg" width="1200" height="720" alt="Forsiden af Tagværk" loading="lazy"></div><figcaption><b>Tagværk, Sjælland</b>Tilbudsformular lige i toppen. <u>Se siden</u></figcaption></figure></a></li>
+    </ul>
+    <p class="note">Firmaerne er opdigtede. <a href="/eksempler">Se alle eksempler</a></p>
+  </section>
+
+  <section class="block" id="saadan">
+    <div class="two">
+      <div>
+        <span class="kicker">Guide</span>
+        <h2>Sådan foregår det</h2>
+        <ol class="steps">
+          <li><b>Du skriver til os</b>Firmanavn, fag og by. Send gerne billeder af dit arbejde og dit logo med.</li>
+          <li><b>Du får et udkast</b>Vi bygger din side ud fra det, du sender, og det vi kan finde om dig.</li>
+          <li><b>Siden går live</b>Siger du ja, betaler du 999,-, og siden kommer online på dit domæne. Ellers siger du bare nej tak.</li>
+        </ol>
+      </div>
+      <div>
+        <span class="kicker">Læserne spørger</span>
+        <h2>Spørgsmål og svar</h2>
+        <dl class="qa">
+          <dt>Hvordan er det så billigt?</dt>
+          <dd>Vi er to mand uden kontor, sælgere eller mellemled, og siderne er enkle.</dd>
+          <dt>Er der binding?</dt>
+          <dd>Nej. Du betaler én gang. Domænet betaler du selv direkte til udbyderen.</dd>
+          <dt>Jeg har allerede en hjemmeside.</dt>
+          <dd>Så laver vi en ny og flytter dit domæne over, så du beholder din adresse.</dd>
+          <dt>Kan jeg ændre noget bagefter?</dt>
+          <dd>Ja. Skriv til os, når noget skal opdateres.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<section class="block contact" id="kontakt">
+  <div class="wrap">
+  <span class="kicker">Skriv til redaktionen</span>
+  <h2>Skal vi lave et udkast til dig?</h2>
+  <p class="intro">Skriv dit firmanavn, dit fag og din by. Vi svarer typisk samme dag.</p>
+  <div class="actions">
+    <a class="btn btn-red" href="mailto:blond.nikolaj@gmail.com?subject=Udkast%20til%20min%20hjemmeside&amp;body=Firmanavn%3A%0AFag%3A%0ABy%3A%0A%0A(Send%20gerne%20billeder%20af%20dit%20arbejde%20med)">Skriv en mail</a>
+  </div>
+  <p class="mail">blond.nikolaj@gmail.com</p>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© 2026 Makkerne</span><span>Vi er to iværksættere.</span></div></footer>
+
+</body>
+</html>

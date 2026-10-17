@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Draft for the client: keep it out of search engines -->
+<meta name="robots" content="noindex, nofollow">
+<title>Aagaard &amp; K.S. Elektro – autoriseret elektriker i Rødovre og Køge</title>
+<meta name="description" content="Autoriseret el-installatør i Rødovre og Køge. El- og datainstallationer for private, erhverv og industri. Medlem af Tekniq. Ring 36 70 28 99 for et uforpligtende tilbud.">
+<meta property="og:title" content="Aagaard & K.S. Elektro – autoriseret elektriker i Rødovre og Køge">
+<meta property="og:description" content="El- og datainstallationer for private, erhverv og industri. Ring for et uforpligtende tilbud.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="da_DK">
+<meta property="og:image" content="https://makkerne-tech.vercel.app/udkast/akselektriker/img/lanterner.jpg">
+<meta name="theme-color" content="#0d2f57">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23005dab'/%3E%3Cpath d='M6 16c2.5-6 5-6 7.5 0s5 6 7.5 0 3.5-4 5-2' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<!--
+  PLAN
+  Concept: the classic Danish trades house - blue and white like an enamel shop sign or musselmalet
+  porcelain, whitewashed walls, honest printed photographs. Their own photos are framed like prints.
+  Fonts: Source Serif 4 (headings) + Public Sans (body).
+  Palette: warm whitewash background, ink, the exact logo blue (#005dab) as the one accent, a deep
+  enamel blue for the two dark bands.
+  Sections: header with logo · hero (text + their switch photo as a print) · info strip with live
+  opening hours, Tekniq and CVR between double rules · services as alternating photo rows + a short
+  list · enamel-sign band for the Køge shop · profile · Tekniq guarantee · FAQ · contact · job · footer.
+  Photos are the ones on akselektriker.dk, resized. Not used: three wallpapers in their door-phone
+  gallery (waterfall, sunset, hurricane), a stock door-phone product shot, and a messy fuse box.
+  All facts come from akselektriker.dk (October 2026). No prices are published there, so none are shown.
+-->
+
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --paper: #fbfaf7;
+    --ink: #1c1e21;
+    --muted: #55595e;
+    --rule: #d9d3c7;
+    --accent: #005dab;
+    --accent-hover: #004a8a;
+    --on-accent: #f7f5ef;
+    --deep: #0d2f57;
+    --on-deep: #f3f1ea;
+    --on-deep-muted: #b9c4d2;
+    --ok: #1d7a46;
+    --error: #b42318;
+
+    --font-head: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --font-body: "Public Sans", system-ui, sans-serif;
+    --step-0: 1.0625rem;
+    --step-1: 1.3rem;
+    --step-2: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    --step-3: clamp(2rem, 1.45rem + 2.4vw, 3.15rem);
+    --step-4: clamp(2.5rem, 1.6rem + 3.9vw, 4.4rem);
+
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+    --s-7: 48px; --s-8: 64px; --s-9: 96px;
+    --section: clamp(72px, 9vw, 140px);
+
+    --radius: 4px;
+    --ease: cubic-bezier(0.23, 1, 0.32, 1);
+    --header-h: 80px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: var(--step-0); line-height: 1.6; }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: var(--font-head); font-weight: 600; line-height: 1.08; letter-spacing: -0.015em; margin: 0; }
+  h2 { font-size: var(--step-3); }
+  h3 { font-size: var(--step-2); }
+  p { margin: 0; }
+  .wrap { width: min(1140px, 100% - 2 * var(--s-5)); margin-inline: auto; }
+  .muted { color: var(--muted); }
+  .num { font-variant-numeric: tabular-nums; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .skip { position: absolute; left: var(--s-4); top: -100px; z-index: 100; background: var(--ink); color: var(--bg); padding: var(--s-3) var(--s-4); border-radius: var(--radius); }
+  .skip:focus { top: var(--s-4); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  .on-deep :focus-visible { outline-color: var(--on-deep); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+    min-height: 48px; padding: var(--s-3) var(--s-5); border-radius: var(--radius); border: 1.5px solid transparent;
+    font: 600 var(--step-0)/1.2 var(--font-body); text-decoration: none; cursor: pointer;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease), border-color 150ms var(--ease), transform 120ms var(--ease);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--on-accent); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-ghost { border-color: var(--ink); color: var(--ink); }
+  .btn-ghost:hover { background: var(--ink); color: var(--bg); }
+  .btn-light { background: var(--on-deep); color: var(--deep); }
+  .btn-light:hover { background: #ffffff; }
+  .icon { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Two thin lines, like the rule on an old letterhead */
+  .double { border: 0; border-top: 3px double var(--ink); margin: 0; }
+
+  /* A photograph shown like a print: white mat, thin edge */
+  .print { background: var(--paper); padding: 10px; border: 1px solid var(--rule); box-shadow: 0 1px 2px rgba(28,30,33,0.06); margin: 0; }
+  .print img { width: 100%; object-fit: cover; filter: saturate(0.82) sepia(0.07) contrast(0.98); }
+
+  /* Header */
+  .site-header { position: sticky; top: 0; z-index: 50; background: #ffffff; border-bottom: 1px solid var(--rule); }
+  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); min-height: var(--header-h); }
+  .logo { display: inline-flex; align-items: center; min-height: 48px; }
+  .logo img { height: 46px; width: auto; }
+  .nav { display: flex; gap: var(--s-1); }
+  .nav a { text-decoration: none; padding: var(--s-2) var(--s-3); border-radius: var(--radius); color: var(--muted); font-weight: 600; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+  .nav a:hover { color: var(--ink); background: var(--bg); }
+  .header-cta { display: flex; align-items: center; gap: var(--s-4); }
+  .header-phone { text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: var(--s-2); white-space: nowrap; min-height: 44px; }
+  .menu-btn { display: none; width: 48px; height: 48px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; color: var(--ink); cursor: pointer; align-items: center; justify-content: center; }
+  .mobile-nav { display: none; }
+  @media (max-width: 920px) {
+    .nav, .header-cta .btn { display: none; }
+    .menu-btn { display: inline-flex; }
+    .mobile-nav[data-open="true"] { display: block; border-top: 1px solid var(--rule); padding-bottom: var(--s-5); }
+    .mobile-nav ul { list-style: none; margin: 0; padding: 0; }
+    .mobile-nav a { display: flex; align-items: center; min-height: 52px; text-decoration: none; font-weight: 600; font-size: 1.15rem; border-bottom: 1px solid var(--rule); }
+    .mobile-nav .btn { margin-top: var(--s-5); width: 100%; }
+  }
+  @media (max-width: 520px) {
+    .logo img { height: 34px; }
+    .header-phone span { display: none; }
+    .header-phone { width: 48px; height: 48px; justify-content: center; border: 1px solid var(--rule); border-radius: var(--radius); }
+  }
+
+  /* Hero */
+  .hero { padding-block: clamp(40px, 6vw, 96px); }
+  .hero .wrap { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .hero h1 { font-size: var(--step-4); max-width: 14ch; }
+  .hero .lead { font-size: var(--step-1); color: var(--muted); margin-top: var(--s-5); max-width: 42ch; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+  .hero .reassure { margin-top: var(--s-4); font-size: 0.95rem; color: var(--muted); }
+  .hero .print { max-width: 420px; justify-self: end; transform: rotate(0.6deg); }
+  .hero .print img { aspect-ratio: 3 / 4; }
+  @media (max-width: 860px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .hero .print { justify-self: start; max-width: 100%; transform: none; }
+    .hero .print img { aspect-ratio: 4 / 3; object-position: 40% 50%; }
+  }
+
+  /* Info strip between double rules */
+  .info { background: var(--paper); }
+  .info-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; }
+  .info-grid > div { padding: var(--s-6) var(--s-6) var(--s-6) 0; }
+  .info-grid > div + div { padding-left: var(--s-6); border-left: 1px solid var(--rule); }
+  .info h2 { font-size: var(--step-1); }
+  .status { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-3); font-weight: 600; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+  .status[data-open="true"] .status-dot { background: var(--ok); box-shadow: 0 0 0 4px rgba(29,122,70,0.15); }
+  .status-sub { color: var(--muted); font-size: 0.95rem; min-height: 1.5em; }
+  .hours { width: 100%; border-collapse: collapse; margin-top: var(--s-3); font-size: 0.95rem; }
+  .hours td { padding: 6px 0; border-top: 1px solid var(--rule); }
+  .hours td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .hours tr[data-today="true"] td { font-weight: 600; color: var(--accent); }
+  .info p { margin-top: var(--s-3); color: var(--muted); }
+  .info .big { font-family: var(--font-head); font-size: var(--step-2); font-weight: 600; color: var(--ink); letter-spacing: -0.015em; line-height: 1.1; }
+  @media (max-width: 860px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .info-grid > div { padding: var(--s-5) 0; }
+    .info-grid > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+  }
+
+  /* Services */
+  .section { padding-block: var(--section); }
+  .section-head { max-width: 640px; margin-bottom: var(--s-8); }
+  .section-head p { margin-top: var(--s-4); color: var(--muted); }
+  .rows { display: grid; gap: clamp(48px, 7vw, 96px); }
+  .row { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+  .row:nth-child(even) .print { order: 2; }
+  .row .print img { aspect-ratio: 3 / 2; }
+  .row h3 { font-size: var(--step-3); }
+  .row p { margin-top: var(--s-4); color: var(--muted); max-width: 48ch; }
+  .row .detail { margin-top: var(--s-3); color: var(--ink); font-size: 0.95rem; }
+  .also { margin-top: clamp(56px, 8vw, 112px); }
+  .also h3 { font-size: var(--step-2); }
+  .also ul { list-style: none; margin: var(--s-5) 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s-7); }
+  .also li { padding-block: var(--s-5); border-top: 1px solid var(--rule); }
+  .also li strong { display: block; font-family: var(--font-head); font-size: var(--step-1); font-weight: 600; }
+  .also li span { display: block; margin-top: var(--s-1); color: var(--muted); }
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 1fr; }
+    .row:nth-child(even) .print { order: 0; }
+    .also ul { grid-template-columns: 1fr; }
+  }
+
+  /* Enamel sign band (Køge shop) */
+  .shop { background: var(--deep); color: var(--on-deep); }
+  .shop .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; padding-block: var(--section); }
+  .shop p { color: var(--on-deep-muted); margin-top: var(--s-5); max-width: 50ch; }
+  .sign { background: var(--accent); border-radius: 12px; padding: 7px; box-shadow: 0 10px 30px -18px rgba(0,0,0,0.6); }
+  .sign-inner { border: 2px solid var(--on-deep); border-radius: 7px; padding: var(--s-6) var(--s-5); text-align: center; }
+  .sign-inner .small { font-size: 0.9rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-deep); opacity: 0.85; }
+  .sign-inner address { font-style: normal; font-family: var(--font-head); font-size: var(--step-2); font-weight: 600; line-height: 1.2; margin-top: var(--s-2); }
+  .sign-inner a { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; margin-top: var(--s-3); font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor; }
+  .shop .maplink { display: inline-flex; align-items: center; min-height: 48px; margin-top: var(--s-4); color: var(--on-deep); font-weight: 600; }
+  @media (max-width: 860px) { .shop .wrap { grid-template-columns: 1fr; } }
+
+  /* Profile */
+  .profile-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
+  .statement { font-family: var(--font-head); font-size: var(--step-3); font-weight: 500; line-height: 1.18; letter-spacing: -0.015em; max-width: 22ch; }
+  .profile-grid p.body { margin-top: var(--s-6); color: var(--muted); max-width: 58ch; }
+  .words { list-style: none; margin: 0; padding: 0; }
+  .words li { font-family: var(--font-head); font-size: var(--step-2); font-weight: 600; padding-block: var(--s-3); border-top: 1px solid var(--rule); }
+  .words li:last-child { border-bottom: 1px solid var(--rule); }
+  @media (max-width: 760px) { .profile-grid { grid-template-columns: 1fr; } }
+
+  /* Guarantee */
+  .guarantee { background: var(--paper); }
+  .guarantee .wrap { display: grid; grid-template-columns: auto 1fr; gap: clamp(28px, 6vw, 96px); align-items: center; padding-block: var(--section); }
+  .seal { width: clamp(170px, 20vw, 220px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent); display: grid; place-items: center; text-align: center; padding: 10px; }
+  .seal-inner { width: 100%; height: 100%; border-radius: 50%; border: 1px solid var(--accent); display: grid; place-content: center; gap: 4px; color: var(--accent); }
+  .seal-inner .amount { font-family: var(--font-head); font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem); font-weight: 600; line-height: 1; }
+  .seal-inner .label { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+  .guarantee p { color: var(--muted); margin-top: var(--s-4); max-width: 58ch; }
+  .guarantee .links { display: flex; flex-wrap: wrap; gap: var(--s-5); margin-top: var(--s-4); }
+  .guarantee .links a { font-weight: 600; color: var(--accent); display: inline-flex; align-items: center; min-height: 44px; }
+  @media (max-width: 760px) { .guarantee .wrap { grid-template-columns: 1fr; } }
+
+  /* FAQ */
+  .faq { display: grid; grid-template-columns: 1fr 1.6fr; gap: clamp(32px, 5vw, 80px); }
+  .faq details { border-top: 1px solid var(--rule); }
+  .faq details:last-child { border-bottom: 1px solid var(--rule); }
+  .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--s-5); padding: var(--s-5) 0; font-weight: 600; font-size: var(--step-1); min-height: 48px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary .icon { transition: transform 200ms var(--ease); color: var(--muted); }
+  .faq details[open] summary .icon { transform: rotate(45deg); }
+  .faq details p { padding-bottom: var(--s-5); color: var(--muted); max-width: 62ch; }
+  @media (max-width: 860px) { .faq { grid-template-columns: 1fr; } }
+
+  /* Contact */
+  .contact .wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(32px, 6vw, 96px); }
+  @media (max-width: 860px) { .contact .wrap { grid-template-columns: 1fr; } }
+  form { display: grid; gap: var(--s-4); margin-top: var(--s-6); }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  @media (max-width: 600px) { .row-2 { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: var(--s-1); }
+  .req { color: var(--error); }
+  input, select, textarea { width: 100%; font: inherit; color: var(--ink); background: #ffffff; border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--s-3) var(--s-4); min-height: 48px; transition: border-color 150ms var(--ease); }
+  input:hover, select:hover, textarea:hover { border-color: #b9b0a0; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  input, select { height: 52px; }
+  textarea { min-height: 120px; resize: vertical; }
+  .field-error { color: var(--error); font-size: 0.9rem; margin-top: var(--s-1); }
+  [aria-invalid="true"] { border-color: var(--error); }
+  .form-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4); }
+  .form-foot small { color: var(--muted); max-width: 40ch; }
+  .form-status { padding: var(--s-4); border-radius: var(--radius); background: var(--paper); border-left: 3px solid var(--accent); }
+  .form-status[hidden] { display: none; }
+  .btn[aria-busy="true"] { opacity: 0.7; pointer-events: none; }
+  .places { display: grid; gap: var(--s-6); align-content: start; }
+  .place { border-top: 3px double var(--ink); padding-top: var(--s-4); }
+  .place h3 { font-size: var(--step-1); }
+  .place address { font-style: normal; color: var(--muted); margin-top: var(--s-2); }
+  .place a { font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; min-height: 40px; overflow-wrap: anywhere; }
+  .place a:hover { text-decoration: underline; }
+
+  /* Job notice */
+  .job { border-top: 1px solid var(--rule); background: var(--paper); }
+  .job .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-6); }
+  .job p { max-width: 70ch; }
+  .job a { font-weight: 600; color: var(--accent); white-space: nowrap; display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* Footer */
+  .site-footer { background: #ffffff; border-top: 1px solid var(--rule); font-size: 0.95rem; color: var(--muted); }
+  .site-footer .wrap { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: var(--s-7); padding-block: var(--s-8) var(--s-7); }
+  .site-footer img { height: 42px; width: auto; }
+  .site-footer strong { color: var(--ink); font-family: var(--font-head); font-weight: 600; font-size: 1.1rem; }
+  .site-footer ul { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid; gap: var(--s-1); }
+  .site-footer a { color: var(--ink); text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+  .site-footer .legal { grid-column: 1 / -1; border-top: 1px solid var(--rule); padding-top: var(--s-5); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3); }
+  @media (max-width: 760px) { .site-footer .wrap { grid-template-columns: 1fr; gap: var(--s-6); } }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+  .reveal.is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { transform: none; transition: opacity 400ms linear; }
+    .btn:active { transform: none; }
+    .faq summary .icon { transition: none; }
+  }
+</style>
+</head>
+
+<body>
+<a class="skip" href="#indhold">Spring til indhold</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="#top"><img src="img/logo.png" width="300" height="75" alt="Aagaard &amp; K.S. Elektro – aut. el-installatør"></a>
+    <nav class="nav" aria-label="Hovedmenu">
+      <a href="#ydelser">Det laver vi</a>
+      <a href="#om-os">Om os</a>
+      <a href="#garanti">Garanti</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="header-cta">
+      <!-- TODO: their site shows both 36 70 28 99 and 21 76 18 40 for Rødovre - confirm which is the main number -->
+      <a class="header-phone num" href="tel:+4536702899" aria-label="Ring 36 70 28 99">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+        <span>36 70 28 99</span>
+      </a>
+      <a class="btn btn-primary" href="#kontakt">Få et tilbud</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobilmenu" aria-label="Åbn menu">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobilmenu" data-open="false">
+    <div class="wrap">
+      <ul>
+        <li><a href="#ydelser">Det laver vi</a></li>
+        <li><a href="#om-os">Om os</a></li>
+        <li><a href="#garanti">Garanti</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+      <a class="btn btn-primary" href="#kontakt">Få et tilbud</a>
+    </div>
+  </div>
+</header>
+
+<main id="indhold">
+
+  <!-- Hero -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <h1 id="hero-title">Autoriseret elektriker i Rødovre, Køge og omegn</h1>
+        <p class="lead">Elinstallationer og datanet for private, erhverv og industri. Ordentligt arbejde, til den aftalte tid.</p>
+        <div class="actions">
+          <a class="btn btn-primary num" href="tel:+4536702899">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+            Ring 36 70 28 99
+          </a>
+          <a class="btn btn-ghost" href="#kontakt">Bed om et tilbud</a>
+        </div>
+        <p class="reassure">Tilbuddet er uforpligtende.</p>
+      </div>
+      <figure class="print">
+        <img src="img/kontakt.jpg" width="900" height="1200" alt="Afbryder med rødt kontrollys på en hvid væv-væg" fetchpriority="high">
+      </figure>
+    </div>
+  </section>
+
+  <!-- Info strip: hours, guarantee, company -->
+  <section class="info" aria-label="Åbningstider og firmaoplysninger">
+    <hr class="double">
+    <div class="wrap info-grid">
+      <div>
+        <h2>Åbningstider</h2>
+        <p class="status" id="status" data-open="false"><span class="status-dot" aria-hidden="true"></span><span id="status-text">Rødovre</span></p>
+        <p class="status-sub" id="status-sub" aria-live="polite"></p>
+        <table class="hours">
+          <caption class="sr-only">Åbningstider, Rødovre</caption>
+          <tbody>
+            <tr data-days="1,2,3,4"><td>Mandag – torsdag</td><td>07:00 – 15:00</td></tr>
+            <tr data-days="5"><td>Fredag</td><td>07:00 – 13:00</td></tr>
+            <tr data-days="6,0"><td>Lørdag – søndag</td><td>Lukket</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.95rem">Faste kunder kan tilkalde os døgnet rundt.</p>
+      </div>
+      <div>
+        <h2>Garanti</h2>
+        <p class="big num">Op til 150.000 kr.</p>
+        <p>Vi er medlem af Tekniq og dermed af Tekniqs garantiordning.</p>
+      </div>
+      <div>
+        <h2>Firma</h2>
+        <p class="big">Aut. el-installatør</p>
+        <p class="num">Rødovrevej 285, 2610 Rødovre<br>CVR 24 97 93 34</p>
+      </div>
+    </div>
+    <hr class="double">
+  </section>
+
+  <!-- Services -->
+  <section class="section" id="ydelser" aria-labelledby="ydelser-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2 id="ydelser-title">Det laver vi</h2>
+        <p>Vi laver og servicerer elinstallationer og datanet. Tag os med fra start, så sidder stik, lys og kabler der, hvor du har brug for dem.</p>
+      </div>
+
+      <div class="rows">
+        <article class="row reveal">
+          <figure class="print"><img src="img/lanterner.jpg" width="1200" height="858" alt="Lanterner i smedejern under en hvidkalket hvælving" loading="lazy"></figure>
+          <div>
+            <h3>Udendørslamper</h3>
+            <p>Vi rådgiver om den bedste placering og kan gøre løsningen klogere, fx med automatisk tænd og sluk, der byder familien og gæsterne velkommen og holder ubudne gæster væk.</p>
+            <p class="detail">Og vi sørger for den rigtige jordforbindelse.</p>
+          </div>
+        </article>
+        <article class="row reveal">
+          <figure class="print"><img src="img/gulv.jpg" width="1200" height="800" alt="Slidt plankegulv i træ" loading="lazy"></figure>
+          <div>
+            <h3>Elektrisk gulvvarme</h3>
+            <p>Varme skal mærkes, ikke ses eller høres. Hvert rum styres for sig med sin egen termostat på væggen eller i gulvet, og der kan kobles et ur på, hvis temperaturen skal sænkes på bestemte tider.</p>
+          </div>
+        </article>
+        <article class="row reveal">
+          <figure class="print"><img src="img/kokken.jpg" width="1024" height="682" alt="Storkøkken med fliser og ternet gulv" loading="lazy"></figure>
+          <div>
+            <h3>Køkkeninstallationer</h3>
+            <p>Den rigtige placering af stik og lys, og strøm til hårde hvidevarer dimensioneret rigtigt. Godt arbejdslys ved vask, bord og kogezone, i private køkkener og i erhverv.</p>
+          </div>
+        </article>
+        <article class="row reveal">
+          <figure class="print"><img src="img/netvaerk.jpg" width="1200" height="899" alt="Bundt af netværkskabler" loading="lazy"></figure>
+          <div>
+            <h3>Netværk og bredbånd</h3>
+            <p>Vi er autoriseret til at trække alle former for ledninger, også netværk og bredbånd. Så får hele familien hurtigt internet, ikke kun i kontoret og stuen, men også på børneværelset.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="also reveal">
+        <h3>Vi laver også</h3>
+        <ul>
+          <li><strong>Kontakter og stikkontakter</strong><span>Nye eller flere, med eller uden lysdæmpning. Godt at gøre, når du alligevel skal male.</span></li>
+          <li><strong>Antenner og parabol</strong><span>Boxer TV fra Hove, fællesantenner, fladanlæg og parabolanlæg.</span></li>
+          <li><strong>Dørtelefoner</strong><span>Ritto TwinBus porttelefoner til opgange og ejendomme.</span></li>
+          <li><strong>Forsikringsskader</strong><span>Vi udbedrer alle former for forsikringsskader på el og antenner.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Køge shop: an enamel sign -->
+  <section class="shop on-deep" aria-labelledby="shop-title">
+    <div class="wrap">
+      <div class="reveal">
+        <h2 id="shop-title">Butik med antennedele i Køge</h2>
+        <p>Skal du selv bruge en antennekomponent, eller vil du tale med os om en installation, så kig forbi Ørnevej.</p>
+        <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=%C3%98rnevej%2018%2C%204600%20K%C3%B8ge" target="_blank" rel="noopener">Se på kort ↗</a>
+        <!-- TODO: add opening hours for the Køge shop -->
+      </div>
+      <div class="sign reveal">
+        <div class="sign-inner">
+          <p class="small">Aagaard &amp; K.S. Elektro · Køge</p>
+          <address>Ørnevej 18<br>4600 Køge</address>
+          <a class="num" href="tel:+4556661056">Tlf. 56 66 10 56</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profile -->
+  <section class="section" id="om-os" aria-labelledby="om-title">
+    <div class="wrap profile-grid">
+      <div class="reveal">
+        <h2 id="om-title" class="sr-only">Om os</h2>
+        <p class="statement">Kvalitetsarbejde til konkurrencedygtige priser, og vi holder de tider, vi har aftalt.</p>
+        <p class="body">Aagaard &amp; K.S. Elektro er en autoriseret elektriker og el-installatør med værksted på Rødovrevej. Vi laver og servicerer elinstallationer og datanet for private, erhverv og industri, mest i København, Køge og omegn, men vi tager gerne opgaver på hele Sjælland. Vores mål er altid at levere det, vi har aftalt med dig.</p>
+        <!-- TODO: add a real photo of the team, the van or a finished job -->
+      </div>
+      <ul class="words reveal" aria-label="Det er vi kendt for">
+        <li>Pålidelige</li>
+        <li>Løsningsorienterede</li>
+        <li>Kvalitetsbevidste</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Guarantee -->
+  <section class="guarantee" id="garanti" aria-labelledby="garanti-title">
+    <hr class="double">
+    <div class="wrap">
+      <div class="seal reveal" aria-hidden="true">
+        <div class="seal-inner"><span class="label">Tekniq</span><span class="amount num">150.000 kr.</span><span class="label">Garanti</span></div>
+      </div>
+      <div class="reveal">
+        <h2 id="garanti-title">Du er dækket, hvis noget går galt</h2>
+        <p>Vi er medlem af Tekniq og dermed af Tekniqs garantiordning. Skulle der være fejl, mangler eller utilfredshed med en installation, er du økonomisk dækket med op til 150.000 kr. Først og fremmest vil vi dog gerne tale med dig og løse det.</p>
+        <div class="links">
+          <a href="https://www.tekniq.dk" target="_blank" rel="noopener">tekniq.dk ↗</a>
+          <a href="https://www.el-vvs-anke.dk" target="_blank" rel="noopener">el-vvs-anke.dk ↗</a>
+        </div>
+      </div>
+    </div>
+    <hr class="double">
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq">
+      <div class="reveal">
+        <h2 id="faq-title">Spørgsmål vi tit får</h2>
+        <p class="muted" style="margin-top:16px">Ring på <a class="num" href="tel:+4536702899">36 70 28 99</a>, hvis dit spørgsmål ikke står her.</p>
+      </div>
+      <div class="reveal">
+        <details>
+          <summary>Hvad koster det?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <p>Det afhænger af opgaven. Ring eller skriv, så får du et uforpligtende tilbud.</p>
+          <!-- TODO: add an hourly rate or a few "from" prices if they want to show them -->
+        </details>
+        <details>
+          <summary>Hvor kommer I ud?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <p>Mest i København, Køge og omegn, men vi tager gerne opgaver på hele Sjælland.</p>
+        </details>
+        <details>
+          <summary>Hvornår kan jeg ringe?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <p>Mandag til torsdag kl. 7–15 og fredag kl. 7–13. Faste kunder kan tilkalde os døgnet rundt.</p>
+        </details>
+        <details>
+          <summary>Laver I opgaver for erhverv og boligforeninger?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <p>Ja. Vi arbejder for private, erhverv og industri, og vi laver også fællesantenner og dørtelefoner til opgange og ejendomme.</p>
+        </details>
+        <details>
+          <summary>Udbedrer I forsikringsskader?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <p>Ja, vi udbedrer alle former for forsikringsskader.</p>
+        </details>
+        <details>
+          <summary>Hvad hvis jeg ikke er tilfreds?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <p>Så vil vi gerne høre fra dig, så vi kan finde en løsning. Som medlem af Tekniq er du desuden dækket af Tekniqs garantiordning med op til 150.000 kr.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section contact" id="kontakt" aria-labelledby="kontakt-title" style="padding-top:0">
+    <div class="wrap">
+      <div>
+        <h2 id="kontakt-title">Få et uforpligtende tilbud</h2>
+        <p class="muted" style="margin-top:16px; max-width:52ch">Fortæl kort, hvad der skal laves, og hvor. Vi vender tilbage inden for vores åbningstid.</p>
+
+        <!-- TODO: connect form to a backend. Until then it opens a ready-written email to aagaard@aagaard-el.dk -->
+        <form id="kontaktform" novalidate>
+          <div class="row-2">
+            <div>
+              <label for="navn">Navn <span class="req" aria-hidden="true">*</span></label>
+              <input id="navn" name="navn" type="text" autocomplete="name" required aria-describedby="navn-fejl">
+              <p class="field-error" id="navn-fejl" aria-live="polite"></p>
+            </div>
+            <div>
+              <label for="telefon">Telefon <span class="req" aria-hidden="true">*</span></label>
+              <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="telefon-fejl">
+              <p class="field-error" id="telefon-fejl" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="row-2">
+            <div>
+              <label for="email">E-mail</label>
+              <input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-fejl">
+              <p class="field-error" id="email-fejl" aria-live="polite"></p>
+            </div>
+            <div>
+              <label for="opgave">Hvad drejer det sig om?</label>
+              <select id="opgave" name="opgave">
+                <option value="">Vælg</option>
+                <option>Udendørslamper</option>
+                <option>Gulvvarme</option>
+                <option>Køkken</option>
+                <option>Netværk og bredbånd</option>
+                <option>Kontakter og stik</option>
+                <option>Antenne eller parabol</option>
+                <option>Dørtelefon</option>
+                <option>Forsikringsskade</option>
+                <option>Andet</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="besked">Beskriv opgaven</label>
+            <textarea id="besked" name="besked" rows="4"></textarea>
+          </div>
+          <div class="form-foot">
+            <button class="btn btn-primary" type="submit">Send forespørgsel</button>
+            <small>Vi bruger kun dine oplysninger til at svare dig. <span class="req">*</span> skal udfyldes.</small>
+          </div>
+          <p class="form-status" id="form-status" role="status" hidden></p>
+        </form>
+      </div>
+
+      <div class="places">
+        <div class="place">
+          <h3>Rødovre</h3>
+          <address>Rødovrevej 285<br>2610 Rødovre</address>
+          <p><a class="num" href="tel:+4536702899">Tlf. 36 70 28 99</a></p>
+          <p><a href="mailto:aagaard@aagaard-el.dk">aagaard@aagaard-el.dk</a></p>
+          <p><a href="https://www.google.com/maps/search/?api=1&query=R%C3%B8dovrevej%20285%2C%202610%20R%C3%B8dovre" target="_blank" rel="noopener">Se på kort ↗</a></p>
+        </div>
+        <div class="place">
+          <h3>Køge, butik</h3>
+          <address>Ørnevej 18<br>4600 Køge</address>
+          <p><a class="num" href="tel:+4556661056">Tlf. 56 66 10 56</a></p>
+        </div>
+        <div class="place">
+          <h3>Tilbud direkte</h3>
+          <p class="muted" style="margin-top:8px">Ring til Per Aagaard</p>
+          <p><a class="num" href="tel:+4521761840">21 76 18 40</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Job notice (from their front page) -->
+  <aside class="job" aria-label="Job">
+    <div class="wrap">
+      <p><strong>Vi søger erfarne servicemontører.</strong> Har du lyst til at løse de daglige opgaver og give kunderne en god oplevelse, så ring til Per.</p>
+      <a class="num" href="tel:+4521761840">Ring 21 76 18 40 →</a>
+    </div>
+  </aside>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <img src="img/logo.png" width="300" height="75" alt="Aagaard &amp; K.S. Elektro" loading="lazy">
+      <p style="margin-top:16px">Autoriseret el-installatør for private, erhverv og industri i København, Køge og omegn.</p>
+      <p class="num" style="margin-top:8px">CVR 24 97 93 34</p>
+    </div>
+    <div>
+      <strong>Kontakt</strong>
+      <ul class="num">
+        <li><a href="tel:+4536702899">36 70 28 99</a></li>
+        <li><a href="mailto:aagaard@aagaard-el.dk">aagaard@aagaard-el.dk</a></li>
+        <li>Man–tor 7–15 · fre 7–13</li>
+      </ul>
+    </div>
+    <div>
+      <strong>Adresser</strong>
+      <ul>
+        <li>Rødovrevej 285, 2610 Rødovre</li>
+        <li>Ørnevej 18, 4600 Køge</li>
+      </ul>
+    </div>
+    <div class="legal">
+      <span>© 2026 Aagaard &amp; K.S. Elektro</span>
+      <!-- TODO: link to privacy and cookie policy -->
+      <span>Sidst opdateret oktober 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Open now: computed from the real opening hours, in Danish time.
+  (function () {
+    const hours = { 1: [7, 15], 2: [7, 15], 3: [7, 15], 4: [7, 15], 5: [7, 13] };
+    const names = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
+    const el = document.getElementById("status");
+    const text = document.getElementById("status-text");
+    const sub = document.getElementById("status-sub");
+    const pad = (n) => String(n).padStart(2, "0");
+
+    function nowInCopenhagen() {
+      const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Copenhagen", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
+      const get = (t) => parts.find((p) => p.type === t).value;
+      const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+      return { day, minutes: Number(get("hour")) * 60 + Number(get("minute")) };
+    }
+
+    function update() {
+      const { day, minutes } = nowInCopenhagen();
+      document.querySelectorAll(".hours tr[data-days]").forEach((tr) => {
+        tr.dataset.today = String(tr.dataset.days.split(",").map(Number).includes(day));
+      });
+      const today = hours[day];
+      const open = !!today && minutes >= today[0] * 60 && minutes < today[1] * 60;
+      el.dataset.open = String(open);
+      if (open) {
+        text.textContent = "Åbent nu";
+        sub.textContent = "Vi tager telefonen til kl. " + pad(today[1]) + ":00 i dag.";
+        return;
+      }
+      text.textContent = "Lukket lige nu";
+      for (let i = 0; i < 8; i++) {
+        const d = (day + i) % 7;
+        const h = hours[d];
+        if (!h) continue;
+        if (i === 0 && minutes >= h[0] * 60) continue;
+        const when = i === 0 ? "i dag" : i === 1 ? "i morgen" : "på " + names[d];
+        sub.textContent = "Vi åbner " + when + " kl. " + pad(h[0]) + ":00.";
+        return;
+      }
+    }
+    update();
+    setInterval(update, 60000);
+  })();
+
+  // Mobile menu: opens and closes cleanly, closes on link click and Escape.
+  (function () {
+    const btn = document.querySelector(".menu-btn");
+    const menu = document.getElementById("mobilmenu");
+    if (!btn || !menu) return;
+    const set = (open) => {
+      menu.dataset.open = String(open);
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "Luk menu" : "Åbn menu");
+    };
+    btn.addEventListener("click", () => set(menu.dataset.open !== "true"));
+    menu.addEventListener("click", (e) => { if (e.target.closest("a")) set(false); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu.dataset.open === "true") { set(false); btn.focus(); }
+    });
+    window.matchMedia("(min-width: 921px)").addEventListener("change", (m) => { if (m.matches) set(false); });
+  })();
+
+  // Scroll reveal: once per element, a small fade and lift.
+  (function () {
+    const items = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) { items.forEach((el) => el.classList.add("is-in")); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const siblings = [...el.parentElement.children].filter((c) => c.classList.contains("reveal"));
+        el.style.transitionDelay = Math.min(siblings.indexOf(el), 4) * 60 + "ms";
+        el.classList.add("is-in");
+        io.unobserve(el);
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    items.forEach((el) => io.observe(el));
+  })();
+
+  // Contact form: inline validation, then a ready-written email (no backend yet).
+  (function () {
+    const form = document.getElementById("kontaktform");
+    if (!form) return;
+    const status = document.getElementById("form-status");
+    const rules = {
+      navn: (v) => (v.trim().length < 2 ? "Skriv dit navn, så vi ved, hvem vi taler med." : ""),
+      telefon: (v) => (v.replace(/[^\d]/g, "").length < 8 ? "Skriv et telefonnummer med 8 cifre, fx 12 34 56 78." : ""),
+      email: (v) => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Skriv en e-mail som navn@domæne.dk, eller lad feltet stå tomt." : ""),
+    };
+    const check = (name) => {
+      const input = form.elements[name];
+      const msg = rules[name](input.value);
+      input.setAttribute("aria-invalid", msg ? "true" : "false");
+      document.getElementById(name + "-fejl").textContent = msg;
+      return !msg;
+    };
+    Object.keys(rules).forEach((name) => form.elements[name].addEventListener("blur", () => check(name)));
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const ok = Object.keys(rules).map(check).every(Boolean);
+      if (!ok) { form.querySelector('[aria-invalid="true"]').focus(); return; }
+
+      const btn = form.querySelector('button[type="submit"]');
+      btn.setAttribute("aria-busy", "true");
+      btn.textContent = "Åbner din mail …";
+
+      const f = form.elements;
+      const body = [
+        "Navn: " + f.navn.value,
+        "Telefon: " + f.telefon.value,
+        "E-mail: " + (f.email.value || "-"),
+        "Opgave: " + (f.opgave.value || "-"),
+        "",
+        f.besked.value,
+      ].join("\n");
+      const subject = "Tilbud" + (f.opgave.value ? ": " + f.opgave.value : "");
+      window.location.href = "mailto:aagaard@aagaard-el.dk?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+      setTimeout(() => {
+        btn.removeAttribute("aria-busy");
+        btn.textContent = "Send forespørgsel";
+        status.hidden = false;
+        status.textContent = "Tak, " + f.navn.value.trim().split(" ")[0] + ". Din mail er skrevet færdig. Tryk send i dit mailprogram, så vender vi tilbage. Åbnede der ikke noget, så skriv til aagaard@aagaard-el.dk eller ring 36 70 28 99.";
+      }, 700);
+    });
+  })();
+</script>
+</body>
+</html>

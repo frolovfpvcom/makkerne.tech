@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Makkerne – forslag B: Før og efter</title>
+<!--
+  Forslag B: "Før og efter". Signal orange like a work van, wide lettering, and
+  a before/after you can drag: an old tired homepage turns into a new one.
+  Photos of the trades in a mosaic, a dark section with what is included.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #f1efe9;
+    --ink: #161514;
+    --muted: #5d5b56;
+    --rule: #dedbd3;
+    --orange: #ff5a1f;
+    --orange-dark: #d9450f;
+    --cream: #fff4e8;
+    --font: "Archivo", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--font); }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .wrap { width: min(1200px, 100% - 32px); margin-inline: auto; }
+  h1, h2, h3 { margin: 0; font-stretch: 118%; font-weight: 850; line-height: 0.98; letter-spacing: -0.025em; text-wrap: balance; }
+  p { margin: 0; }
+  .icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 12px 26px; border-radius: 4px; font-weight: 800; font-stretch: 110%; text-decoration: none; border: 2px solid var(--ink); transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease; }
+  .btn-ink { background: var(--ink); color: #fff; }
+  .btn-ink:hover { background: #2c2a27; }
+  .btn-line { background: transparent; }
+  .btn-line:hover { background: var(--ink); color: #fff; }
+  .btn-orange { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .btn-orange:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+  .btn-white { background: #fff; border-color: #fff; color: var(--ink); }
+  .btn-white:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  /* Orange top */
+  .top-zone { background: var(--orange); color: var(--ink); }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; }
+  .logo { font-stretch: 125%; font-weight: 900; font-size: 1.45rem; text-decoration: none; letter-spacing: -0.03em; }
+  .top nav { display: flex; gap: 28px; align-items: center; font-weight: 600; }
+  .top nav a:not(.btn) { text-decoration: none; }
+  .top nav a:not(.btn):hover { text-decoration: underline; text-underline-offset: 4px; }
+  .top .btn { min-height: 46px; padding: 8px 18px; }
+  @media (max-width: 760px) { .top nav a:not(.btn) { display: none; } }
+
+  .hero { padding-top: clamp(24px, 4vw, 56px); padding-bottom: clamp(140px, 18vw, 250px); position: relative; }
+  .hero h1 { font-size: clamp(3rem, 1rem + 8vw, 8.2rem); color: var(--ink); max-width: 11ch; }
+  .hero h1 em { font-style: normal; color: #fff; white-space: nowrap; }
+  .hero .row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 24px 48px; margin-top: 28px; }
+  .hero .lead { font-size: 1.25rem; max-width: 42ch; font-weight: 500; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .sticker { position: absolute; right: max(16px, calc((100% - 1200px) / 2)); top: clamp(20px, 5vw, 60px); width: clamp(120px, 14vw, 180px); aspect-ratio: 1; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-content: center; text-align: center; transform: rotate(-10deg); font-weight: 800; line-height: 1.1; padding: 12px; }
+  .sticker b { display: block; font-stretch: 120%; font-size: clamp(1.5rem, 1rem + 1.6vw, 2.4rem); color: var(--orange); }
+  .sticker span { font-size: clamp(0.75rem, 0.6rem + 0.4vw, 0.95rem); }
+  @media (max-width: 760px) { .sticker { position: static; margin: 24px 0 0 16px; transform: rotate(-4deg); } }
+
+  /* Before / after, overlapping the orange */
+  .ba-zone { margin-top: clamp(-220px, -16vw, -110px); }
+  .ba-labels { display: flex; justify-content: space-between; font-weight: 800; font-stretch: 115%; margin-bottom: 10px; color: var(--ink); }
+  .frame { border: 2px solid var(--ink); background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 24px 50px rgba(22,21,20,0.18); }
+  .frame .bar { display: flex; gap: 6px; align-items: center; height: 34px; padding-inline: 14px; border-bottom: 2px solid var(--ink); background: var(--surface); }
+  .frame .bar i { width: 10px; height: 10px; border-radius: 50%; background: #cfcbc2; }
+  .frame .bar b { margin-left: 10px; font-weight: 500; font-size: 0.82rem; color: var(--muted); }
+  .compare { position: relative; aspect-ratio: 5 / 3; overflow: hidden; touch-action: pan-y; user-select: none; }
+  .compare > * { position: absolute; inset: 0; }
+  .compare .new img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  .compare .old-wrap { clip-path: inset(0 calc(100% - var(--pos, 38%)) 0 0); }
+  .compare .handle { left: var(--pos, 38%); right: auto; width: 4px; margin-left: -2px; background: var(--orange); pointer-events: none; }
+  .compare .handle::after { content: "⟷"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 52px; height: 52px; border-radius: 50%; background: var(--orange); color: #fff; display: grid; place-items: center; font-size: 1.4rem; font-weight: 900; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
+  .compare input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+  .compare .tag { position: absolute; top: 14px; padding: 6px 12px; border-radius: 4px; font-weight: 800; font-size: 0.9rem; inset: auto; top: 14px; }
+  .compare .tag.before { left: 14px; background: #fff; color: var(--ink); }
+  .compare .tag.after { right: 14px; background: var(--orange); color: #fff; }
+  .ba-hint { margin-top: 12px; color: var(--muted); font-size: 0.95rem; text-align: center; }
+
+  /* The old site, drawn with plain HTML so it looks the part */
+  .old { display: flex; flex-direction: column; width: 100%; height: 100%; background: #e9e9e4; font-family: "Times New Roman", Times, serif; color: #222; padding: 2% 2.4%; font-size: clamp(8px, 1.55vw, 21px); line-height: 1.35; }
+  .old .banner { background: #2d4f8a; color: #ffff99; text-align: center; padding: 1.6% 6px; font-size: 2em; font-weight: bold; border: 4px ridge #8fa6cc; }
+  .old .marq { background: #000; color: #0f0; font-family: "Courier New", monospace; padding: 3px 6px; margin-top: 1%; white-space: nowrap; overflow: hidden; }
+  .old .menu { text-align: center; margin-top: 1.2%; }
+  .old .menu u { color: #1a0dab; margin-inline: 6px; }
+  .old .cols { flex: 1; display: grid; grid-template-columns: 1fr 2.3fr; gap: 1.6%; margin-top: 1.6%; }
+  .old .side, .old .main { background: #fff; border: 1px solid #999; padding: 1.4%; }
+  .old h4 { margin: 0 0 6px; font-size: 1.35em; color: #2d4f8a; }
+  .old .pic { height: 9em; background: repeating-linear-gradient(45deg, #ddd 0 6px, #ccc 6px 12px); border: 1px solid #999; display: grid; place-items: center; font-size: 0.85em; color: #666; margin-top: 6px; }
+  .old .count { margin-top: 1em; text-align: center; font-family: "Courier New", monospace; color: #555; }
+  .old .count b { background: #000; color: #f33; padding: 0 4px; letter-spacing: 2px; }
+  .old .under { margin-top: 1em; text-align: center; color: #c00; font-weight: bold; }
+
+  section.block { padding-block: clamp(72px, 10vw, 136px); }
+  .block h2 { font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.2rem); max-width: 16ch; }
+  .block .intro { margin-top: 16px; color: var(--muted); max-width: 54ch; font-size: 1.15rem; }
+
+  /* Trades mosaic */
+  .mosaic { margin-top: 44px; display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: 260px 260px; gap: 14px; }
+  .mosaic figure { margin: 0; position: relative; border-radius: 6px; overflow: hidden; background: var(--ink); }
+  .mosaic figure:first-child { grid-row: span 2; }
+  .mosaic img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms ease; }
+  .mosaic figure:hover img { transform: scale(1.04); }
+  .mosaic figcaption { position: absolute; left: 14px; bottom: 14px; background: #fff; color: var(--ink); padding: 6px 12px; border-radius: 4px; font-weight: 800; font-stretch: 112%; }
+  @media (max-width: 860px) { .mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: 300px 200px 200px; } .mosaic figure:first-child { grid-column: span 2; grid-row: auto; } }
+
+  /* Included, dark */
+  .dark { background: var(--ink); color: #f3efe8; }
+  .dark .intro { color: #b9b4ab; }
+  .incl { list-style: none; margin: 48px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .incl li { background: #24221f; border-radius: 6px; padding: 26px 24px; }
+  .incl .icon { width: 34px; height: 34px; color: var(--orange); }
+  .incl strong { display: block; margin-top: 14px; font-size: 1.2rem; font-stretch: 110%; }
+  .incl span { display: block; margin-top: 4px; color: #b9b4ab; }
+  @media (max-width: 860px) { .incl { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .incl { grid-template-columns: 1fr; } }
+  .price { margin-top: 48px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; padding: 28px 32px; border: 2px solid var(--orange); border-radius: 6px; }
+  .price b { font-stretch: 120%; font-weight: 900; font-size: clamp(3rem, 2rem + 4vw, 5rem); color: var(--orange); letter-spacing: -0.03em; line-height: 1; }
+  .price p { color: #d8d3ca; max-width: 46ch; font-size: 1.1rem; }
+  .price .btn { margin-left: auto; }
+  @media (max-width: 760px) { .price .btn { margin-left: 0; } }
+
+  /* Examples */
+  .ex-grid { list-style: none; margin: 48px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .card { display: block; text-decoration: none; background: #fff; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; transition: transform 200ms ease, box-shadow 200ms ease; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 14px 0 -6px var(--orange); }
+  .card .shot { position: relative; background: var(--surface); padding: 22px 22px 0; aspect-ratio: 4 / 3.4; overflow: hidden; border-bottom: 2px solid var(--ink); }
+  .card .shot .desk { width: 100%; border-radius: 4px 4px 0 0; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+  .card .shot .mob { position: absolute; right: 16px; bottom: -40px; width: 34%; border: 5px solid var(--ink); border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+  .card .body { padding: 20px 22px 24px; }
+  .card h3 { font-size: 1.6rem; }
+  .card p { margin-top: 6px; color: var(--muted); }
+  .card .go { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-weight: 800; color: var(--orange-dark); }
+  .ex-note { margin-top: 28px; color: var(--muted); }
+  .ex-note a { font-weight: 800; }
+  @media (max-width: 960px) { .ex-grid { grid-template-columns: 1fr; max-width: 560px; } }
+
+  /* Steps */
+  .steps { list-style: none; margin: 44px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 3px solid var(--ink); }
+  .steps li { padding: 28px 28px 8px 0; }
+  .steps li + li { padding-left: 28px; border-left: 2px solid var(--rule); }
+  .steps .n { font-stretch: 125%; font-weight: 900; font-size: 3.4rem; color: var(--orange); line-height: 1; }
+  .steps h3 { margin-top: 12px; font-size: 1.5rem; }
+  .steps p { margin-top: 8px; color: var(--muted); }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } .steps li + li { padding-left: 0; border-left: 0; border-top: 2px solid var(--rule); } }
+
+  /* Contact */
+  .contact { background: var(--orange); color: var(--ink); }
+  .contact .wrap { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; }
+  .contact .intro { color: var(--ink); opacity: 0.85; }
+  .contact .actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 28px; }
+  .contact .mail { font-weight: 700; word-break: break-all; }
+  .contact .who { margin-top: 22px; font-weight: 700; }
+  .contact figure { margin: 0; border-radius: 6px; overflow: hidden; border: 3px solid var(--ink); aspect-ratio: 4 / 3; transform: rotate(1.5deg); }
+  .contact figure img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 860px) { .contact .wrap { grid-template-columns: 1fr; } .contact figure { transform: none; } }
+
+  footer { background: var(--ink); color: #9d988f; padding-block: 24px; font-size: 0.92rem; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></symbol>
+  <symbol id="i-call" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+</svg>
+
+<div class="top-zone">
+  <header class="top">
+    <div class="wrap">
+      <a class="logo" href="#">Makkerne</a>
+      <nav aria-label="Menu">
+        <a href="#eksempler">Eksempler</a>
+        <a href="#saadan">Sådan foregår det</a>
+        <a class="btn btn-ink" href="#kontakt">Få et udkast</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>Vi laver din hjemmeside for <em>999,-</em></h1>
+      <div class="row">
+        <p class="lead">Fra en side, du helst ikke viser frem, til en side, kunderne ringer fra. Vi skriver teksterne og sætter det hele op.</p>
+        <div class="actions">
+          <a class="btn btn-ink" href="#kontakt">Få et udkast</a>
+          <a class="btn btn-line" href="#eksempler">Se eksempler</a>
+        </div>
+      </div>
+    </div>
+    <div class="sticker" aria-hidden="true"><div><b>Se den</b><span>før du betaler</span></div></div>
+  </section>
+</div>
+
+<div class="ba-zone">
+  <div class="wrap">
+    <div class="frame">
+      <div class="bar"><i></i><i></i><i></i><b>holmvvs.dk</b></div>
+      <div class="compare" id="compare">
+        <div class="new"><img src="../makkerne/img/vvs.jpg" width="1200" height="720" alt="Den nye forside for Holm VVS med ring-knap og døgnvagt"></div>
+        <div class="old-wrap" aria-hidden="true">
+          <div class="old">
+            <div class="banner">Velkommen til Holm VVS!!</div>
+            <div class="marq">*** NYHED *** Vi har fået ny hjemmeside *** Ring for tilbud ***</div>
+            <div class="menu"><u>Forside</u> | <u>Om os</u> | <u>Ydelser</u> | <u>Kontakt</u> | <u>Gæstebog</u></div>
+            <div class="cols">
+              <div class="side"><h4>Nyheder</h4>Hjemmesiden er under opbygning!<div class="pic">billede.jpg</div></div>
+              <div class="main"><h4>Om firmaet</h4>Holm VVS er et VVS firma. Vi laver alt inden for VVS til private og erhverv. Ring for et uforpligtende tilbud. Klik her for at se vores ydelser. Siden er bedst set i Internet Explorer 1024x768.<div class="count">Du er besøgende nr. <b>004211</b></div><div class="under">Sidst opdateret: 12-03-2011</div></div>
+            </div>
+          </div>
+        </div>
+        <span class="tag before">Før</span>
+        <span class="tag after">Efter</span>
+        <div class="handle" aria-hidden="true"></div>
+        <input type="range" min="0" max="100" value="38" aria-label="Træk for at se før og efter">
+      </div>
+    </div>
+    <p class="ba-hint">Træk i midten og se forskellen.</p>
+  </div>
+</div>
+
+<main>
+  <section class="block">
+    <div class="wrap">
+      <h2>Vi laver kun sider til håndværkere</h2>
+      <p class="intro">VVS'ere, tømrere, malere, tagfolk og elektrikere. Vi ved, hvad dine kunder leder efter, og vi bruger billeder af dit eget arbejde.</p>
+      <div class="mosaic">
+        <figure><img src="../makkerne/img/vvs-work.jpg" width="1400" height="933" alt="VVS'er på et badeværelse" loading="lazy"><figcaption>VVS</figcaption></figure>
+        <figure><img src="../makkerne/img/maler-work.jpg" width="1400" height="934" alt="Maler med rulle" loading="lazy"><figcaption>Maler</figcaption></figure>
+        <figure><img src="../makkerne/img/tomrer-work.jpg" width="1400" height="933" alt="Tømrer med værktøjsbælte" loading="lazy"><figcaption>Tømrer</figcaption></figure>
+        <figure><img src="../makkerne/img/tag-work.jpg" width="1400" height="933" alt="Tegltag" loading="lazy"><figcaption>Tag</figcaption></figure>
+        <figure><img src="../makkerne/img/murer-work.jpg" width="1400" height="933" alt="Håndværker med vinkelsliber" loading="lazy"><figcaption>Og alle de andre</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="block dark" id="det-faar-du">
+    <div class="wrap">
+      <h2>Alt det her er med</h2>
+      <p class="intro">Ingen pakker og ingen timepris. Du ved, hvad det koster, før vi går i gang.</p>
+      <ul class="incl">
+        <li><svg class="icon"><use href="#i-pen"/></svg><strong>Teksterne</strong><span>Vi skriver dem ud fra dit fag og dit område.</span></li>
+        <li><svg class="icon"><use href="#i-image"/></svg><strong>Dine billeder og logo</strong><span>Billeder fra telefonen er fine.</span></li>
+        <li><svg class="icon"><use href="#i-call"/></svg><strong>Ring-knap og formular</strong><span>Forespørgsler lander i din mail.</span></li>
+        <li><svg class="icon"><use href="#i-phone"/></svg><strong>Telefonen</strong><span>Bygget til den skærm, kunderne bruger.</span></li>
+        <li><svg class="icon"><use href="#i-search"/></svg><strong>Google</strong><span>Klar til at blive fundet på dit fag og din by.</span></li>
+        <li><svg class="icon"><use href="#i-lock"/></svg><strong>Domæne og hængelås</strong><span>Vi sætter det op. Du ejer det selv.</span></li>
+      </ul>
+      <div class="price">
+        <b>999,-</b>
+        <p>Én gang. Intet abonnement og ingen binding. Du ser et udkast først og betaler kun, hvis du vil beholde siden.</p>
+        <a class="btn btn-orange" href="#kontakt">Få et udkast</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="eksempler">
+    <div class="wrap">
+      <h2>Sider vi har bygget</h2>
+      <p class="intro">Klik ind og prøv dem, også på telefonen. Din egen side bliver lavet til dit firma.</p>
+      <ul class="ex-grid">
+        <li><a class="card" href="/examples/vvs/"><div class="shot"><img class="desk" src="../makkerne/img/vvs.jpg" width="1200" height="720" alt="Holm VVS på computer" loading="lazy"><img class="mob" src="../makkerne/img/vvs-m.jpg" width="450" height="1000" alt="" loading="lazy"></div><div class="body"><h3>Holm VVS</h3><p>VVS i Herlev. Døgnvagt og typiske priser.</p><span class="go">Se siden <svg class="icon" style="width:18px;height:18px"><use href="#i-arrow"/></svg></span></div></a></li>
+        <li><a class="card" href="/examples/tomrer/"><div class="shot"><img class="desk" src="../makkerne/img/tomrer.jpg" width="1200" height="720" alt="Egholm Tømrer på computer" loading="lazy"><img class="mob" src="../makkerne/img/tomrer-m.jpg" width="450" height="1000" alt="" loading="lazy"></div><div class="body"><h3>Egholm Tømrer</h3><p>Tømrer i Roskilde. Projekter og besigtigelse.</p><span class="go">Se siden <svg class="icon" style="width:18px;height:18px"><use href="#i-arrow"/></svg></span></div></a></li>
+        <li><a class="card" href="/examples/tag/"><div class="shot"><img class="desk" src="../makkerne/img/tag.jpg" width="1200" height="720" alt="Tagværk på computer" loading="lazy"><img class="mob" src="../makkerne/img/tag-m.jpg" width="450" height="1000" alt="" loading="lazy"></div><div class="body"><h3>Tagværk</h3><p>Tag og tømrer på Sjælland. Tilbud i toppen.</p><span class="go">Se siden <svg class="icon" style="width:18px;height:18px"><use href="#i-arrow"/></svg></span></div></a></li>
+      </ul>
+      <p class="ex-note">Firmaerne er opdigtede. <a href="/eksempler">Se alle eksempler</a></p>
+    </div>
+  </section>
+
+  <section class="block" id="saadan" style="padding-top:0">
+    <div class="wrap">
+      <h2>Du ser siden, før du betaler</h2>
+      <ol class="steps">
+        <li><span class="n">1</span><h3>Du skriver til os</h3><p>Firmanavn, fag og by. Har du billeder af dit arbejde eller et logo, så send dem med.</p></li>
+        <li><span class="n">2</span><h3>Du får et udkast</h3><p>Vi bygger din side ud fra det, du sender, og det vi kan finde om dig.</p></li>
+        <li><span class="n">3</span><h3>Siden går live</h3><p>Siger du ja, betaler du 999,-, og siden kommer online på dit domæne. Ellers siger du bare nej tak.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block contact" id="kontakt">
+    <div class="wrap">
+      <div>
+        <h2>Skal vi lave et udkast til dig?</h2>
+        <p class="intro">Skriv dit firmanavn, dit fag og din by. Vi svarer typisk samme dag.</p>
+        <div class="actions">
+          <a class="btn btn-ink" href="mailto:blond.nikolaj@gmail.com?subject=Udkast%20til%20min%20hjemmeside&amp;body=Firmanavn%3A%0AFag%3A%0ABy%3A%0A%0A(Send%20gerne%20billeder%20af%20dit%20arbejde%20med)"><svg class="icon"><use href="#i-mail"/></svg>Skriv en mail</a>
+          <span class="mail">blond.nikolaj@gmail.com</span>
+        </div>
+        <p class="who">Vi er to iværksættere.</p>
+      </div>
+      <figure><img src="../makkerne/img/skelet.jpg" width="1400" height="933" alt="" loading="lazy"></figure>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Makkerne</span><span>Hjemmesider til håndværkere for 999,-</span></div></footer>
+
+<script>
+  // Before/after: the range input drives the split.
+  const compare = document.getElementById("compare");
+  const range = compare.querySelector("input");
+  const set = () => compare.style.setProperty("--pos", range.value + "%");
+  range.addEventListener("input", set);
+  set();
+</script>
+</body>
+</html>

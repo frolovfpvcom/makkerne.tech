@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Makkerne – forslag A: Tilbuddet</title>
+<!--
+  Forslag A: "Tilbuddet". Big work photo at the top with the whole offer written
+  as a quote on top of it. Strong blue, real photos of the trades, the example
+  sites shown on a laptop and a phone.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f4f7;
+    --paper: #ffffff;
+    --ink: #121826;
+    --muted: #5a6172;
+    --rule: #d9dce3;
+    --blue: #1d4ed8;
+    --blue-dark: #163aa3;
+    --navy: #0e1a33;
+    --yellow: #ffd43b;
+    --mono: "IBM Plex Mono", ui-monospace, monospace;
+    --sans: "IBM Plex Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--sans); }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+  .wrap { width: min(1180px, 100% - 32px); margin-inline: auto; }
+  h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: -0.015em; text-wrap: balance; }
+  p { margin: 0; }
+  .icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 12px 24px; border: 2px solid transparent; border-radius: 4px; font-weight: 700; text-decoration: none; transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease; }
+  .btn-yellow { background: var(--yellow); color: var(--ink); }
+  .btn-yellow:hover { background: #ffe066; }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-blue:hover { background: var(--blue-dark); }
+  .btn-ghost { border-color: rgba(255,255,255,0.7); color: #fff; }
+  .btn-ghost:hover { background: #fff; color: var(--ink); }
+
+  /* Header sits on the photo */
+  .top { position: absolute; inset: 0 0 auto; z-index: 2; color: #fff; }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.3rem; text-decoration: none; }
+  .logo b { display: grid; place-items: center; width: 34px; height: 34px; background: var(--yellow); color: var(--ink); border-radius: 4px; font-size: 1.1rem; }
+  .top nav { display: flex; gap: 28px; align-items: center; }
+  .top nav a:not(.btn) { text-decoration: none; opacity: 0.9; }
+  .top nav a:not(.btn):hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+  .top .btn { min-height: 44px; padding: 8px 18px; }
+  @media (max-width: 760px) { .top nav a:not(.btn) { display: none; } }
+
+  /* Hero */
+  .hero { position: relative; color: #fff; background: var(--navy); overflow: hidden; }
+  .hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 35%; }
+  .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(14,26,51,0.94) 0%, rgba(14,26,51,0.82) 42%, rgba(14,26,51,0.35) 100%); z-index: 1; }
+  .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(32px, 5vw, 72px); align-items: center; padding-block: 140px 88px; }
+  .hero h1 { font-size: clamp(2.6rem, 1.4rem + 4.6vw, 5rem); font-weight: 700; }
+  .hero h1 span { color: var(--yellow); white-space: nowrap; }
+  .hero .lead { margin-top: 20px; font-size: 1.25rem; color: #dfe5f2; max-width: 36ch; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .hero .small { margin-top: 16px; color: #c3cbe0; font-size: 0.98rem; display: flex; gap: 8px; align-items: center; }
+  .hero .small .icon { color: var(--yellow); width: 20px; height: 20px; }
+
+  .quote { position: relative; background: var(--paper); color: var(--ink); padding: clamp(22px, 3vw, 34px); border-radius: 6px; box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
+  .quote .stamp { position: absolute; top: -22px; right: 22px; background: var(--yellow); color: var(--ink); font-weight: 700; padding: 8px 14px; border-radius: 4px; transform: rotate(3deg); font-size: 0.95rem; }
+  .quote header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+  .quote header strong { font-size: 1.4rem; }
+  .quote header span { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+  .quote table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  .quote td { padding: 10px 0; border-bottom: 1px dashed var(--rule); }
+  .quote td + td { text-align: right; font-family: var(--mono); white-space: nowrap; padding-left: 16px; color: var(--blue); font-weight: 600; }
+  .quote tr.total td { border-bottom: 0; padding-top: 16px; font-weight: 700; font-size: 1.15rem; vertical-align: baseline; }
+  .quote tr.total td + td { font-family: var(--sans); font-size: 2.4rem; color: var(--blue); }
+  .quote .terms { font-size: 0.92rem; color: var(--muted); }
+  @media (max-width: 920px) { .hero .wrap { grid-template-columns: 1fr; padding-top: 112px; } .hero::before { background: linear-gradient(180deg, rgba(14,26,51,0.9), rgba(14,26,51,0.78)); } }
+
+  /* Blue band */
+  .band { background: var(--blue); color: #fff; }
+  .band ul { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .band li { display: flex; gap: 14px; align-items: center; padding: 22px 18px; font-weight: 600; }
+  .band li + li { border-left: 1px solid rgba(255,255,255,0.25); }
+  .band .icon { width: 30px; height: 30px; color: var(--yellow); }
+  @media (max-width: 920px) { .band ul { grid-template-columns: 1fr 1fr; } .band li:nth-child(3) { border-left: 0; } .band li:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,0.25); } }
+  @media (max-width: 480px) { .band li { padding: 16px 10px; font-size: 0.95rem; gap: 10px; } .band .icon { width: 24px; height: 24px; } }
+
+  section.block { padding-block: clamp(64px, 9vw, 120px); }
+  .block h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.2rem); font-weight: 700; max-width: 20ch; }
+  .block .intro { margin-top: 12px; color: var(--muted); max-width: 58ch; font-size: 1.1rem; }
+
+  /* Trades */
+  .trades { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .trades li { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 3 / 4; background: var(--navy); }
+  .trades img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms ease; }
+  .trades li:hover img { transform: scale(1.04); }
+  .trades span { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 16px 16px; background: linear-gradient(transparent, rgba(14,26,51,0.88)); color: #fff; font-weight: 700; font-size: 1.2rem; }
+  @media (max-width: 760px) { .trades { grid-template-columns: 1fr 1fr; } }
+
+  /* Examples on devices */
+  .ex { background: #e6ecfb; }
+  .ex-list { list-style: none; margin: 48px 0 0; padding: 0; display: grid; gap: clamp(48px, 7vw, 96px); }
+  .ex-item { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+  .ex-item:nth-child(even) .devices { order: 2; }
+  .devices { position: relative; display: block; padding-bottom: 6%; }
+  .laptop { background: #1c2333; border-radius: 10px 10px 0 0; padding: 12px 12px 0; }
+  .laptop img { aspect-ratio: 16 / 10; width: 100%; object-fit: cover; object-position: top left; border-radius: 3px 3px 0 0; }
+  .laptop-base { height: 14px; margin-inline: -4%; background: linear-gradient(#c9ced9, #9aa1b0); border-radius: 0 0 10px 10px; }
+  .phone { position: absolute; right: -2%; bottom: 0; width: 24%; background: #1c2333; border-radius: 18px; padding: 6px; box-shadow: 0 14px 30px rgba(14,26,51,0.3); }
+  .phone img { aspect-ratio: 9 / 18; width: 100%; object-fit: cover; object-position: top; border-radius: 13px; }
+  .ex-item h3 { font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem); }
+  .ex-item .where { margin-top: 4px; color: var(--blue); font-weight: 600; }
+  .ex-item ul { margin: 16px 0 0; padding: 0; list-style: none; }
+  .ex-item ul li { display: flex; gap: 10px; align-items: flex-start; margin-top: 8px; }
+  .ex-item ul .icon { color: var(--blue); margin-top: 2px; width: 20px; height: 20px; }
+  .ex-item .btn { margin-top: 22px; }
+  .ex .note { margin-top: 48px; color: var(--muted); font-size: 0.95rem; }
+  .ex .note a { color: var(--blue); font-weight: 700; }
+  @media (max-width: 860px) { .ex-item { grid-template-columns: 1fr; } .ex-item:nth-child(even) .devices { order: 0; } }
+
+  /* Steps */
+  .steps { list-style: none; margin: 44px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; counter-reset: s; }
+  .steps li { background: var(--paper); border-radius: 6px; padding: 28px; border-top: 5px solid var(--blue); }
+  .steps li::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--yellow); font-weight: 700; font-size: 1.2rem; }
+  .steps h3 { margin-top: 16px; font-size: 1.35rem; }
+  .steps p { margin-top: 8px; color: var(--muted); }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+
+  .faq { margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .faq details { border-bottom: 1px solid var(--rule); }
+  .faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 60px; padding-block: 12px; font-weight: 600; font-size: 1.05rem; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-size: 1.5rem; color: var(--blue); }
+  .faq details[open] summary::after { content: "–"; }
+  .faq details p { padding-bottom: 18px; color: var(--muted); }
+  @media (max-width: 860px) { .faq { grid-template-columns: 1fr; } }
+
+  /* Contact */
+  .contact { background: var(--blue); color: #fff; }
+  .contact .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
+  .contact .intro { color: #dbe4ff; }
+  .contact .actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 28px; }
+  .contact .mail { font-family: var(--mono); color: #dbe4ff; word-break: break-all; }
+  .contact .who { margin-top: 18px; font-weight: 600; }
+  .contact figure { margin: 0; border-radius: 6px; overflow: hidden; aspect-ratio: 4 / 3; }
+  .contact figure img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 860px) { .contact .wrap { grid-template-columns: 1fr; } }
+
+  footer { background: var(--navy); color: #aab3c8; padding-block: 24px; font-size: 0.92rem; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><b>M</b>Makkerne</a>
+    <nav aria-label="Menu">
+      <a href="#eksempler">Eksempler</a>
+      <a href="#saadan">Sådan foregår det</a>
+      <a href="#spoergsmaal">Spørgsmål</a>
+      <a class="btn btn-yellow" href="#kontakt">Få et udkast</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <img src="../makkerne/img/murer-work.jpg" width="1400" height="933" alt="" fetchpriority="high">
+    <div class="wrap">
+      <div>
+        <h1>Vi laver din hjemmeside for <span>999,-</span></h1>
+        <p class="lead">Vi skriver teksterne, sætter domænet op og gør siden klar til telefonen og Google. Du skal ikke tænke mere over det.</p>
+        <div class="actions">
+          <a class="btn btn-yellow" href="#kontakt">Få et udkast</a>
+          <a class="btn btn-ghost" href="#eksempler">Se eksempler</a>
+        </div>
+        <p class="small"><svg class="icon"><use href="#i-eye"/></svg>Du ser din side først og betaler kun, hvis du vil beholde den.</p>
+      </div>
+
+      <div class="quote" role="group" aria-label="Det får du for 999 kroner">
+        <span class="stamp">Intet abonnement</span>
+        <header><strong>Tilbud</strong><span>Hjemmeside til dit firma</span></header>
+        <table>
+          <tr><td>Tekster skrevet til dit fag</td><td>inkl.</td></tr>
+          <tr><td>Dit logo og billeder af dit arbejde</td><td>inkl.</td></tr>
+          <tr><td>Ring-knap og tilbudsformular</td><td>inkl.</td></tr>
+          <tr><td>Virker på telefonen</td><td>inkl.</td></tr>
+          <tr><td>Klar til Google</td><td>inkl.</td></tr>
+          <tr><td>Domæne og hængelås sat op</td><td>inkl.</td></tr>
+          <tr class="total"><td>I alt, én gang</td><td>999,-</td></tr>
+        </table>
+        <p class="terms">Du betaler kun, hvis du siger ja til siden.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="band">
+    <ul class="wrap">
+      <li><svg class="icon"><use href="#i-pen"/></svg>Vi skriver teksterne</li>
+      <li><svg class="icon"><use href="#i-globe"/></svg>Vi sætter domænet op</li>
+      <li><svg class="icon"><use href="#i-phone"/></svg>Virker på telefonen</li>
+      <li><svg class="icon"><use href="#i-search"/></svg>Klar til Google</li>
+    </ul>
+  </div>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Til dig, der arbejder med hænderne</h2>
+      <p class="intro">Vi laver kun sider til håndværkere. Derfor ved vi, hvad dine kunder leder efter: hvad du laver, hvor du kører, og hvordan de får fat i dig.</p>
+      <ul class="trades">
+        <li><img src="../makkerne/img/vvs-work.jpg" width="1400" height="933" alt="VVS'er arbejder på et badeværelse" loading="lazy"><span>VVS</span></li>
+        <li><img src="../makkerne/img/tomrer-work.jpg" width="1400" height="933" alt="Tømrer med værktøjsbælte" loading="lazy"><span>Tømrer</span></li>
+        <li><img src="../makkerne/img/maler-work.jpg" width="1400" height="934" alt="Maler med rulle" loading="lazy"><span>Maler</span></li>
+        <li><img src="../makkerne/img/tag-work.jpg" width="1400" height="933" alt="Tegltag" loading="lazy"><span>Tag og murer</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block ex" id="eksempler">
+    <div class="wrap">
+      <h2>Sådan kan din side se ud</h2>
+      <p class="intro">Klik ind og prøv siderne, også på telefonen. Din egen side bliver lavet til dit firma, med dine billeder og dit område.</p>
+      <ul class="ex-list">
+        <li class="ex-item">
+          <a class="devices" href="/examples/vvs/" aria-label="Åbn Holm VVS">
+            <div class="laptop"><img src="../makkerne/img/vvs.jpg" width="1200" height="720" alt="Forsiden af Holm VVS på en computer" loading="lazy"></div>
+            <div class="laptop-base"></div>
+            <div class="phone"><img src="../makkerne/img/vvs-m.jpg" width="450" height="1000" alt="" loading="lazy"></div>
+          </a>
+          <div>
+            <h3>Holm VVS</h3>
+            <p class="where">VVS i Herlev</p>
+            <ul>
+              <li><svg class="icon"><use href="#i-check"/></svg>Døgnvagt og ring-knap helt i toppen</li>
+              <li><svg class="icon"><use href="#i-check"/></svg>Typiske priser på det, der oftest går galt</li>
+              <li><svg class="icon"><use href="#i-check"/></svg>Tjek om de kører til dit postnummer</li>
+            </ul>
+            <a class="btn btn-blue" href="/examples/vvs/">Se siden</a>
+          </div>
+        </li>
+        <li class="ex-item">
+          <a class="devices" href="/examples/tomrer/" aria-label="Åbn Egholm Tømrer">
+            <div class="laptop"><img src="../makkerne/img/tomrer.jpg" width="1200" height="720" alt="Forsiden af Egholm Tømrer på en computer" loading="lazy"></div>
+            <div class="laptop-base"></div>
+            <div class="phone"><img src="../makkerne/img/tomrer-m.jpg" width="450" height="1000" alt="" loading="lazy"></div>
+          </a>
+          <div>
+            <h3>Egholm Tømrer</h3>
+            <p class="where">Tømrer i Roskilde</p>
+            <ul>
+              <li><svg class="icon"><use href="#i-check"/></svg>Store billeder af arbejdet</li>
+              <li><svg class="icon"><use href="#i-check"/></svg>Projekter man kan filtrere</li>
+              <li><svg class="icon"><use href="#i-check"/></svg>Book en besigtigelse</li>
+            </ul>
+            <a class="btn btn-blue" href="/examples/tomrer/">Se siden</a>
+          </div>
+        </li>
+        <li class="ex-item">
+          <a class="devices" href="/examples/tag/" aria-label="Åbn Tagværk">
+            <div class="laptop"><img src="../makkerne/img/tag.jpg" width="1200" height="720" alt="Forsiden af Tagværk på en computer" loading="lazy"></div>
+            <div class="laptop-base"></div>
+            <div class="phone"><img src="../makkerne/img/tag-m.jpg" width="450" height="1000" alt="" loading="lazy"></div>
+          </a>
+          <div>
+            <h3>Tagværk</h3>
+            <p class="where">Tag og tømrer på Sjælland</p>
+            <ul>
+              <li><svg class="icon"><use href="#i-check"/></svg>Tilbudsformular lige i toppen</li>
+              <li><svg class="icon"><use href="#i-check"/></svg>Vælg tagtype med pris og levetid</li>
+              <li><svg class="icon"><use href="#i-check"/></svg>Afbetaling forklaret enkelt</li>
+            </ul>
+            <a class="btn btn-blue" href="/examples/tag/">Se siden</a>
+          </div>
+        </li>
+      </ul>
+      <p class="note">Firmaerne er opdigtede. <a href="/eksempler">Se alle eksempler</a></p>
+    </div>
+  </section>
+
+  <section class="block" id="saadan">
+    <div class="wrap">
+      <h2>Du ser siden, før du betaler</h2>
+      <p class="intro">Ingen møder og ingen lange mails. Du passer dit arbejde, vi klarer resten.</p>
+      <ol class="steps">
+        <li><h3>Du skriver til os</h3><p>Send dit firmanavn, dit fag og din by. Har du billeder af dit arbejde eller et logo, så send dem med.</p></li>
+        <li><h3>Du får et udkast</h3><p>Vi bygger et udkast til din side ud fra det, du sender, og det vi kan finde om dig.</p></li>
+        <li><h3>Siden går live</h3><p>Du betaler 999,-, og vi sætter siden online på dit domæne. Vil du ikke have den, siger du bare nej tak.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="spoergsmaal" style="padding-top:0">
+    <div class="wrap">
+      <h2>Det bliver vi tit spurgt om</h2>
+      <div class="faq">
+        <details><summary>Hvordan er det så billigt?</summary><p>Vi er to mand uden kontor, sælgere eller mellemled. Siderne er enkle og fokuserede, så vi kan lave dem hurtigt.</p></details>
+        <details><summary>Er der binding?</summary><p>Nej. Du betaler 999,- én gang. Det eneste, du selv betaler løbende, er dit domæne, direkte til udbyderen.</p></details>
+        <details><summary>Jeg har ikke tid til at skrive tekster</summary><p>Det skal du heller ikke. Fortæl os i en mail, hvad du laver, så skriver vi det.</p></details>
+        <details><summary>Jeg har allerede en hjemmeside</summary><p>Så laver vi en ny, der er hurtigere og nemmere at ringe fra, og flytter dit domæne over.</p></details>
+        <details><summary>Hvor kommer forespørgslerne hen?</summary><p>Direkte i din mail, så du kan ringe kunden op, når du har en pause.</p></details>
+        <details><summary>Kan jeg ændre noget bagefter?</summary><p>Ja. Når siden er live, kan du altid skrive til os, hvis noget skal opdateres.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block contact" id="kontakt">
+    <div class="wrap">
+      <div>
+        <h2>Skal vi lave et udkast til dig?</h2>
+        <p class="intro">Skriv dit firmanavn, dit fag og din by. Vi svarer typisk samme dag.</p>
+        <div class="actions">
+          <a class="btn btn-yellow" href="mailto:blond.nikolaj@gmail.com?subject=Udkast%20til%20min%20hjemmeside&amp;body=Firmanavn%3A%0AFag%3A%0ABy%3A%0A%0A(Send%20gerne%20billeder%20af%20dit%20arbejde%20med)"><svg class="icon"><use href="#i-mail"/></svg>Skriv en mail</a>
+          <span class="mail">blond.nikolaj@gmail.com</span>
+        </div>
+        <p class="who">Vi er to iværksættere.</p>
+      </div>
+      <figure><img src="../makkerne/img/skelet.jpg" width="1400" height="933" alt="" loading="lazy"></figure>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Makkerne</span><span>Hjemmesider til håndværkere for 999,-</span></div>
+</footer>
+
+</body>
+</html>

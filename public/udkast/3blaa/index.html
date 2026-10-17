@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Draft for the client: keep it out of search engines -->
+<meta name="robots" content="noindex, nofollow">
+<title>JAH &amp; De Blå Mænd – VVS, kloak og murer i København siden 1942</title>
+<meta name="description" content="VVS, el, kloak, murer og ejendomsservice i Storkøbenhavn og på Sjælland. Faste priser på siden, VVS-Vagt døgnet rundt på 38 89 08 89. Siden 1942.">
+<meta property="og:title" content="JAH & De Blå Mænd – håndværkere i København siden 1942">
+<meta property="og:description" content="VVS, kloak, murer og ejendomsservice. Priserne står på siden. VVS-Vagt døgnet rundt.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="da_DK">
+<meta property="og:image" content="https://makkerne-tech.vercel.app/udkast/3blaa/img/hero.jpg">
+<meta name="theme-color" content="#181e38">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23024995'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='15' font-weight='700' fill='%23fff'%3EJAH%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+<!--
+  PLAN
+  an old Copenhagen trades house (since 1942) with nothing to hide - like a well-kept price list
+  in a shop window. Their logo with the three running blue men leads; their own photos are framed as prints.
+  Fonts: Libre Caslon Text (headings) + Source Sans 3 (body).
+  Palette from the logo: navy #181e38 as ink and dark bands, blue #024995 as the one accent, raspberry
+  #b61449 only for "akut". Warm whitewash background.
+  Sections: akut strip · header with logo · hero (text + brass valve print) · info strip between double rules
+  (visit price, VVS-Vagt, since 1942) · services (VVS band + alternating rows) · rate card · akut band ·
+  timeline · guarantee (trowel print + Byg Garanti/Tekniq) · FAQ · contact · footer with CVR.
+  Photos are the ones on 3blaa.dk, resized. Not used: posed stock people in hard hats and two AC pressure-gauge
+  photos (not Danish VVS work).
+  All facts come from 3blaa.dk (October 2026).
+-->
+
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --paper: #fbfaf6;
+    --ink: #181e38;
+    --muted: #565b6b;
+    --rule: #d8d2c4;
+    --accent: #024995;
+    --accent-hover: #013a78;
+    --on-accent: #f6f4ee;
+    --navy: #181e38;
+    --on-navy: #f1efe8;
+    --on-navy-muted: #b4bccd;
+    --alert: #b61449;
+
+    --font-head: "Libre Caslon Text", Georgia, "Times New Roman", serif;
+    --font-body: "Source Sans 3", system-ui, sans-serif;
+    --step-0: 1.0625rem;
+    --step-1: 1.25rem;
+    --step-2: clamp(1.45rem, 1.2rem + 1vw, 1.9rem);
+    --step-3: clamp(1.9rem, 1.4rem + 2.2vw, 2.9rem);
+    --step-4: clamp(2.4rem, 1.5rem + 3.8vw, 4.1rem);
+
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+    --s-7: 48px; --s-8: 64px; --s-9: 96px;
+    --section: clamp(72px, 9vw, 140px);
+
+    --radius: 3px;
+    --ease: cubic-bezier(0.23, 1, 0.32, 1);
+    --header-h: 84px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: var(--step-0); line-height: 1.6; }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: var(--font-head); font-weight: 700; line-height: 1.12; letter-spacing: -0.01em; margin: 0; }
+  h2 { font-size: var(--step-3); }
+  h3 { font-size: var(--step-2); }
+  p { margin: 0; }
+  .wrap { width: min(1140px, 100% - 2 * var(--s-5)); margin-inline: auto; }
+  .muted { color: var(--muted); }
+  .num { font-variant-numeric: tabular-nums; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .skip { position: absolute; left: var(--s-4); top: -100px; z-index: 100; background: var(--ink); color: var(--bg); padding: var(--s-3) var(--s-4); border-radius: var(--radius); }
+  .skip:focus { top: var(--s-4); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  .on-navy :focus-visible, .akut-strip :focus-visible { outline-color: var(--on-navy); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+    min-height: 48px; padding: var(--s-3) var(--s-5); border-radius: var(--radius); border: 1.5px solid transparent;
+    font: 600 var(--step-0)/1.2 var(--font-body); text-decoration: none; cursor: pointer;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease), border-color 150ms var(--ease), transform 120ms var(--ease);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--on-accent); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-ghost { border-color: var(--ink); color: var(--ink); }
+  .btn-ghost:hover { background: var(--ink); color: var(--bg); }
+  .icon { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+  .double { border: 0; border-top: 3px double var(--ink); margin: 0; }
+  .print { background: var(--paper); padding: 10px; border: 1px solid var(--rule); box-shadow: 0 1px 2px rgba(24,30,56,0.06); margin: 0; }
+  .print img { width: 100%; object-fit: cover; filter: saturate(0.85) sepia(0.06) contrast(0.98); }
+
+  /* Akut strip */
+  .akut-strip { background: var(--navy); color: var(--on-navy); font-size: 0.95rem; }
+  .akut-strip .wrap { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); min-height: 40px; }
+  .akut-strip a { text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: var(--s-2); min-height: 40px; }
+  .akut-strip a:hover { text-decoration: underline; }
+  .akut-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff6f95; flex: none; }
+  .akut-strip .where { color: var(--on-navy-muted); }
+  @media (max-width: 520px) { .akut-strip .where { display: none; } }
+
+  /* Header */
+  .site-header { position: sticky; top: 0; z-index: 50; background: #ffffff; border-bottom: 1px solid var(--rule); }
+  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); min-height: var(--header-h); }
+  .logo { display: inline-flex; align-items: center; min-height: 48px; }
+  .logo img { height: 54px; width: auto; }
+  .nav { display: flex; gap: var(--s-1); }
+  .nav a { text-decoration: none; padding: var(--s-2) var(--s-3); border-radius: var(--radius); color: var(--muted); font-weight: 600; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+  .nav a:hover { color: var(--ink); background: var(--bg); }
+  .header-cta { display: flex; align-items: center; gap: var(--s-4); }
+  .header-phone { text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: var(--s-2); white-space: nowrap; min-height: 44px; }
+  .menu-btn { display: none; width: 48px; height: 48px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; color: var(--ink); cursor: pointer; align-items: center; justify-content: center; }
+  .mobile-nav { display: none; }
+  @media (max-width: 960px) {
+    .nav, .header-cta .btn { display: none; }
+    .menu-btn { display: inline-flex; }
+    .mobile-nav[data-open="true"] { display: block; border-top: 1px solid var(--rule); padding-bottom: var(--s-5); }
+    .mobile-nav ul { list-style: none; margin: 0; padding: 0; }
+    .mobile-nav a { display: flex; align-items: center; min-height: 52px; text-decoration: none; font-weight: 600; font-size: 1.15rem; border-bottom: 1px solid var(--rule); }
+    .mobile-nav .btn { margin-top: var(--s-5); width: 100%; }
+  }
+  @media (max-width: 520px) {
+    .logo img { height: 40px; }
+    .header-phone span { display: none; }
+    .header-phone { width: 48px; height: 48px; justify-content: center; border: 1px solid var(--rule); border-radius: var(--radius); }
+  }
+
+  /* Hero */
+  .hero { padding-block: clamp(40px, 6vw, 96px); }
+  .hero .wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .hero h1 { font-size: var(--step-4); max-width: 13ch; }
+  .hero .lead { font-size: var(--step-1); color: var(--muted); margin-top: var(--s-5); max-width: 44ch; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+  .hero .reassure { margin-top: var(--s-4); font-size: 0.95rem; color: var(--muted); }
+  .hero .reassure a { color: var(--accent); font-weight: 600; }
+  .hero .print { max-width: 430px; justify-self: end; transform: rotate(-0.6deg); }
+  .hero .print img { aspect-ratio: 24 / 25; }
+  @media (max-width: 860px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .hero .print { justify-self: start; max-width: 100%; transform: none; }
+    .hero .print img { aspect-ratio: 4 / 3; }
+  }
+
+  /* Info strip */
+  .info { background: var(--paper); }
+  .info-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; }
+  .info-grid > div { padding: var(--s-6) var(--s-6) var(--s-6) 0; }
+  .info-grid > div + div { padding-left: var(--s-6); border-left: 1px solid var(--rule); }
+  .info .label { font-size: 0.95rem; font-weight: 600; color: var(--muted); }
+  .info .big { font-family: var(--font-head); font-size: var(--step-2); font-weight: 700; line-height: 1.15; margin-top: var(--s-2); }
+  .info .big small { font-family: var(--font-body); font-size: 1rem; font-weight: 400; color: var(--muted); }
+  .info .big a { text-decoration: none; }
+  .info .big a:hover { text-decoration: underline; }
+  .info p.sub { margin-top: var(--s-2); color: var(--muted); }
+  .info p.sub a { color: var(--accent); font-weight: 600; }
+  @media (max-width: 860px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .info-grid > div { padding: var(--s-5) 0; }
+    .info-grid > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+  }
+
+  /* Services */
+  .section { padding-block: var(--section); }
+  .section-head { max-width: 640px; margin-bottom: var(--s-8); }
+  .section-head p { margin-top: var(--s-4); color: var(--muted); }
+  .vvs .print img { aspect-ratio: 8 / 3; }
+  .vvs-body { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); margin-top: var(--s-6); }
+  .vvs-body h3 { font-size: var(--step-3); }
+  .vvs-body p { margin-top: var(--s-4); color: var(--muted); max-width: 52ch; }
+  .vvs-body .btn { margin-top: var(--s-6); }
+  .ledger { list-style: none; margin: 0; padding: 0; border-top: 3px double var(--ink); }
+  .ledger li { padding-block: var(--s-4); border-bottom: 1px solid var(--rule); }
+  .ledger strong { display: block; font-family: var(--font-head); font-size: var(--step-1); }
+  .ledger span { display: block; color: var(--muted); margin-top: 2px; }
+  .ledger a { color: var(--accent); font-weight: 600; }
+  @media (max-width: 760px) { .vvs-body { grid-template-columns: 1fr; } .vvs .print img { aspect-ratio: 16 / 9; } }
+
+  .rows { display: grid; gap: clamp(56px, 8vw, 112px); margin-top: clamp(64px, 9vw, 128px); }
+  .row { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+  .row:nth-child(even) .media { order: 2; }
+  .row .print img { aspect-ratio: 4 / 3; }
+  .row h3 { font-size: var(--step-3); }
+  .row p { margin-top: var(--s-4); color: var(--muted); max-width: 50ch; }
+  .row p a { color: var(--accent); font-weight: 600; }
+  .tags { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); padding: 0; list-style: none; }
+  .tags li { border: 1px solid var(--rule); background: var(--paper); border-radius: var(--radius); padding: 2px var(--s-3); font-size: 0.95rem; }
+  /* Two prints laid on top of each other */
+  .duo { position: relative; padding-bottom: 18%; }
+  .duo .print + .print { position: absolute; right: -4%; bottom: 0; width: 42%; transform: rotate(1.2deg); }
+  .duo .print + .print img { aspect-ratio: 1; }
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 1fr; }
+    .row:nth-child(even) .media { order: 0; }
+    .duo .print + .print { right: 0; }
+  }
+
+  /* Rate card */
+  .rates { background: var(--paper); border-block: 3px double var(--ink); }
+  .rate-table { width: 100%; border-collapse: collapse; }
+  .rate-table th, .rate-table td { text-align: left; padding: var(--s-4) var(--s-4) var(--s-4) 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .rate-table thead th { font-family: var(--font-head); font-size: var(--step-1); font-weight: 700; border-bottom: 3px double var(--ink); padding-bottom: var(--s-3); }
+  .rate-table thead th small { display: block; font-family: var(--font-body); font-size: 0.9rem; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .rate-table tbody th { font-weight: 600; width: 34%; }
+  .rate-table td { font-variant-numeric: tabular-nums; }
+  .rate-table td strong { font-family: var(--font-head); font-size: var(--step-1); }
+  .rate-note { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); margin-top: var(--s-7); }
+  .rate-note h3 { font-size: var(--step-1); }
+  .rate-note ul { margin: var(--s-3) 0 0; padding-left: 1.1em; color: var(--muted); }
+  .rate-note li { margin-bottom: var(--s-1); }
+  .stamp { margin-top: var(--s-6); font-size: 0.9rem; color: var(--muted); }
+  @media (max-width: 760px) {
+    .rate-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .rate-table { min-width: 560px; }
+    .rate-note { grid-template-columns: 1fr; gap: var(--s-5); }
+  }
+
+  /* Akut band */
+  .akut-band { background: var(--navy); color: var(--on-navy); }
+  .akut-band .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(32px, 5vw, 80px); align-items: center; padding-block: var(--section); }
+  .akut-band .tag { display: inline-flex; align-items: center; gap: var(--s-2); font-weight: 600; color: #ffb3c6; }
+  .akut-band h2 { margin-top: var(--s-4); }
+  .akut-band p { color: var(--on-navy-muted); margin-top: var(--s-5); max-width: 52ch; }
+  .akut-number { font-family: var(--font-head); font-size: clamp(2.4rem, 1.6rem + 3.4vw, 4.2rem); font-weight: 700; line-height: 1; text-decoration: none; display: inline-block; border-bottom: 3px double var(--on-navy); padding-bottom: 6px; }
+  .akut-number:hover { color: #ffffff; }
+  .akut-side p { margin-top: var(--s-4); }
+  .akut-side a.plain { color: var(--on-navy); font-weight: 600; }
+  @media (max-width: 860px) { .akut-band .wrap { grid-template-columns: 1fr; } }
+
+  /* Timeline */
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { display: grid; grid-template-columns: 9rem 1fr; gap: var(--s-6); padding-block: var(--s-6); border-top: 1px solid var(--rule); }
+  .timeline li:first-child { border-top: 3px double var(--ink); }
+  .timeline li:last-child { border-bottom: 1px solid var(--rule); }
+  .timeline .year { font-family: var(--font-head); font-size: var(--step-3); font-weight: 700; line-height: 1; color: var(--accent); }
+  .timeline h3 { font-size: var(--step-1); }
+  .timeline p { color: var(--muted); margin-top: var(--s-2); max-width: 60ch; }
+  @media (max-width: 600px) { .timeline li { grid-template-columns: 1fr; gap: var(--s-2); } }
+
+  /* Guarantee */
+  .guarantee { background: var(--paper); border-top: 3px double var(--ink); }
+  .guarantee .grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .guarantee .print img { aspect-ratio: 3 / 4; object-position: 50% 45%; }
+  .schemes { display: grid; gap: var(--s-6); margin-top: var(--s-6); }
+  .scheme { display: grid; grid-template-columns: 112px 1fr; gap: var(--s-5); align-items: start; padding-top: var(--s-5); border-top: 1px solid var(--rule); }
+  .scheme img { width: 112px; height: 56px; object-fit: contain; background: #ffffff; border: 1px solid var(--rule); }
+  .scheme h3 { font-size: var(--step-1); }
+  .scheme p { margin-top: var(--s-2); color: var(--muted); }
+  .scheme .cvr { font-size: 0.95rem; }
+  @media (max-width: 760px) {
+    .guarantee .grid { grid-template-columns: 1fr; }
+    .guarantee .print { max-width: 360px; }
+    .scheme { grid-template-columns: 1fr; gap: var(--s-3); }
+  }
+
+  /* FAQ */
+  .faq { display: grid; grid-template-columns: 1fr 1.6fr; gap: clamp(32px, 5vw, 80px); }
+  .faq details { border-top: 1px solid var(--rule); }
+  .faq details:last-child { border-bottom: 1px solid var(--rule); }
+  .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--s-5); padding: var(--s-5) 0; font-weight: 600; font-size: var(--step-1); min-height: 48px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary .icon { transition: transform 200ms var(--ease); color: var(--muted); }
+  .faq details[open] summary .icon { transform: rotate(45deg); }
+  .faq details p { padding-bottom: var(--s-5); color: var(--muted); max-width: 62ch; }
+  @media (max-width: 860px) { .faq { grid-template-columns: 1fr; } }
+
+  /* Contact */
+  .contact .wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(32px, 6vw, 96px); }
+  @media (max-width: 860px) { .contact .wrap { grid-template-columns: 1fr; } }
+  form { display: grid; gap: var(--s-4); margin-top: var(--s-6); }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  @media (max-width: 600px) { .row-2 { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: var(--s-1); }
+  .req { color: var(--alert); }
+  input, select, textarea { width: 100%; font: inherit; color: var(--ink); background: #ffffff; border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--s-3) var(--s-4); transition: border-color 150ms var(--ease); }
+  input, select { height: 52px; }
+  input:hover, select:hover, textarea:hover { border-color: #b4ab98; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  textarea { min-height: 120px; resize: vertical; }
+  .field-error { color: var(--alert); font-size: 0.9rem; margin-top: var(--s-1); }
+  [aria-invalid="true"] { border-color: var(--alert); }
+  .form-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4); }
+  .form-foot small { color: var(--muted); max-width: 40ch; }
+  .form-status { padding: var(--s-4); border-radius: var(--radius); background: var(--paper); border-left: 3px solid var(--accent); }
+  .form-status[hidden] { display: none; }
+  .btn[aria-busy="true"] { opacity: 0.7; pointer-events: none; }
+  .places { display: grid; gap: var(--s-6); align-content: start; }
+  .place { border-top: 3px double var(--ink); padding-top: var(--s-4); }
+  .place.akut { border-top: 3px solid var(--alert); }
+  .place h3 { font-size: var(--step-1); }
+  .place address { font-style: normal; color: var(--muted); margin-top: var(--s-2); }
+  .place a { font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; min-height: 40px; overflow-wrap: anywhere; }
+  .place a:hover { text-decoration: underline; }
+
+  /* Footer */
+  .site-footer { background: #ffffff; border-top: 1px solid var(--rule); font-size: 0.95rem; color: var(--muted); }
+  .site-footer .wrap { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: var(--s-7); padding-block: var(--s-8) var(--s-7); }
+  .site-footer img { height: 56px; width: auto; }
+  .site-footer strong { color: var(--ink); font-family: var(--font-head); font-size: 1.1rem; }
+  .site-footer ul { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid; gap: var(--s-1); }
+  .site-footer a { color: var(--ink); text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+  .site-footer .legal { grid-column: 1 / -1; border-top: 1px solid var(--rule); padding-top: var(--s-5); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3); }
+  @media (max-width: 760px) { .site-footer .wrap { grid-template-columns: 1fr; gap: var(--s-6); } }
+
+  /* ---------- Top: akut bar, header, hero with their photo, the four blue men ---------- */
+  .a-bar { background: #a30039; color: #ffffff; font-size: 0.95rem; }
+  .a-bar .wrap { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); min-height: 40px; }
+  .a-bar a { display: inline-flex; align-items: center; gap: var(--s-3); min-height: 40px; text-decoration: none; }
+  .a-bar a:hover { text-decoration: underline; }
+  .a-bar strong { font-weight: 600; }
+  .a-bar .where { opacity: 0.85; }
+  @media (max-width: 600px) { .a-bar .where { display: none; } .a-bar .long { display: none; } }
+  @media (min-width: 601px) { .a-bar .short { display: none; } }
+
+  .h-hero { padding-block: clamp(40px, 6vw, 88px) clamp(40px, 5vw, 72px); }
+  .h-hero .wrap { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
+  .h-hero h1 { font-size: var(--step-4); max-width: 13ch; }
+  .h-hero .lead { font-size: var(--step-1); color: var(--muted); margin-top: var(--s-5); max-width: 44ch; }
+  .h-hero .actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+  .h-hero .reassure { margin-top: var(--s-4); font-size: 0.95rem; color: var(--muted); }
+  .h-hero .reassure a { color: var(--accent); font-weight: 600; }
+  .h-hero figure { margin: 0; }
+  .h-hero .print { transform: rotate(0.5deg); }
+  .h-hero .print img { aspect-ratio: 5 / 4; object-position: 42% 50%; }
+  .h-hero figcaption { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: right; }
+  @media (max-width: 860px) {
+    .h-hero .wrap { grid-template-columns: 1fr; }
+    .h-hero .print { transform: none; }
+    .h-hero .print img { aspect-ratio: 4 / 3; }
+  }
+
+  /* The four blue men, like a painted shop sign */
+  .men { padding-bottom: clamp(48px, 6vw, 88px); }
+  .men ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 3px double var(--ink); border-bottom: 1px solid var(--rule); }
+  .men li + li { border-left: 1px solid var(--rule); }
+  .men a { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--s-3); padding: var(--s-5) var(--s-3); text-decoration: none; height: 100%; transition: background-color 150ms var(--ease); }
+  .men a:hover { background: var(--paper); }
+  .men a:hover strong { text-decoration: underline; text-underline-offset: 4px; }
+  .men img { width: 104px; height: 104px; }
+  .men strong { display: block; font-family: var(--font-head); font-size: var(--step-1); font-weight: 700; color: var(--ink); }
+  .men span { display: block; margin-top: 2px; font-size: 0.95rem; color: var(--muted); }
+  @media (max-width: 1000px) {
+    .men ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .men li:nth-child(3) { border-left: 0; }
+    .men li:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  }
+  @media (max-width: 560px) {
+    .men ul { grid-template-columns: 1fr; }
+    .men li + li { border-left: 0; border-top: 1px solid var(--rule); }
+    .men a { display: grid; grid-template-columns: 72px 1fr; text-align: left; align-items: center; gap: var(--s-4); padding: var(--s-4) 0; }
+    .men img { width: 72px; height: 72px; }
+  }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+  .reveal.is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { transform: none; transition: opacity 400ms linear; }
+    .btn:active { transform: none; }
+    .faq summary .icon { transition: none; }
+  }
+</style>
+</head>
+
+<body>
+<a class="skip" href="#indhold">Spring til indhold</a>
+
+<div class="a-bar">
+  <div class="wrap">
+    <a href="tel:+4538890889"><strong>AKUT</strong><span class="long">Har du brug for VVS-Vagten? Ring døgnet rundt:</span><span class="short">VVS-Vagten:</span><strong class="num">38 89 08 89</strong></a>
+    <span class="where">Storkøbenhavn og Sjælland</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="#top"><img src="img/logo.png" width="640" height="264" alt="JAH &amp; De Blå Mænd A/S"></a>
+    <nav class="nav" aria-label="Hovedmenu">
+      <a href="#ydelser">Ydelser</a>
+      <a href="#priser">Priser</a>
+      <a href="#om-os">Om os</a>
+      <a href="#garanti">Garanti</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="header-cta">
+      <a class="header-phone num" href="tel:+4570252590" aria-label="Ring 70 25 25 90">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+        <span>70 25 25 90</span>
+      </a>
+      <a class="btn btn-primary" href="#kontakt">Bestil en håndværker</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobilmenu" aria-label="Åbn menu">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobilmenu" data-open="false">
+    <div class="wrap">
+      <ul>
+        <li><a href="#ydelser">Ydelser</a></li>
+        <li><a href="#priser">Priser</a></li>
+        <li><a href="#om-os">Om os</a></li>
+        <li><a href="#garanti">Garanti</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+      <a class="btn btn-primary" href="#kontakt">Bestil en håndværker</a>
+    </div>
+  </div>
+</header>
+
+<main id="indhold">
+
+  <!-- Hero: who and what, with their own photo framed as a print -->
+  <section class="h-hero" id="top" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <h1 id="hero-title">Håndværkere i København siden 1942</h1>
+        <p class="lead">VVS, el, kloak, murer og ejendomsservice for private, boligforeninger og erhverv. Vi skaber trygge rammer for kunder, leverandører og medarbejdere, og priserne står på siden.</p>
+        <div class="actions">
+          <a class="btn btn-primary num" href="tel:+4570252590">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+            Ring 70 25 25 90
+          </a>
+          <a class="btn btn-ghost" href="#priser">Se alle priser</a>
+        </div>
+        <p class="reassure">Eller <a href="#kontakt">skriv til os</a>, så kontakter vi dig hurtigst muligt.</p>
+      </div>
+      <figure>
+        <div class="print"><img src="img/hero.jpg" width="2000" height="750" alt="Montør i blåt arbejdstøj med beskyttelsesbriller og handsker" fetchpriority="high"></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- The four blue men from their logo, each leading to its trade -->
+  <nav class="men" aria-label="Vores fag">
+    <div class="wrap">
+      <ul>
+        <li><a href="#vvs"><img src="img/icon-vvs.png" width="245" height="245" alt=""><span><strong>VVS</strong><span>VVS-Vagt døgnet rundt</span></span></a></li>
+        <li><a href="#ejendomsservice"><img src="img/icon-ejendomsservice.png" width="245" height="245" alt=""><span><strong>Ejendomsservice</strong><span>Service- og nøgleaftaler</span></span></a></li>
+        <li><a href="#kloak"><img src="img/icon-kloak.png" width="245" height="245" alt=""><span><strong>Kloak</strong><span>Autoriserede kloakmestre</span></span></a></li>
+        <li><a href="#murer"><img src="img/icon-murer.png" width="245" height="245" alt=""><span><strong>Murer</strong><span>Bad, facader og tag</span></span></a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- Info strip -->
+  <section class="info" aria-label="Pris, vagt og firma">
+    <hr class="double">
+    <div class="wrap info-grid">
+      <div>
+        <p class="label">Et besøg i normal arbejdstid</p>
+        <p class="big num">1.481 kr. <small>+ materialer</small></p>
+        <p class="sub">Op til 1,5 times arbejde, køretid og administration. <a href="#priser">Alle priser</a></p>
+      </div>
+      <div>
+        <p class="label">VVS-Vagten, døgnet rundt</p>
+        <p class="big num"><a href="tel:+4538890889">38 89 08 89</a></p>
+        <p class="sub">Alle ugens dage, året rundt.</p>
+      </div>
+      <div>
+        <p class="label">Siden 1942</p>
+        <p class="big">Ca. 75 ansatte</p>
+        <p class="sub">Brønshøj og Nørrebro. Medlem af Byg Garanti og Tekniq.</p>
+      </div>
+    </div>
+    <hr class="double">
+  </section>
+
+  <!-- Services -->
+  <section class="section" id="ydelser" aria-labelledby="ydelser-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2 id="ydelser-title">Det klarer vi</h2>
+        <p>Store og små opgaver for private, andels- og ejerforeninger, boligselskaber og erhverv. Vi har lokalt lager og de mest brugte reservedele med i servicebilerne.</p>
+      </div>
+
+      <article class="vvs reveal" id="vvs" aria-labelledby="vvs-title">
+        <figure class="print"><img src="img/vvs.jpg" width="1600" height="600" alt="Montør samler et blankt vandrør med en rørtang" loading="lazy"></figure>
+        <div class="vvs-body">
+          <div>
+            <h3 id="vvs-title">VVS</h3>
+            <p>Vand, varme, sanitet og afløb. I dag bruger vi rør i rustfrit stål og svejste PEH-afløb, og de senere år har vi skiftet brugsvand og afløb i et stort antal beboelsesejendomme.</p>
+            <a class="btn btn-primary" href="#kontakt">Bestil en VVS'er</a>
+          </div>
+          <ul class="ledger">
+            <li><strong>VVS-Vagten</strong><span>Bemandet 24 timer i døgnet. En installatør vurderer opkaldet og aftaler et besøg, hvis det er nødvendigt. <a class="num" href="tel:+4538890889">38 89 08 89</a></span></li>
+            <li><strong>Vandskade</strong><span>Vi udbedrer vandskader, uanset om de skyldes et hul i taget eller et sprængt rør.</span></li>
+            <li><strong>Blikkenslager</strong><span>Tagrender og nedløb i zink og kobber fra vores eget pladeværksted, inddækninger og tagarbejde.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="rows">
+        <article class="row reveal" id="kloak">
+          <div class="media duo">
+            <figure class="print"><img src="img/kloak.jpg" width="1400" height="525" alt="Hænder samler et orange kloakrør" loading="lazy"></figure>
+            <figure class="print"><img src="img/tv-inspektion.jpg" width="900" height="938" alt="Skærm med TV-inspektion af et kloakrør" loading="lazy"></figure>
+          </div>
+          <div>
+            <h3>Kloak</h3>
+            <p>Vi er autoriserede kloakmestre. Vi renoverer og anlægger kloak og står for kontakten til myndigheder og forsikringsselskab.</p>
+            <ul class="tags"><li>TV-inspektion</li><li>Højtryksrensning</li><li>Nye kloakanlæg</li></ul>
+          </div>
+        </article>
+        <article class="row reveal" id="murer">
+          <div class="media">
+            <figure class="print"><img src="img/fliser.jpg" width="960" height="1000" alt="Murer lægger en klinke i fliseklæb" loading="lazy"></figure>
+          </div>
+          <div>
+            <h3>Murer</h3>
+            <p>Murermestre i København og på Sjælland, året rundt. Ring direkte til mureren på <a class="num" href="tel:+4570278031">70 27 80 31</a>.</p>
+            <ul class="tags"><li>Badeværelser</li><li>Fliser og klinker</li><li>Beton</li><li>Fugtskader</li><li>Facader</li><li>Tagskader</li><li>Om- og tilbygning</li></ul>
+          </div>
+        </article>
+        <article class="row reveal" id="ejendomsservice">
+          <div class="media">
+            <figure class="print"><img src="img/noegle.jpg" width="900" height="1069" alt="Nøglebrik holdes op mod en dørlås" loading="lazy"></figure>
+          </div>
+          <div>
+            <h3>Ejendomsservice</h3>
+            <p>Faste serviceaftaler for boligforeninger og ejendomme. Vi tilser varmeanlæg og tekniske installationer efter en fast plan, så fejl findes i tide.</p>
+            <p>Med en nøgleaftale har vi nøglerne til de tekniske rum, opbevaret i en alarmovervåget boks, så vi kan komme til uden at vente på administrationen.</p>
+            <ul class="tags"><li>Serviceaftaler</li><li>Nøgleaftale</li><li>Overvågning af varmecentral</li><li>Hovedentreprise</li></ul>
+          </div>
+        </article>
+        <article class="row reveal" id="el">
+          <div class="media">
+            <figure class="print"><img src="img/el.jpg" width="900" height="1069" alt="Elektriker afisolerer ledninger ved en samledåse" loading="lazy"></figure>
+          </div>
+          <div>
+            <h3>El</h3>
+            <p>Elarbejde udføres af De Blå Mænd ApS, som er medlem af Tekniqs garantiordning. Skriv eller ring, så finder vi en tid.</p>
+            <!-- TODO: add a short description of the electrician services they want to highlight -->
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rate card -->
+  <section class="section rates" id="priser" aria-labelledby="priser-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2 id="priser-title">Priserne står her</h2>
+        <p>Du kender prisen, før vi kommer. Alle priser er inklusive moms.</p>
+      </div>
+      <div class="rate-scroll reveal">
+        <table class="rate-table">
+          <caption class="muted" style="text-align:left; caption-side: bottom; padding-top: 12px;">Grundgebyret bortfalder, når en opgave tager mere end 1,5 time.</caption>
+          <thead>
+            <tr>
+              <th scope="col"><span class="sr-only">Pris</span></th>
+              <th scope="col">Normal arbejdstid</th>
+              <th scope="col">Døgnservice<small>Uden for normal arbejdstid</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Grundgebyr<br><span class="muted" style="font-weight:400">Op til 1,5 times arbejde inkl. køretid og administration</span></th>
+              <td><strong>1.481 kr.</strong><br><span class="muted">+ materialer</span></td>
+              <td><strong>4.854 kr.</strong><br><span class="muted">+ materialer</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Timepris over 1,5 time</th>
+              <td><strong>908 kr.</strong> pr. time</td>
+              <td><strong>1.815,50 kr.</strong> pr. time</td>
+            </tr>
+            <tr>
+              <th scope="row">Opstart over 1,5 time</th>
+              <td>Opstartsgebyr <strong>547,50 kr.</strong></td>
+              <td>Rådighedstillæg <strong>1.988 kr.</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rate-note reveal">
+        <div>
+          <h3>Ikke med i prisen</h3>
+          <ul><li>Kørsel</li><li>Miljøtillæg</li><li>Materialer</li></ul>
+        </div>
+        <div>
+          <h3>Tillæg, der kan komme</h3>
+          <ul class="num">
+            <li>Servicevogn: 187 kr. pr. påbegyndt time</li>
+            <li>Kvalitetssikring: 128,50 kr. pr. faktura</li>
+            <li>Gasanmeldelse til myndighederne: 630,50 kr. pr. anmeldelse</li>
+          </ul>
+          <p class="muted" style="margin-top:8px">Tillæg afhænger af den konkrete opgave.</p>
+        </div>
+      </div>
+      <!-- TODO: confirm these are still the current prices before going live -->
+      <p class="stamp">Priser senest gennemgået: oktober 2026</p>
+    </div>
+  </section>
+
+  <!-- Akut band -->
+  <section class="akut-band on-navy" aria-labelledby="akut-title">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="tag"><span class="akut-dot" aria-hidden="true"></span>Akut VVS</span>
+        <h2 id="akut-title">Vand på gulvet en søndag nat? Vi tager telefonen.</h2>
+        <p>VVS-Vagten er bemandet 24 timer, alle ugens dage, året rundt. En VVS-installatør vurderer dit opkald, og bliver det nødvendigt, aftaler vi et besøg, så problemet bliver løst hurtigst muligt.</p>
+      </div>
+      <div class="akut-side reveal">
+        <a class="akut-number num" href="tel:+4538890889">38 89 08 89</a>
+        <p class="num">Døgnservice: grundgebyr 4.854 kr. + materialer. <a class="plain" href="#priser">Se alle priser</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- History -->
+  <section class="section" id="om-os" aria-labelledby="om-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2 id="om-title">To gamle københavnske firmaer, ét hus</h2>
+        <p>Vi er en af Københavns ældste håndværksvirksomheder. I dag samler vi flere fag under samme tag, så du kun skal ringe ét sted.</p>
+      </div>
+      <ol class="timeline">
+        <li class="reveal"><span class="year num">1942</span><div><h3>John A. Hansen grundlægges</h3><p>JAH bliver kendt for høj kvalitet, grundig planlægning og service, og for at holde fast i håndværkets traditioner med nye teknikker.</p></div></li>
+        <li class="reveal"><span class="year num">1949</span><div><h3>Erik Schmidt starter sin VVS-virksomhed</h3><p>Det bliver begyndelsen på De Blå Mænd. I dag ledes virksomheden af Søren Schmidt.</p></div></li>
+        <li class="reveal"><span class="year num">2020</span><div><h3>JAH og De Blå Mænd bliver ét</h3><p>Den 1. november 2020 slås de to virksomheder sammen til JAH &amp; De Blå Mænd A/S.</p></div></li>
+        <li class="reveal"><span class="year">I dag</span><div><h3>Ca. 75 ansatte i København og på Sjælland</h3><p>VVS, el, kloak, murer og ejendomsservice, med administration i Brønshøj og afdeling på Nørrebro.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Guarantee -->
+  <section class="section guarantee" id="garanti" aria-labelledby="garanti-title">
+    <div class="wrap grid">
+      <figure class="print reveal"><img src="img/murske.jpg" width="900" height="1348" alt="Håndværker glatter en væg med en murske" loading="lazy"></figure>
+      <div class="reveal">
+        <h2 id="garanti-title">Går noget galt, er du dækket</h2>
+        <p class="muted" style="margin-top:16px; max-width:52ch">Vi er medlem af to danske garantiordninger, én for bygge- og én for installationsarbejde.</p>
+        <div class="schemes">
+          <div class="scheme">
+            <img src="img/byggaranti.png" width="600" height="300" alt="Byg Garanti" loading="lazy">
+            <div>
+              <h3>Byg Garanti</h3>
+              <p>For murer- og tømrerarbejde hos private. Dækker i op til 3 år for synlige fejl og op til 10 år for skjulte fejl.</p>
+              <!-- TODO: their site says both 100.000 and 150.000 kr. as the max coverage - confirm before adding the amount -->
+              <p class="cvr muted num">De Blå Mænd Entreprise ApS, CVR 31 60 31 10</p>
+            </div>
+          </div>
+          <div class="scheme">
+            <img src="img/tekniq.png" width="600" height="300" alt="Medlem af Tekniq" loading="lazy">
+            <div>
+              <h3>Tekniq</h3>
+              <p>For VVS- og elarbejde. Er du utilfreds, kan du klage til Ankenævnet for Tekniske Installationer, stiftet af Tekniq, Forbrugerrådet Tænk og Parcelhusejernes Landsforening.</p>
+              <p class="cvr muted num">De Blå Mænd ApS, CVR 15 00 30 06</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq">
+      <div class="reveal">
+        <h2 id="faq-title">Det spørger folk tit om</h2>
+        <p class="muted" style="margin-top:16px">Står dit spørgsmål ikke her, så ring på <a class="num" href="tel:+4570252590">70 25 25 90</a>.</p>
+      </div>
+      <div class="reveal">
+        <details><summary>Hvad koster det at få en VVS'er ud?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>I normal arbejdstid koster et besøg 1.481 kr. plus materialer. Det dækker op til 1,5 times arbejde, køretiden og administrationen.</p></details>
+        <details><summary>Hvad hvis opgaven tager længere tid?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Så bortfalder grundgebyret, og du betaler 908 kr. i timen plus et opstartsgebyr på 547,50 kr.</p></details>
+        <details><summary>Kan jeg ringe om natten eller i weekenden?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Ja. Ring til VVS-Vagten på 38 89 08 89, døgnet rundt, året rundt. Uden for normal arbejdstid er grundgebyret 4.854 kr. plus materialer.</p></details>
+        <details><summary>Hvor kommer I ud?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>I hele Storkøbenhavn og på Sjælland. Vi har base i Brønshøj og på Nørrebro.</p></details>
+        <details><summary>Er jeg dækket, hvis noget går galt?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Ja. Murer- og tømrerarbejde er dækket af Byg Garanti, og VVS- og elarbejde er dækket af Tekniqs ordning med Ankenævnet for Tekniske Installationer.</p></details>
+        <details><summary>Arbejder I for boligforeninger?<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Ja. Vi laver serviceaftaler med faste eftersyn, nøgleaftaler med nøgler i alarmovervåget boks, og vi påtager os gerne hovedentreprisen.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section contact" id="kontakt" aria-labelledby="kontakt-title" style="padding-top:0">
+    <div class="wrap">
+      <div>
+        <h2 id="kontakt-title">Bestil en håndværker</h2>
+        <p class="muted" style="margin-top:16px; max-width:52ch">Skriv kort, hvad der skal laves, så kontakter vi dig hurtigst muligt. Haster det, så ring.</p>
+
+        <!-- TODO: connect form to a backend. Until then it opens a ready-written email to info@3blaa.dk -->
+        <form id="kontaktform" novalidate>
+          <div class="row-2">
+            <div>
+              <label for="navn">Navn <span class="req" aria-hidden="true">*</span></label>
+              <input id="navn" name="navn" type="text" autocomplete="name" required aria-describedby="navn-fejl">
+              <p class="field-error" id="navn-fejl" aria-live="polite"></p>
+            </div>
+            <div>
+              <label for="telefon">Telefon <span class="req" aria-hidden="true">*</span></label>
+              <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="telefon-fejl">
+              <p class="field-error" id="telefon-fejl" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="row-2">
+            <div>
+              <label for="email">E-mail</label>
+              <input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-fejl">
+              <p class="field-error" id="email-fejl" aria-live="polite"></p>
+            </div>
+            <div>
+              <label for="fag">Type af arbejde</label>
+              <select id="fag" name="fag">
+                <option value="">Vælg</option>
+                <option>VVS</option>
+                <option>Elektriker</option>
+                <option>Kloak</option>
+                <option>Murer</option>
+                <option>Ejendomsservice</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="besked">Hvad skal laves?</label>
+            <textarea id="besked" name="besked" rows="4"></textarea>
+          </div>
+          <div class="form-foot">
+            <button class="btn btn-primary" type="submit">Send forespørgsel</button>
+            <small>Vi bruger kun dine oplysninger til at svare dig. <span class="req">*</span> skal udfyldes.</small>
+          </div>
+          <p class="form-status" id="form-status" role="status" hidden></p>
+        </form>
+      </div>
+
+      <div class="places">
+        <div class="place akut">
+          <h3>Akut VVS, døgnet rundt</h3>
+          <p><a class="num" href="tel:+4538890889">38 89 08 89</a></p>
+        </div>
+        <div class="place">
+          <h3>Administration</h3>
+          <!-- TODO: their contact page says 2770, the footer says 2700 Brønshøj - confirm the postcode -->
+          <address>Arnesvej 1<br>2700 Brønshøj</address>
+        </div>
+        <div class="place">
+          <h3>Nørrebro</h3>
+          <address>Heimdalsgade 4<br>2200 København N</address>
+        </div>
+        <div class="place">
+          <h3>Telefon og mail</h3>
+          <p><a class="num" href="tel:+4570252590">70 25 25 90</a></p>
+          <p><a href="mailto:info@3blaa.dk">info@3blaa.dk</a></p>
+          <!-- TODO: add opening hours for the office phone -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <img src="img/logo.png" width="640" height="264" alt="JAH &amp; De Blå Mænd A/S" loading="lazy">
+      <p style="margin-top:16px">VVS, el, kloak, murer og ejendomsservice i Storkøbenhavn og på Sjælland siden 1942.</p>
+      <p class="num" style="margin-top:8px">CVR 41 77 77 61</p>
+    </div>
+    <div>
+      <strong>Kontakt</strong>
+      <ul class="num">
+        <li><a href="tel:+4570252590">70 25 25 90</a></li>
+        <li><a href="mailto:info@3blaa.dk">info@3blaa.dk</a></li>
+        <li>Akut: <a href="tel:+4538890889">38 89 08 89</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Adresser</strong>
+      <ul>
+        <li>Arnesvej 1, 2700 Brønshøj</li>
+        <li>Heimdalsgade 4, 2200 København N</li>
+      </ul>
+    </div>
+    <div class="legal">
+      <span>© 2026 JAH &amp; De Blå Mænd A/S</span>
+      <!-- TODO: link to cookie policy, privacy policy and the Job page -->
+      <span>Sidst opdateret oktober 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu: opens and closes cleanly, closes on link click and Escape.
+  (function () {
+    const btn = document.querySelector(".menu-btn");
+    const menu = document.getElementById("mobilmenu");
+    if (!btn || !menu) return;
+    const set = (open) => {
+      menu.dataset.open = String(open);
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "Luk menu" : "Åbn menu");
+    };
+    btn.addEventListener("click", () => set(menu.dataset.open !== "true"));
+    menu.addEventListener("click", (e) => { if (e.target.closest("a")) set(false); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu.dataset.open === "true") { set(false); btn.focus(); }
+    });
+    window.matchMedia("(min-width: 961px)").addEventListener("change", (m) => { if (m.matches) set(false); });
+  })();
+
+  // Scroll reveal: once per element, a small fade and lift.
+  (function () {
+    const items = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) { items.forEach((el) => el.classList.add("is-in")); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const siblings = [...el.parentElement.children].filter((c) => c.classList.contains("reveal"));
+        el.style.transitionDelay = Math.min(siblings.indexOf(el), 4) * 60 + "ms";
+        el.classList.add("is-in");
+        io.unobserve(el);
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    items.forEach((el) => io.observe(el));
+  })();
+
+  // Contact form: inline validation, then a ready-written email (no backend yet).
+  (function () {
+    const form = document.getElementById("kontaktform");
+    if (!form) return;
+    const status = document.getElementById("form-status");
+    const rules = {
+      navn: (v) => (v.trim().length < 2 ? "Skriv dit navn, så vi ved, hvem vi taler med." : ""),
+      telefon: (v) => (v.replace(/[^\d]/g, "").length < 8 ? "Skriv et telefonnummer med 8 cifre, fx 12 34 56 78." : ""),
+      email: (v) => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Skriv en e-mail som navn@domæne.dk, eller lad feltet stå tomt." : ""),
+    };
+    const check = (name) => {
+      const input = form.elements[name];
+      const msg = rules[name](input.value);
+      input.setAttribute("aria-invalid", msg ? "true" : "false");
+      document.getElementById(name + "-fejl").textContent = msg;
+      return !msg;
+    };
+    Object.keys(rules).forEach((name) => form.elements[name].addEventListener("blur", () => check(name)));
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const ok = Object.keys(rules).map(check).every(Boolean);
+      if (!ok) { form.querySelector('[aria-invalid="true"]').focus(); return; }
+      const btn = form.querySelector('button[type="submit"]');
+      btn.setAttribute("aria-busy", "true");
+      btn.textContent = "Åbner din mail …";
+      const f = form.elements;
+      const body = ["Navn: " + f.navn.value, "Telefon: " + f.telefon.value, "E-mail: " + (f.email.value || "-"), "Type af arbejde: " + (f.fag.value || "-"), "", f.besked.value].join("\n");
+      const subject = "Forespørgsel" + (f.fag.value ? ": " + f.fag.value : "");
+      window.location.href = "mailto:info@3blaa.dk?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      setTimeout(() => {
+        btn.removeAttribute("aria-busy");
+        btn.textContent = "Send forespørgsel";
+        status.hidden = false;
+        status.textContent = "Tak, " + f.navn.value.trim().split(" ")[0] + ". Din mail er skrevet færdig. Tryk send i dit mailprogram, så kontakter vi dig hurtigst muligt. Åbnede der ikke noget, så skriv til info@3blaa.dk eller ring 70 25 25 90.";
+      }, 700);
+    });
+  })();
+</script>
+</body>
+</html>
