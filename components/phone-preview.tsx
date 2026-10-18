@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Example } from "@/lib/content";
-import { useTrade } from "./trade-store";
+import { setTrade, useTrade } from "./trade-store";
 
 const PHONE_WIDTH = 390;
 
@@ -144,26 +144,43 @@ function onResize(cb: () => void) {
 }
 
 /**
- * A smaller phone on small screens, and on a low laptop screen one that fits under the header.
+ * A smaller phone on small screens, and on a low laptop screen one that fits under the header
+ * with its arrows below it.
  * Read straight from the window, so the hero has its final height on the first render after a
  * menu click and a jump to #eksempler lands in the right place.
  */
 function phoneHeight() {
   if (window.innerWidth < 640) return 460;
-  if (window.innerWidth >= 1024) return Math.max(460, Math.min(560, window.innerHeight - 200));
+  if (window.innerWidth >= 1024) return Math.max(460, Math.min(560, window.innerHeight - 270));
   return 540;
 }
 
 /**
- * Front page: the phone with one of the example sites on screen, Holm VVS until a trade is
- * picked in the examples below.
+ * Front page: the phone with one of the example sites on screen, Holm VVS first. The counter and
+ * arrows under it step through all of them, the same controls as on the examples page.
  */
 export function PhonePreview({ items, title, cta }: { items: Example[]; title: string; cta?: string }) {
-  const item = items[useTrade()] ?? items[0];
+  const sel = useTrade();
+  const n = items.length;
+  const item = items[sel] ?? items[0];
   const height = useSyncExternalStore(onResize, phoneHeight, () => 560);
+  const go = (i: number) => setTrade(((i % n) + n) % n);
+  const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
   return (
     <div className="flex flex-col items-center">
       <IPhone src={item.href} title={`${title}: ${item.name}`} width={height / 2} height={height} />
+      <div className="mt-6 flex items-center gap-2">
+        <span aria-live="polite" className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
+          <span className="sr-only">{item.name}, </span>
+          {String(sel + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+        </span>
+        <button type="button" onClick={() => go(sel - 1)} aria-label="Forrige eksempel" className={arrow}>
+          <span aria-hidden className="text-xl">←</span>
+        </button>
+        <button type="button" onClick={() => go(sel + 1)} aria-label="Næste eksempel" className={arrow}>
+          <span aria-hidden className="text-xl">→</span>
+        </button>
+      </div>
       {cta && (
         <a href={item.href} target="_blank" rel="noopener" className="mt-5 text-sm font-medium text-ink/70 underline underline-offset-4 transition hover:text-ink">
           {item.name} · {cta} ↗
