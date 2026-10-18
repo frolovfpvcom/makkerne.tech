@@ -146,7 +146,11 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
     // One flat shadow behind the strips; a shadow on each strip would fall on its neighbour as a stripe.
     `.${lift}>i{opacity:0;transition:opacity 320ms ease-out}` +
     `.${tile}:hover .${lift}>i{opacity:1}` +
-    `.${tile}:hover .${lift}{transform:translateZ(${u(0.22)}) scale(1.08);transition-duration:220ms}` +
+    `.${tile}:hover .${lift}{transform:translateZ(${u(0.3)}) scale(1.14);transition-duration:220ms}` +
+    // The tiles stack in page order, not by depth, so the hovered one is lifted above both
+    // neighbours, and stays there until it has settled back.
+    `.${tile}{transition:z-index 0s 320ms}` +
+    `.${tile}:hover{z-index:2;transition-delay:0s}` +
     // Pausing rather than removing the motion leaves the row as a finished still.
     `@media(prefers-reduced-motion:reduce){.${tile}{animation-play-state:paused!important}}`;
 
