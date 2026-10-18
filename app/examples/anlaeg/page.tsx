@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Alegreya, Alegreya_Sans } from "next/font/google";
+import { Spectral } from "next/font/google";
 import { AnlaegSite } from "@/components/examples/anlaeg";
 
-// A calligraphic book serif for headings and captions, like an old garden handbook, and its sans sibling for reading.
-const serif = Alegreya({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-lindholm" });
-const sans = Alegreya_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], style: ["normal", "italic"], variable: "--font-lindholm-sans" });
+// One quiet book serif, light and large under the photos, like the captions in a book about gardens.
+const spectral = Spectral({ subsets: ["latin"], weight: ["300", "400", "500", "600"], style: ["normal", "italic"], variable: "--font-lindholm" });
 
 export const metadata: Metadata = {
   title: { absolute: "Lindholm Anlæg – anlægsgartner i Vejle (eksempel)" },
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className={`${serif.variable} ${sans.variable}`}>
+    <div className={spectral.variable}>
       <AnlaegSite />
     </div>
   );
