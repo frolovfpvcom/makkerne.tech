@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Overpass, Overpass_Mono } from "next/font/google";
 import { ElSite } from "@/components/examples/el";
 
-// One plain, technical grotesk for everything, like the print on a fuse board label.
-const archivo = Archivo({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-fasebro" });
+// Overpass comes from the lettering on American highway signs: made to be read fast, at a distance, under stress.
+const body = Overpass({ subsets: ["latin"], variable: "--font-fasebro" });
+const mono = Overpass_Mono({ subsets: ["latin"], variable: "--font-fasebro-mono" });
 
 export const metadata: Metadata = {
   title: { absolute: "Fasebro El – elektriker i Køge (eksempel)" },
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className={archivo.variable}>
+    <div className={`${body.variable} ${mono.variable}`}>
       <ElSite />
     </div>
   );
