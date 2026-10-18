@@ -15,9 +15,10 @@ import * as React from "react";
  * delay differs, and that sets where on the arc it sits.
  *
  * Hovering any tile pauses every tile and lifts that one off the arc toward
- * you, and a tile is a link to its example.
- * The only JS is a ResizeObserver that sizes the loop, and a handler that
- * hands a tile its next example each time it wraps, out of sight.
+ * you, and a tile is a link to its example. Pressing and dragging scrubs the
+ * row back and forth instead; only a click that didn't drag opens a tile.
+ * The JS is a ResizeObserver that sizes the loop, a handler that hands a tile
+ * its next example each time it wraps, out of sight, and the drag.
  * ─────────────────────────────────────────────────────────────── */
 
 // Strips per tile. Each is a few degrees of arc, too little to read as a facet.
@@ -45,6 +46,9 @@ const EDGE_CLIP = [
   "100% calc(100% - 1px)", "calc(100% - 1px) calc(100% - 1px)", "calc(100% - 1px) 100%",
   "1px 100%", "1px calc(100% - 1px)", "0 calc(100% - 1px)", "0 1px", "1px 1px",
 ].join(",");
+
+// How far, in pixels, a press can wander before it counts as a drag rather than a click.
+const SLOP = 6;
 
 // Corner radius, as a share of the tile's height.
 const RADIUS = 0.035;
@@ -104,6 +108,11 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
   const [layout, setLayout] = React.useState<ReturnType<typeof measure> | null>(null);
   // The item each tile shows, as a position in the run of items. Changes only when the tile wraps.
   const [shown, setShown] = React.useState<Record<number, number>>({});
+  const bandRef = React.useRef<HTMLDivElement>(null);
+  // The press under way: where the pointer last was, and whether it has become a drag.
+  const press = React.useRef<{ x: number; moved: boolean } | null>(null);
+  // Set when a drag ends, so the click that follows it doesn't open a tile.
+  const swallow = React.useRef(false);
 
   React.useEffect(() => {
     const el = ref.current;
@@ -159,11 +168,67 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
     // neighbours, and stays there until it has settled back.
     `.${tile}{transition:z-index 0s 320ms}` +
     `.${tile}:hover{z-index:2;transition-delay:0s}` +
+    // A drag holds the row still while it scrubs it, and the page's text isn't selected under it.
+    `.${band}[data-drag] .${tile}{animation-play-state:paused!important}` +
+    `.${band}[data-drag]{cursor:grabbing}` +
+    `.${band}{user-select:none;-webkit-user-select:none}` +
     // Pausing rather than removing the motion leaves the row as a finished still.
     `@media(prefers-reduced-motion:reduce){.${tile}{animation-play-state:paused!important}}`;
 
   const share = aspectRatio / SLICES;
   const duration = columns * speed;
+
+  // Scrubbing moves every tile's animation clock by the same amount, so the row keeps its spacing.
+  const orbits = () =>
+    (bandRef.current?.getAnimations({ subtree: true }) ?? []).filter(
+      (a): a is CSSAnimation => a instanceof CSSAnimation && a.animationName === orbit,
+    );
+
+  function onPointerDown(e: React.PointerEvent) {
+    if (e.button !== 0) return;
+    swallow.current = false;
+    press.current = { x: e.clientX, moved: false };
+  }
+
+  function onPointerMove(e: React.PointerEvent) {
+    const p = press.current;
+    const el = bandRef.current;
+    if (!p || !el) return;
+    const dx = e.clientX - p.x;
+    const anims = orbits();
+    if (!p.moved) {
+      if (Math.abs(dx) < SLOP) return;
+      p.moved = true;
+      el.dataset.drag = "";
+      el.setPointerCapture(e.pointerId);
+      // Leave room to scrub backwards. Whole loops times the item count land every tile on the
+      // same example it shows now, so nothing visibly changes.
+      const loop = Math.max(items.length, 1) * duration * 1000;
+      for (const a of anims) if (Number(a.currentTime) < duration * 1000) a.currentTime = Number(a.currentTime) + loop;
+    }
+    // One tile's pitch in pixels takes `speed` seconds; the row streams leftward, so dragging
+    // right winds it back.
+    const tileEl = el.querySelector<HTMLElement>(`.${tile}`);
+    const pitch = (tileEl?.offsetHeight ?? 0) * (aspectRatio + gap / 100);
+    if (pitch > 0) {
+      const dt = (-dx / pitch) * speed * 1000;
+      for (const a of anims) a.currentTime = Math.max(0, Number(a.currentTime) + dt);
+    }
+    p.x = e.clientX;
+  }
+
+  function onPointerEnd(e: React.PointerEvent) {
+    const p = press.current;
+    press.current = null;
+    if (!p?.moved) return;
+    swallow.current = true;
+    const el = bandRef.current;
+    if (el) {
+      delete el.dataset.drag;
+      if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    }
+  }
+
   const mask = `linear-gradient(90deg,transparent,#000 ${fade}%,#000 ${100 - fade}%,transparent)`;
 
   return (
@@ -171,6 +236,7 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
       <style>{css}</style>
       {/* Decorative for screen readers; the section lists the same examples as plain links. */}
       <div
+        ref={bandRef}
         aria-hidden
         className={`${band} pointer-events-none absolute inset-0 transition-opacity duration-500`}
         style={{
@@ -181,6 +247,16 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
           WebkitMaskImage: mask,
         }}
         onMouseLeave={() => onHover?.(null)}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={onPointerEnd}
+        onClickCapture={(e) => {
+          if (!swallow.current) return;
+          swallow.current = false;
+          e.preventDefault();
+          e.stopPropagation();
+        }}
       >
         {Array.from({ length: columns }, (_, t) => {
           // Tile `columns - 1` starts nearest the exit, so this numbers tiles in the order they come on.
@@ -205,6 +281,8 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
                 width: u(aspectRatio),
                 height: u(1),
                 transformStyle: "preserve-3d",
+                // Sideways drags are the row's; up and down still scroll the page.
+                touchAction: "pan-y",
                 animation: `${orbit} ${duration}s linear ${-t * speed}s infinite`,
               }}
               onMouseEnter={() => onHover?.(i)}
