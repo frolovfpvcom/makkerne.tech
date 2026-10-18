@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { EMAIL, TEAM } from "@/lib/content";
+import { ACCENT } from "@/lib/accent";
 import { useLang } from "./lang";
+import { BrowserSite } from "./live-site";
 import { CurvedRow } from "./curved-row";
 import { Logo } from "./header";
 import { Calculator } from "./calculator";
+import { setTrade, useTrade } from "./trade-store";
 
 function SectionHead({ title, lead, light = false }: { title: string; lead?: string; light?: boolean }) {
   return (
@@ -37,7 +41,7 @@ export function Examples() {
   return (
     <section id="eksempler" className="overflow-hidden bg-[#f3f2ef] py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-8">
-        <SectionHead title={e.title} lead={e.lead} />
+        <SectionHead title={e.title} lead={e.rowLead} />
       </div>
       <CurvedRow items={tiles} onHover={setHover} className="h-[180px] sm:h-[280px] lg:h-[380px] 2xl:h-[460px]" />
       <div className="mx-auto max-w-7xl px-4 sm:px-8">
@@ -62,6 +66,123 @@ export function Examples() {
         <p className="mt-8 text-sm text-ink/55">{e.disclaimer}</p>
       </div>
     </section>
+  );
+}
+
+/** The examples page: one example at a time, with trade tabs and arrows. */
+export function ExamplePicker() {
+  const { t } = useLang();
+  const e = t.examples;
+  return (
+    <section className="bg-[#f3f2ef] pt-18">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 sm:py-24">
+        <SectionHead title={e.title} lead={e.lead} />
+        <ExampleCarousel />
+        <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * One example at a time: the live site in a browser window with its text beside it. Trade tabs and
+ * arrows move between them, and the hero's trade buttons pick one too. A site is only loaded the
+ * first time it is shown, then stays mounted (stacked on top of the others), so switching back is
+ * instant and the box never jumps in height.
+ */
+function ExampleCarousel() {
+  const { t } = useLang();
+  const e = t.examples;
+  const n = e.items.length;
+  const sel = useTrade();
+  const [dir, setDir] = useState(1);
+  const [seen, setSeen] = useState<number[]>([0]);
+  if (!seen.includes(sel)) setSeen([...seen, sel]);
+  const go = (i: number) => {
+    setDir(i > sel ? 1 : -1);
+    setTrade(((i % n) + n) % n);
+  };
+  const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
+  return (
+    <div>
+      <div className="flex items-center gap-3">
+        <div role="tablist" aria-label={e.pick} className="-mx-4 flex flex-1 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
+          {e.items.map((it, i) => (
+            <button
+              key={it.slug}
+              type="button"
+              role="tab"
+              aria-selected={i === sel}
+              onClick={() => go(i)}
+              className={`shrink-0 border-2 border-ink px-4 py-2 font-cond text-lg font-bold uppercase transition ${i === sel ? "bg-ink text-paper" : "bg-card hover:bg-brand"}`}
+            >
+              {it.trade}
+            </button>
+          ))}
+        </div>
+        <div className="hidden shrink-0 items-center gap-2 sm:flex">
+          <span className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
+            {String(sel + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+          </span>
+          <button type="button" onClick={() => go(sel - 1)} aria-label="Forrige eksempel" className={arrow}>
+            <span aria-hidden className="text-xl">←</span>
+          </button>
+          <button type="button" onClick={() => go(sel + 1)} aria-label="Næste eksempel" className={arrow}>
+            <span aria-hidden className="text-xl">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-8 grid">
+        {e.items.map((item, i) => (
+          <article
+            key={item.slug}
+            aria-hidden={i !== sel}
+            className={`grid items-center gap-8 transition-opacity duration-300 [grid-area:1/1] lg:grid-cols-12 lg:gap-14 ${i === sel ? "opacity-100" : "pointer-events-none invisible opacity-0"}`}
+          >
+            <div className="min-w-0 lg:col-span-7">
+              {seen.includes(i) && <BrowserSite src={item.href} title={item.name} tryLabel={e.try} accent={ACCENT[item.slug]} />}
+            </div>
+            <div className="min-w-0 lg:col-span-5">
+              <AnimatePresence mode="wait">
+                {i === sel && (
+                  <motion.div key={item.slug} initial={{ opacity: 0, x: dir * 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+                    <p className="font-cond text-lg font-bold uppercase tracking-wide text-ink/50">
+                      {item.industry} · {item.place}
+                    </p>
+                    <h3 className="mt-1 font-cond text-5xl font-extrabold uppercase leading-none">{item.name}</h3>
+                    <p className="mt-4 text-lg leading-relaxed text-ink/70">{item.short}</p>
+                    <ul className="mt-6 flex flex-wrap gap-2">
+                      {item.tags.map((tag) => (
+                        <li key={tag} className="border border-ink/20 bg-card px-3 py-1 text-sm font-medium">
+                          {tag}
+                        </li>
+                      ))}
+                    </ul>
+                    <a href={item.href} target="_blank" rel="noopener" className="mt-7 inline-block border-b-2 border-ink pb-0.5 font-cond text-xl font-bold uppercase transition hover:border-brand">
+                      {e.open} ↗
+                    </a>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {/* Arrows under the example on phones, where there is no room next to the tabs. */}
+      <div className="mt-6 flex items-center justify-between sm:hidden">
+        <button type="button" onClick={() => go(sel - 1)} aria-label="Forrige eksempel" className={arrow}>
+          <span aria-hidden className="text-xl">←</span>
+        </button>
+        <span className="font-cond text-lg font-bold tabular-nums text-ink/50">
+          {String(sel + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+        </span>
+        <button type="button" onClick={() => go(sel + 1)} aria-label="Næste eksempel" className={arrow}>
+          <span aria-hidden className="text-xl">→</span>
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -227,7 +348,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8">
         <Logo light />
         <nav className="flex flex-wrap gap-x-6 gap-y-2 font-cond text-lg font-bold uppercase text-paper/70">
-          <Link href="/#eksempler" className="hover:text-brand">{t.nav.examples}</Link>
+          <Link href="/eksempelsider/" className="hover:text-brand">{t.nav.examples}</Link>
           <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>

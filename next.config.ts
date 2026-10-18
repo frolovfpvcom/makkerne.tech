@@ -11,10 +11,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [{ source: "/udkast/:name/", destination: "/udkast/:name/index.html" }];
   },
-  // The examples used to have their own page; they now live on the front page, above the price.
+  // The menu's examples page is /eksempelsider/. /eksempler once redirected permanently to the
+  // front page, and browsers keep that, so the page got a new path instead of reusing the old one.
   async redirects() {
     return [
-      { source: "/eksempler", destination: "/#eksempler", permanent: true },
+      { source: "/eksempler", destination: "/eksempelsider/", permanent: false },
       { source: "/cookies", destination: "/privatliv/#cookies", permanent: true },
       { source: "/privatlivspolitik", destination: "/privatliv/", permanent: true },
       { source: "/handelsbetingelser", destination: "/vilkaar/", permanent: true },

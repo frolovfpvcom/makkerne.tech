@@ -1,7 +1,7 @@
 "use client";
 
 import { useLang } from "./lang";
-import { Comparison, Contact, Faq, Footer, PageIntro, PriceSection, Process } from "./sections";
+import { Comparison, Contact, ExamplePicker, Faq, Footer, PageIntro, PriceSection, Process } from "./sections";
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
@@ -12,6 +12,15 @@ function Shell({ children }: { children: React.ReactNode }) {
       </main>
       <Footer />
     </>
+  );
+}
+
+/** The menu's examples page: the trade tabs and the live site, as on the front page before the row. */
+export function ExamplesPage() {
+  return (
+    <Shell>
+      <ExamplePicker />
+    </Shell>
   );
 }
 
