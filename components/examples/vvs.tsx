@@ -1,176 +1,87 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DemoNote, Img, SampleReviewsNote, Stars, useOpenNow, type Hours } from "./shared";
+import { DemoNote, Img } from "./shared";
 
 /*
- * Holm VVS, built like the side of the service van and the invoice that follows it: marine blue,
- * white tiles and copper, with alarm orange kept for one thing only, calling the emergency line.
- * Condensed caps for the lettering, a plain sans for prices and instructions. No cards, no shadows,
- * no motion. What a customer needs at 3 a.m. comes first: who answers, what it costs, what to do now.
+ * Holm VVS is the side of the van: the phone number is the biggest thing on it. One typeface made
+ * to be read in a hurry, black on white, and the two colours every tap already carries: red for
+ * "ring now", blue for "write, it can wait". Nothing about who is on call or how fast we come,
+ * because a page cannot know that. What it can do is tell you how to shut the water off.
  */
 
 const PHONE = "12 34 56 78";
 const TEL = "tel:+4512345678";
+const SMS = "sms:+4512345678";
 const ADDRESS = "Kobbervej 7, 2730 Herlev";
 
-// Colours: van marine #0F2742 (deep #0A1B2F), alarm orange #F26419 for calling only, copper #9A4E25,
-// tile white #F6F7F5, grout #D5DADC, muted text #4A5868.
+// Colours: ink #101820, tile grey #E9ECEE, line #C5CCD1, muted #4B5560 (on ink #A7B1BA),
+// tap red #D0311C for calling only, tap blue #1E56C8 for writing.
 
-const display = "font-(family-name:--font-holm-display) uppercase";
+const mono = "font-(family-name:--font-holm-mono) [word-spacing:-0.3em]";
+const wrap = "mx-auto w-full max-w-[1280px] px-5 sm:px-10 lg:px-14";
+const h2 = "text-[34px] font-extrabold leading-[1.05] tracking-[-0.025em] sm:text-[48px]";
+const red = "inline-flex items-center justify-center whitespace-nowrap bg-[#D0311C] font-bold text-white transition-colors hover:bg-[#B0270F]";
+const blue = "inline-flex items-center justify-center whitespace-nowrap bg-[#1E56C8] font-bold text-white transition-colors hover:bg-[#1745A5]";
+const field = "w-full border-2 border-[#101820] bg-white px-4 py-3 text-[17px] text-[#101820] placeholder:text-[#6A747D]";
 
-const HOURS: Hours = [
-  { day: "Mandag", open: "07:00", close: "16:00" },
-  { day: "Tirsdag", open: "07:00", close: "16:00" },
-  { day: "Onsdag", open: "07:00", close: "16:00" },
-  { day: "Torsdag", open: "07:00", close: "16:00" },
-  { day: "Fredag", open: "07:00", close: "14:00" },
-  { day: "Lørdag", open: "", close: "" },
-  { day: "Søndag", open: "", close: "" },
-];
+const NAV = [
+  ["#hovedhane", "Luk for vandet"],
+  ["#kontakt", "Skriv til os"],
+  ["#opgaver", "Opgaver"],
+  ["#priser", "Priser"],
+] as const;
 
-const STEPS: { title: string; text: string }[] = [
-  { title: "Du ringer", text: "Den, der har vagten, tager telefonen selv. Også kl. 3 om natten. Der er ingen telefonsvarer." },
-  { title: "Vi spørger ind", text: "Vi spørger, hvad der sker, og siger, hvad du kan gøre, mens du venter. Som regel er det at lukke for hovedhanen." },
-  { title: "Bilen kører", text: "I Herlev og nabokommunerne er vi typisk hos dig inden for en time. Vi ringer, når vi drejer ind på din vej." },
-  { title: "Prisen", text: "Aften, nat og weekend koster fremmøde 1.495 kr. med den første halve time. Ser det ud til at tage mere end en time, siger vi prisen, før vi går i gang." },
-];
-
-const WHILE_YOU_WAIT: { title: string; text: string }[] = [
-  {
-    title: "Luk for hovedhanen",
-    text: "Den sidder ved vandmåleren: i bryggerset, i kælderen eller under køkkenvasken i en lejlighed. Drej med uret, til den stopper. Sidder den fast, så lad være med at tvinge den.",
-  },
-  {
-    title: "Slå strømmen fra til vandvarmeren",
-    text: "Hvis det er en el-vandvarmer, der lækker. Sikringen er tit mærket ”VVB” eller ”Vandvarmer” i eltavlen.",
-  },
-  {
-    title: "Luk fjernvarmen ved unitten",
-    text: "Er vandet varmt, kommer det fra varmen. Der sidder to haner ved måleren, frem og retur. Luk dem begge.",
-  },
-  {
-    title: "Tag billeder, før du tørrer op",
-    text: "Forsikringen vil gerne se skaden. Vi kan tit se på et billede, hvilke dele vi skal have med i bilen.",
-  },
-  {
-    title: "Hæld ikke afløbsrens i",
-    text: "Et stoppet afløb bliver sjældent bedre af det, og vi skal arbejde i det bagefter.",
-  },
+const SHUT_OFF: { title: string; text: string }[] = [
+  { title: "Luk for hovedhanen", text: "Den sidder ved vandmåleren, tit i bryggerset, i kælderen eller under køkkenvasken. Drej med uret, til den stopper." },
+  { title: "Er vandet varmt?", text: "Så kommer det fra varmen. Luk de to haner ved fjernvarmeunitten." },
+  { title: "Lækker vandvarmeren?", text: "Slå sikringen fra i eltavlen. Den hedder tit VVB." },
+  { title: "Tag billeder, før du tørrer op", text: "Forsikringen vil se skaden, og vi kan se, hvilke dele vi skal have med." },
 ];
 
 type Row = { what: string; note?: string; price: string };
-const PRICES: { group: string; rows: Row[] }[] = [
+const HOURLY: Row[] = [
+  { what: "Kørsel", note: "Herlev og nabokommuner", price: "395 kr." },
+  { what: "VVS-montør", note: "pr. påbegyndt halve time", price: "795 kr./t" },
+  { what: "Lærling", price: "450 kr./t" },
+  { what: "Døgnvagt, fremmøde", note: "aften, nat og weekend, med den første halve time", price: "1.495 kr." },
+  { what: "Døgnvagt, derefter", price: "1.195 kr./t" },
+];
+const FIXED: Row[] = [
+  { what: "Skift af blandingsbatteri", note: "du køber batteriet", price: "1.450 kr." },
+  { what: "Nyt toilet monteret", note: "hvidt gulvtoilet, det gamle kører vi væk", price: "7.900 kr." },
+  { what: "Stoppet håndvask eller køkkenafløb", price: "fra 1.190 kr." },
+  { what: "Eftersyn af fjernvarmeunit", price: "1.395 kr." },
+  { what: "Nyt badeværelse", note: "besigtigelse 595 kr., trækkes fra", price: "Fast pris" },
+];
+
+const FAQ: { q: string; a: string }[] = [
   {
-    group: "Timer og kørsel",
-    rows: [
-      { what: "Kørsel", note: "Herlev og nabokommuner", price: "395 kr." },
-      { what: "VVS-montør", note: "pr. påbegyndt halve time", price: "795 kr./t" },
-      { what: "Lærling", price: "450 kr./t" },
-    ],
+    q: "Hvad hvis det tager mere end en time om natten?",
+    a: "Så siger vi prisen, før vi går videre. Om natten laver vi det, der skal til for at stoppe skaden, og kommer tilbage på en hverdag med resten.",
   },
   {
-    group: "Døgnvagt, aften, nat og weekend",
-    rows: [
-      { what: "Fremmøde", note: "med den første halve time", price: "1.495 kr." },
-      { what: "Timepris derefter", price: "1.195 kr./t" },
-    ],
-  },
-  {
-    group: "Faste priser, med kørsel og smådele",
-    rows: [
-      { what: "Skift af blandingsbatteri", note: "køkken eller bad, du køber batteriet", price: "1.450 kr." },
-      { what: "Nyt toilet monteret", note: "hvidt gulvtoilet, det gamle kører vi væk", price: "7.900 kr." },
-      { what: "Ny skyllemekanisme i cisterne", price: "1.150 kr." },
-      { what: "Stoppet håndvask eller køkkenafløb", price: "fra 1.190 kr." },
-      { what: "Eftersyn af fjernvarmeunit", price: "1.395 kr." },
-      { what: "Udluftning og indregulering af radiatorer", note: "parcelhus", price: "1.850 kr." },
-    ],
-  },
-  {
-    group: "Større opgaver",
-    rows: [{ what: "Nyt badeværelse", note: "besigtigelse 595 kr., trækkes fra, hvis du siger ja", price: "Fast pris" }],
+    q: "Kan jeg få håndværkerfradrag?",
+    a: "Tilslutning til fjernvarme kan give fradrag for arbejdslønnen. Service og nye badeværelser giver ikke fradrag. Reglerne står på skat.dk.",
   },
 ];
 
-const INVOICE: [string, string][] = [
-  ["Kørsel, Herlev", "395,00"],
-  ["VVS-montør, 1 time", "795,00"],
-  ["Kuglehane ½″ og to fittings", "186,00"],
-];
-
-const WEEK: { day: string; place: string; job: string; time: string; night?: boolean }[] = [
-  { day: "Man 5.10", place: "Herlev", job: "Stoppet køkkenafløb, renset fra rensestykket", time: "1 t" },
-  { day: "Man 5.10", place: "Skovlunde", job: "Nyt toilet i rækkehus fra 1971", time: "2,5 t" },
-  { day: "Tir 6.10", place: "Hjortespring", job: "Ny varmtvandsbeholder, 110 liter", time: "6 t" },
-  { day: "Ons 7.10", place: "Søborg", job: "Badeværelse, dag 4 af 9: nye rør i væggen", time: "8 t" },
-  { day: "Tor 8.10", place: "Herlev", job: "Utæt ventil under køkkenvask", time: "1 t" },
-  { day: "Tor 8.10, kl. 02.40", place: "Herlev", job: "Utæt samling på radiatorrør, vand gennem loftet", time: "1,5 t", night: true },
-  { day: "Fre 9.10", place: "Ballerup", job: "Eftersyn af fjernvarmeunit", time: "1 t" },
-  { day: "Lør 10.10", place: "Gladsaxe", job: "Toilet løb over, stop i faldstammen", time: "2 t", night: true },
-];
-
-const REVIEWS: { stars: number; date: string; text: string; name: string; reply?: string }[] = [
-  {
-    stars: 5,
-    date: "11. okt. 2026",
-    text: "Ringede kl. 6.40 en søndag med vand ned gennem loftet. Kasper var her kl. 7.30 og forklarede, hvad der var sket, før han gik i gang.",
-    name: "Mette, Herlev",
-  },
-  {
-    stars: 4,
-    date: "22. sep. 2026",
-    text: "Det nye badeværelse er rigtig fint, og prisen holdt. En stjerne trækkes, fordi vi stod uden toilet en dag længere end aftalt.",
-    name: "Lars, Ballerup",
-    reply:
-      "Det er rigtigt, Lars. Toilettet kom ikke fra grossisten, og det skulle vi have sagt om morgenen og ikke sidst på dagen. Nu stiller vi et midlertidigt toilet op, når det sker.",
-  },
-  {
-    stars: 5,
-    date: "3. sep. 2026",
-    text: "Fik skiftet blandingsbatteri. Han lagde en klud i vasken, så skruerne ikke forsvandt i afløbet. Den slags lægger man mærke til.",
-    name: "Aisha, Gladsaxe",
-  },
-  {
-    stars: 5,
-    date: "14. aug. 2026",
-    text: "Fjernvarmeunitten larmede. Ali fandt luft i systemet og var færdig på 40 minutter. Regningen var på det, han havde sagt.",
-    name: "Peter, Husum",
-  },
-];
-
-const NAV = [
-  ["#mens-du-venter", "Mens du venter"],
-  ["#priser", "Priser"],
-  ["#opgaver", "Opgaver"],
-  ["#om", "Om os"],
-  ["#kontakt", "Kontakt"],
-] as const;
-
-const TILES = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M64 0V64H0' fill='none' stroke='%23D5DADC' stroke-width='1.5'/%3E%3C/svg%3E")`;
-
-const wrap = "mx-auto max-w-[1200px] px-4 sm:px-8";
-const h2 = `${display} text-[40px] font-bold leading-[1] tracking-[0.01em] sm:text-[56px]`;
-const callBtn = "items-center justify-center whitespace-nowrap rounded-[2px] bg-[#F26419] font-bold text-[#0F2742] transition-colors hover:bg-[#FF7A33]";
-const field = "w-full rounded-[2px] border border-[#8C99A6] bg-white px-3.5 py-3 text-base text-[#0F2742] placeholder:text-[#6B7785]";
-
-function PhoneGlyph({ className = "size-5" }: { className?: string }) {
+function Prices({ title, rows }: { title: string; rows: Row[] }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />
-    </svg>
-  );
-}
-
-/** Who answers right now: the office in working hours, the on-call plumber the rest of the day. */
-function OnCallStatus() {
-  const state = useOpenNow(HOURS);
-  if (!state) return <p className="text-[15px] leading-snug text-[#C9D3DD]">Kontoret har åbent på hverdage. Resten af døgnet tager vagten telefonen.</p>;
-  return (
-    <p className="flex items-start gap-2.5 text-[15px] leading-snug text-white">
-      <span className={`mt-1.5 size-2.5 shrink-0 rounded-full ${state.open ? "bg-[#7FD18B]" : "bg-[#F26419]"}`} aria-hidden />
-      {state.open ? "Kontoret har åbent nu. Lene tager telefonen og sender den nærmeste bil." : "Kontoret er lukket nu. Den, der har vagten, tager telefonen."}
-    </p>
+    <table className="w-full border-collapse text-[16px]">
+      <caption className="border-b-2 border-[#101820] pb-2 text-left text-[15px] font-bold">{title}</caption>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.what} className="border-b border-[#C5CCD1]">
+            <th scope="row" className="py-3 pr-4 text-left align-top font-normal">
+              {r.what}
+              {r.note && <span className="block text-[14px] text-[#4B5560]">{r.note}</span>}
+            </th>
+            <td className="whitespace-nowrap py-3 text-right align-top font-bold tabular-nums">{r.price}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -186,26 +97,24 @@ export function VvsSite() {
   }, [menu]);
 
   return (
-    <div className="min-h-dvh overflow-x-clip bg-white font-(family-name:--font-holm) text-[#0F2742] [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#0F2742]">
-      <DemoNote className="bg-[#0A1B2F] text-[#C9D3DD]" />
+    <div className="min-h-dvh overflow-x-clip bg-white font-(family-name:--font-holm) text-[#101820] [&_:focus-visible]:outline-[3px] [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#1E56C8]">
+      <DemoNote className="bg-[#101820] text-[#A7B1BA]" />
 
-      <header className="relative z-40 border-b border-[#D5DADC] bg-white sm:sticky sm:top-0">
+      <header className="relative z-40 border-b-2 border-[#101820] bg-white sm:sticky sm:top-0">
         <div className={`${wrap} flex items-center justify-between gap-4 py-3`}>
-          <a href="#top" className="flex min-w-0 flex-col leading-none">
-            <span className={`${display} whitespace-nowrap text-[30px] font-extrabold tracking-[0.02em]`}>Holm VVS</span>
-            <span className="mt-1 whitespace-nowrap text-[11px] font-medium text-[#4A5868] sm:text-xs">Aut. VVS-installatør · Herlev</span>
+          <a href="#top" className="whitespace-nowrap text-[26px] font-extrabold leading-none tracking-[-0.03em]">
+            Holm VVS
           </a>
-          <nav aria-label="Hovedmenu" className="hidden gap-6 whitespace-nowrap text-[15px] font-medium lg:flex">
+          <nav aria-label="Hovedmenu" className="hidden gap-7 whitespace-nowrap text-[16px] font-semibold lg:flex">
             {NAV.map(([href, label]) => (
-              <a key={href} href={href} className="hover:text-[#9A4E25]">
+              <a key={href} href={href} className="underline-offset-4 hover:underline">
                 {label}
               </a>
             ))}
           </nav>
           <div className="flex shrink-0 items-center gap-3">
-            <a href={TEL} className={`${callBtn} hidden gap-2 px-4 py-2.5 text-[15px] sm:inline-flex`}>
-              <PhoneGlyph className="size-4" />
-              Døgnvagt {PHONE}
+            <a href={TEL} className={`${red} h-11 gap-2 px-4 text-[16px] max-sm:hidden`}>
+              Ring <span className={mono}>{PHONE}</span>
             </a>
             <button
               type="button"
@@ -213,27 +122,27 @@ export function VvsSite() {
               aria-expanded={menu}
               aria-controls="holm-menu"
               onClick={() => setMenu((m) => !m)}
-              className="grid size-11 place-items-center rounded-[2px] border border-[#8C99A6] lg:hidden"
+              className="grid size-11 place-items-center border-2 border-[#101820] lg:hidden"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" aria-hidden>
                 {menu ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
               </svg>
             </button>
           </div>
         </div>
         {menu && (
-          <nav id="holm-menu" aria-label="Menu" className="border-t border-[#D5DADC] lg:hidden">
+          <nav id="holm-menu" aria-label="Menu" className="border-t border-[#C5CCD1] lg:hidden">
             <ul className={`${wrap} py-2`}>
               {NAV.map(([href, label]) => (
                 <li key={href}>
-                  <a href={href} onClick={() => setMenu(false)} className="block border-b border-[#D5DADC] py-3.5 text-lg font-medium">
+                  <a href={href} onClick={() => setMenu(false)} className="block border-b border-[#C5CCD1] py-3.5 text-lg font-semibold">
                     {label}
                   </a>
                 </li>
               ))}
               <li>
-                <a href={TEL} className="block py-3.5 text-lg font-bold">
-                  Ring {PHONE}, døgnvagt
+                <a href={TEL} className="block py-3.5 text-lg font-bold text-[#D0311C]">
+                  Ring {PHONE}
                 </a>
               </li>
             </ul>
@@ -242,89 +151,71 @@ export function VvsSite() {
       </header>
 
       <main>
-        {/* Hero: the van lettering on the left, the on-call board on the right */}
-        <section id="top" className={`${wrap} grid gap-8 pb-10 pt-8 sm:pt-12 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-x-16 lg:gap-y-10 lg:pb-14 lg:pt-16`}>
-          <div className="flex flex-col gap-6">
-            <h1 className="flex flex-col gap-3">
-              <span className={`${display} text-[72px] font-extrabold leading-[0.85] tracking-[0.005em] sm:text-[112px] lg:text-[136px]`}>Holm VVS</span>
-              <span className="max-w-[22ch] text-[22px] font-semibold leading-[1.2] tracking-[-0.01em] sm:text-[28px]">Vand, varme og afløb i Herlev og nabokommunerne</span>
+        {/* The van: the number, how to call it, and the photo running off the edge */}
+        <section
+          id="top"
+          className="bg-[#101820] text-white [&_:focus-visible]:outline-white lg:grid lg:grid-cols-[minmax(3.5rem,1fr)_minmax(0,664px)_minmax(0,504px)_minmax(3.5rem,1fr)]"
+        >
+          <div className="px-5 pb-12 pt-10 sm:px-10 sm:pb-16 sm:pt-16 lg:col-start-2 lg:px-0 lg:pb-24 lg:pr-12 lg:pt-20">
+            <p className={`${mono} text-[14px] text-[#A7B1BA]`}>Aut. VVS-installatør · Herlev</p>
+            <h1 className="mt-4 max-w-[16ch] text-[36px] font-extrabold leading-[1.04] tracking-[-0.03em] sm:text-[52px] lg:text-[60px]">
+              Vand, varme og afløb i Herlev og omegn.
             </h1>
-            <p className="max-w-[48ch] text-[17px] leading-[1.6] text-[#24384F] sm:text-lg">
-              Vi er fem: Jonas, Kasper, Ali, lærlingen Emil og Lene på kontoret. Vi laver alt fra et toilet, der løber, til et nyt badeværelse, og vi har døgnvagt alle årets dage.
-            </p>
-            <dl className="grid max-w-[560px] grid-cols-[max-content_minmax(0,1fr)] gap-x-5 gap-y-1.5 border-t-2 border-[#9A4E25] pt-4 text-[15px]">
-              <dt className="text-[#4A5868]">Autorisation</dt>
-              <dd>VVS-installatør nr. 00000 (eksempel)</dd>
-              <dt className="text-[#4A5868]">Kontor</dt>
-              <dd>Hverdage kl. 7–16, fredag til 14</dd>
-              <dt className="text-[#4A5868]">Værksted</dt>
-              <dd>{ADDRESS}</dd>
-            </dl>
-          </div>
-
-          <section aria-labelledby="vagt" className="flex flex-col gap-5 self-start lg:col-start-2 lg:row-span-2 lg:row-start-1 rounded-[2px] bg-[#0F2742] p-5 text-white sm:p-7">
-            <div className="flex flex-col gap-3">
-              <h2 id="vagt" className={`${display} text-[34px] font-bold leading-none tracking-[0.02em]`}>
-                Døgnvagt
-              </h2>
-              <OnCallStatus />
-            </div>
-            <a href={TEL} className={`${callBtn} flex h-14 gap-2.5 text-xl`}>
-              <PhoneGlyph />
-              Ring {PHONE}
-            </a>
-            <ol className="flex flex-col border-t border-[#2C4561]">
-              {STEPS.map((s, i) => (
-                <li key={s.title} className="grid grid-cols-[28px_minmax(0,1fr)] gap-x-2 border-b border-[#2C4561] py-3.5">
-                  <span className="pt-px font-semibold tabular-nums text-[#E2A27C]">{i + 1}</span>
-                  <div className="flex flex-col gap-1">
-                    <h3 className="font-semibold">{s.title}</h3>
-                    <p className="text-[15px] leading-[1.5] text-[#C9D3DD]">{s.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <p className="text-sm leading-normal text-[#C9D3DD]">
-              Ikke akut?{" "}
-              <a href="#kontakt" className="font-semibold text-white underline underline-offset-2">
-                Skriv til Lene
+            <div className="mt-10 border-t border-[#3A4651] pt-6 sm:mt-14">
+              <p className="text-[17px] font-bold">Døgnvagt alle dage</p>
+              <a
+                href={TEL}
+                className={`${mono} mt-2 block whitespace-nowrap text-[15vw] font-bold leading-none tracking-[-0.04em] hover:text-[#FFB4A6] sm:text-[96px] lg:text-[min(7vw,104px)]`}
+              >
+                {PHONE}
               </a>
-              , så finder vi en tid på en hverdag.
-            </p>
-          </section>
-
-          <figure className="-mx-4 flex flex-col gap-2 sm:mx-0 lg:col-start-1 lg:row-start-2">
+              <div className="mt-7 hidden flex-wrap gap-3 sm:flex">
+                <a href={TEL} className={`${red} h-14 px-8 text-lg`}>
+                  Ring døgnvagten
+                </a>
+                <a href={SMS} className="inline-flex h-14 items-center whitespace-nowrap border-2 border-white px-6 text-lg font-bold hover:bg-white hover:text-[#101820]">
+                  SMS et billede
+                </a>
+              </div>
+              <p className="mt-7 max-w-[40ch] text-[17px] leading-[1.5] text-[#C9D1D8]">
+                Mens du ringer: luk for hovedhanen.{" "}
+                <a href="#hovedhane" className="whitespace-nowrap font-bold text-white underline underline-offset-4">
+                  Hvor sidder den?
+                </a>
+              </p>
+            </div>
+          </div>
+          <div className="relative lg:col-span-2 lg:col-start-3 lg:row-start-1">
             <Img
               priority
               id="1676210134190-3f2c0d5cf58d"
               w={1400}
-              alt="VVS-montør skifter en varmtvandsbeholder i et teknikrum"
-              className="aspect-[3/2] w-full object-cover sm:rounded-[2px] lg:aspect-[16/10]"
+              alt="VVS-montør skifter en vandvarmer i et teknikrum"
+              className="aspect-[4/3] w-full object-cover sm:aspect-[16/9] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
             />
-            <figcaption className="flex flex-wrap justify-between gap-x-4 px-4 text-[13px] text-[#4A5868] sm:px-0">
-              <span>Ny varmtvandsbeholder, Hjortespring</span>
-              <span>Oktober 2026 · 110 liter · 6 timer</span>
-            </figcaption>
-          </figure>
+          </div>
         </section>
 
-
-        {/* What to do while we drive */}
-        <section id="mens-du-venter" className="scroll-mt-20 border-y border-[#D5DADC] bg-[#F6F7F5] sm:mt-20" style={{ backgroundImage: TILES }}>
-          <div className={`${wrap} grid gap-8 py-12 sm:py-20 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-16`}>
-            <div className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
-              <h2 className={h2}>Mens du venter på os</h2>
-              <p className="max-w-[40ch] text-[17px] leading-[1.6] text-[#24384F]">
-                Det meste af en vandskade sker i minutterne, før vi kommer. Find din hovedhane i dag, mens der ikke er travlt.
-              </p>
-            </div>
-            <ol className="flex flex-col bg-white">
-              {WHILE_YOU_WAIT.map((w, i) => (
-                <li key={w.title} className="grid grid-cols-[40px_minmax(0,1fr)] gap-x-3 border border-b-0 border-[#D5DADC] px-4 py-5 last:border-b sm:grid-cols-[56px_minmax(0,1fr)] sm:px-6">
-                  <span className={`${display} text-[32px] font-bold leading-none text-[#9A4E25]`}>{i + 1}</span>
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className="text-lg font-semibold leading-snug">{w.title}</h3>
-                    <p className="max-w-[60ch] leading-[1.6] text-[#24384F]">{w.text}</p>
+        {/* What to do before we get there */}
+        <section id="hovedhane" className="bg-[#E9ECEE]">
+          <div className={`${wrap} grid gap-x-10 gap-y-10 py-16 sm:py-24 lg:grid-cols-12`}>
+            <h2 className={`${h2} lg:col-span-6 lg:col-start-7 lg:row-start-1 lg:self-end`}>Luk for vandet, mens du venter.</h2>
+            <figure className="lg:col-span-5 lg:row-span-2 lg:row-start-1">
+              <Img
+                id="1759091563266-b1ce4d8b484d"
+                w={1000}
+                alt="To afspærringshaner med røde håndtag over et sort rør"
+                className="aspect-[3/2] w-full object-cover lg:aspect-[4/5]"
+              />
+              <figcaption className="mt-3 text-[14px] text-[#4B5560]">Sådan kan en afspærringshane se ud. Pladsholderfoto.</figcaption>
+            </figure>
+            <ol className="flex flex-col border-t-2 border-[#101820] lg:col-span-6 lg:col-start-7 lg:row-start-2 lg:self-start">
+              {SHUT_OFF.map((s, i) => (
+                <li key={s.title} className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-3 border-b border-[#C5CCD1] py-5">
+                  <span className={`${mono} text-[22px] font-bold leading-[1.15]`}>{i + 1}</span>
+                  <div>
+                    <h3 className="text-[20px] font-bold leading-[1.2]">{s.title}</h3>
+                    <p className="mt-1.5 max-w-[48ch] text-[17px] leading-[1.5] text-[#2E3A44]">{s.text}</p>
                   </div>
                 </li>
               ))}
@@ -332,300 +223,145 @@ export function VvsSite() {
           </div>
         </section>
 
-        {/* Price list and an example invoice */}
-        <section id="priser" className={`${wrap} grid scroll-mt-20 gap-10 py-12 sm:py-20 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-16`}>
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-              <h2 className={h2}>Prisliste</h2>
-              <p className="max-w-[56ch] text-[17px] leading-[1.6] text-[#24384F]">
-                Vi skriver tiden på regningen og tager betaling for hver påbegyndt halve time. Skal der dele til, står de med navn og pris.
-              </p>
-            </div>
-            <table className="w-full border-collapse text-[15px] sm:text-base">
-              <caption className="pb-2 text-left text-[13px] text-[#4A5868]">Vejledende priser inkl. moms, oktober 2026</caption>
-              {PRICES.map((g) => (
-                <tbody key={g.group}>
-                  <tr>
-                    <th colSpan={2} scope="colgroup" className="border-b-2 border-[#0F2742] pb-2 pt-6 text-left text-[13px] font-semibold uppercase tracking-[0.08em] text-[#9A4E25]">
-                      {g.group}
-                    </th>
-                  </tr>
-                  {g.rows.map((r) => (
-                    <tr key={r.what} className="border-b border-[#D5DADC]">
-                      <th scope="row" className="py-3 pr-4 text-left align-top font-medium">
-                        {r.what}
-                        {r.note && <span className="block text-sm font-normal text-[#4A5868]">{r.note}</span>}
-                      </th>
-                      <td className="whitespace-nowrap py-3 text-right align-top font-semibold tabular-nums">{r.price}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              ))}
-            </table>
-          </div>
-
-          <aside aria-labelledby="regning" className="flex flex-col gap-3 self-start lg:sticky lg:top-28">
-            <h3 id="regning" className="text-lg font-semibold">
-              Sådan ser en regning ud
-            </h3>
-            <div className="border border-[#8C99A6] bg-[#F6F7F5] p-5 text-[15px] sm:p-6">
-              <div className="flex justify-between gap-4 border-b border-[#D5DADC] pb-3">
-                <div className="flex flex-col">
-                  <span className={`${display} text-2xl font-extrabold leading-none`}>Holm VVS</span>
-                  <span className="mt-1 text-[13px] text-[#4A5868]">CVR 00 00 00 00 (eksempel)</span>
-                </div>
-                <span className="text-right text-[13px] text-[#4A5868]">
-                  Faktura 2611
-                  <br />
-                  8. okt. 2026
-                </span>
-              </div>
-              <p className="py-3 text-[#24384F]">Utæt ventil under køkkenvask, Herlev. Ventil skiftet, tæt ved aflevering.</p>
-              <table className="w-full border-collapse tabular-nums">
-                <tbody>
-                  {INVOICE.map(([what, kr]) => (
-                    <tr key={what} className="border-t border-[#D5DADC]">
-                      <th scope="row" className="py-2 pr-3 text-left font-normal">
-                        {what}
-                      </th>
-                      <td className="whitespace-nowrap py-2 text-right">{kr}</td>
-                    </tr>
-                  ))}
-                  <tr className="border-t-2 border-[#0F2742]">
-                    <th scope="row" className="py-2 pr-3 text-left font-semibold">
-                      I alt inkl. moms
-                    </th>
-                    <td className="whitespace-nowrap py-2 text-right font-semibold">1.376,00 kr.</td>
-                  </tr>
-                  <tr>
-                    <th scope="row" className="pr-3 text-left text-[13px] font-normal text-[#4A5868]">
-                      heraf moms
-                    </th>
-                    <td className="whitespace-nowrap text-right text-[13px] text-[#4A5868]">275,20 kr.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="text-sm leading-normal text-[#4A5868]">
-              Tilslutning til fjernvarme kan give håndværkerfradrag for arbejdslønnen. Service og badeværelser giver ikke fradrag. Se reglerne på skat.dk.
-            </p>
-          </aside>
-        </section>
-
-        {/* A normal week, from the driving logs */}
-        <section id="opgaver" className="scroll-mt-20 bg-[#0F2742] text-white [&_:focus-visible]:outline-white">
-          <div className={`${wrap} flex flex-col gap-8 py-12 sm:py-20`}>
-            <div className="flex max-w-[640px] flex-col gap-3">
-              <h2 className={h2}>Uge 41 i bilerne</h2>
-              <p className="text-[17px] leading-[1.6] text-[#C9D3DD]">
-                Det meste, vi laver, er små opgaver. Her er en helt almindelig uge, skrevet af fra køresedlerne. Opgaverne med orange streg var døgnvagt.
-              </p>
-            </div>
-            <table className="w-full border-collapse text-[15px] sm:text-base">
-              <caption className="sr-only">Opgaver i uge 41, 2026</caption>
-              <thead className="hidden sm:table-header-group">
-                <tr className="border-b-2 border-white text-left text-[13px] uppercase tracking-[0.08em] text-[#C9D3DD]">
-                  <th scope="col" className="py-2 pl-4 pr-4 font-semibold">
-                    Dag
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    Sted
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    Opgave
-                  </th>
-                  <th scope="col" className="py-2 text-right font-semibold">
-                    Tid
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {WEEK.map((w) => (
-                  <tr key={w.day + w.job} className={`grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 border-b border-[#2C4561] py-3 sm:table-row sm:py-0 border-l-4 pl-3 sm:pl-0 ${w.night ? "border-l-[#F26419]" : "border-l-transparent"}`}>
-                    <td className="text-[13px] tabular-nums text-[#C9D3DD] sm:w-[170px] sm:py-3.5 sm:pl-3 sm:pr-4 sm:text-[15px]">
-                      {w.day}
-                      <span className="sm:hidden"> · {w.place}</span>
-                    </td>
-                    <td className="row-span-2 self-center text-right tabular-nums sm:hidden">{w.time}</td>
-                    <td className="hidden py-3.5 pr-4 sm:table-cell">{w.place}</td>
-                    <td className="font-medium sm:py-3.5 sm:pr-4">{w.job}</td>
-                    <td className="hidden py-3.5 text-right tabular-nums sm:table-cell">{w.time}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-              <figure className="flex flex-col gap-2">
-                <Img id="1690603935238-b60582bcb273" w={1200} alt="Nyt badeværelse med hvide fliser og bruseniche" className="aspect-[4/3] w-full rounded-[2px] object-cover" />
-                <figcaption className="flex flex-wrap justify-between gap-x-4 text-[13px] text-[#C9D3DD]">
-                  <span>Badeværelse, Søborg</span>
-                  <span>Oktober 2026 · 6 m² · 9 arbejdsdage</span>
-                </figcaption>
-              </figure>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-                <figure className="flex flex-col gap-2">
-                  <Img id="1768321913920-d3ac011e0683" w={800} alt="Nye vandrør og el-rør i en åben væg, før der kommer fliser på" className="aspect-[16/9] w-full rounded-[2px] object-cover" />
-                  <figcaption className="text-[13px] text-[#C9D3DD]">Samme badeværelse, dag 4: rør i væggen</figcaption>
-                </figure>
-                <figure className="flex flex-col gap-2">
-                  <Img id="1650551182956-47efa0f90b64" w={800} alt="Rør, ventiler og manometre i et teknikrum" className="aspect-[16/9] w-full rounded-[2px] object-cover" />
-                  <figcaption className="text-[13px] text-[#C9D3DD]">Ny fjernvarmeunit, Herlev · august 2026 · 1 dag</figcaption>
-                </figure>
-              </div>
-            </div>
-            <p className="text-[13px] text-[#C9D3DD]">Fotos fra Unsplash som pladsholdere. På din side bruger vi dine egne billeder fra opgaverne.</p>
-          </div>
-        </section>
-
-        {/* The master */}
-        <section id="om" className={`${wrap} grid scroll-mt-20 gap-8 py-12 sm:py-20 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-16`}>
-          <figure className="flex items-end gap-3 sm:flex-col sm:items-stretch sm:gap-2">
-            <Img
-              id="1772442198677-10c8e7b46a5f"
-              w={800}
-              alt="Pladsholderfoto af en mand i blåt arbejdstøj ved et vindue"
-              className="aspect-[4/5] w-[132px] shrink-0 rounded-[2px] object-cover sm:w-full"
-            />
-            <figcaption className="text-[13px] leading-snug text-[#4A5868]">Pladsholderfoto · her kommer mesterens eget portræt</figcaption>
-          </figure>
-          <div className="flex max-w-[620px] flex-col gap-5">
-            <h2 className={h2}>Jonas Holm</h2>
-            <p className="text-[17px] leading-[1.65] sm:text-lg">
-              Jeg blev udlært hos en VVS&apos;er i Ballerup og startede for mig selv i 2009 med én bil og en lærling. Vi er stadig små, og det er med vilje. Den, der kommer ud til dig, er en af os fire, og Lene ved altid, hvor bilerne er.
-            </p>
-            <p className="text-[17px] leading-[1.65] sm:text-lg">
-              Vi laver ikke jordvarme og solvarme. Spørger du, giver vi dig nummeret på en, der gør det godt.
-            </p>
-            <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-2.5 border-t-2 border-[#9A4E25] pt-5 text-[15px]">
-              <dt className="text-[#4A5868]">Autorisation</dt>
-              <dd>
-                VVS-installatør nr. 00000 (eksempel)
-                <span className="block text-[13px] text-[#4A5868]">På din side linker vi til Sikkerhedsstyrelsens register, så kunden selv kan tjekke det.</span>
-              </dd>
-              <dt className="text-[#4A5868]">Garanti</dt>
-              <dd>TEKNIQ Installatørernes garantiordning (eksempel)</dd>
-              <dt className="text-[#4A5868]">CVR</dt>
-              <dd>00 00 00 00 (eksempel)</dd>
-              <dt className="text-[#4A5868]">Ventetid nu</dt>
-              <dd>Service samme eller næste hverdag. Nye badeværelser fra uge 47.</dd>
-            </dl>
-          </div>
-        </section>
-
-        {/* Reviews */}
-        <section className="border-t border-[#D5DADC] bg-[#F6F7F5]">
-          <div className={`${wrap} py-12 sm:py-20`}>
-            <div className="mb-6 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-              <h2 className={h2}>Kunderne skriver</h2>
-              <SampleReviewsNote className="text-[13px]! text-[#4A5868]" />
-            </div>
-            <ul className="border-t-2 border-[#0F2742]">
-              {REVIEWS.map((r) => (
-                <li key={r.name} className="grid gap-x-10 gap-y-2 border-b border-[#D5DADC] py-6 md:grid-cols-[200px_minmax(0,1fr)]">
-                  <div className="flex flex-wrap items-center gap-x-3 text-[13px] text-[#4A5868] md:flex-col md:items-start md:gap-1">
-                    <Stars n={r.stars} className="text-[15px] text-[#9A4E25]" />
-                    <span>{r.date}</span>
-                    <span className="font-medium text-[#0F2742] md:text-[15px]">{r.name}</span>
-                  </div>
-                  <div className="flex max-w-[68ch] flex-col gap-3">
-                    <blockquote className="text-[17px] leading-[1.6]">{r.text}</blockquote>
-                    {r.reply && (
-                      <p className="border-l-2 border-[#9A4E25] pl-3.5 text-[15px] leading-[1.55] text-[#24384F]">
-                        <b className="font-semibold">Svar fra Jonas:</b> {r.reply}
-                      </p>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Contact */}
-        <section id="kontakt" className="scroll-mt-20 border-t border-[#D5DADC]">
-          <div className={`${wrap} grid gap-10 py-12 sm:py-20 lg:grid-cols-2 lg:gap-16`}>
-            <div className="flex max-w-[460px] flex-col gap-4">
-              <h2 className={h2}>Ikke akut? Skriv til Lene</h2>
-              <p className="text-[17px] leading-[1.6]">
-                Ring, hvis det haster. Skriv, hvis det kan vente til i morgen, og send gerne et billede af det, der drypper. Lene svarer på hverdage inden kl. 16.
-              </p>
-              <a href={TEL} className={`${display} self-start whitespace-nowrap text-[44px] font-bold leading-none hover:text-[#9A4E25]`}>
-                {PHONE}
-              </a>
-              <p className="text-[15px] text-[#4A5868]">
-                Døgnvagt alle dage · Kontor hverdage kl. 7–16, fredag til 14
-                <br />
-                {ADDRESS}
-              </p>
-            </div>
+        {/* The other route: it can wait, so write */}
+        <section id="kontakt" className={`${wrap} grid gap-x-10 gap-y-14 py-16 sm:py-24 lg:grid-cols-12`}>
+          <div className="lg:col-span-6">
+            <h2 className={h2}>Kan det vente til en hverdag?</h2>
+            <p className="mt-4 max-w-[40ch] text-[17px] leading-[1.55] text-[#2E3A44]">Skriv, hvad der er galt, så ringer vi og finder en tid.</p>
             <form
-              className="flex max-w-[540px] flex-col gap-4"
+              className="mt-8 flex flex-col gap-5"
               onSubmit={(e) => {
                 e.preventDefault();
                 setSent(true);
                 e.currentTarget.reset();
               }}
             >
+              <label className="flex flex-col gap-2 text-[16px] font-bold">
+                Hvad er der galt?
+                <textarea required name="opgave" rows={3} placeholder="Fx toilettet løber hele tiden" className={`${field} resize-y font-normal`} />
+              </label>
+              <label className="flex flex-col gap-2 text-[16px] font-bold">
+                Dit telefonnummer
+                <input
+                  required
+                  name="telefon"
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  pattern="[0-9 +]{8,}"
+                  title="Skriv et telefonnummer på mindst 8 cifre"
+                  className={`${field} font-normal sm:max-w-[320px]`}
+                />
+              </label>
+              <button type="submit" className={`${blue} h-14 self-start px-10 text-lg`}>
+                Send
+              </button>
               {sent && (
-                <p role="status" className="rounded-[2px] border-l-4 border-[#0F2742] bg-[#E7ECF1] p-4 leading-normal">
-                  Tak. På en rigtig side ville Lene ringe dig op inden kl. 16 og aftale en tid. Dette er et eksempel, så der er ikke sendt noget.
+                <p role="status" className="max-w-[48ch] border-l-4 border-[#1E56C8] pl-4 text-[16px] leading-[1.5]">
+                  Tak. På en rigtig side ville vi nu ringe dig op. Dette er et eksempel, så der er ikke sendt noget.
                 </p>
               )}
-              <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                Navn
-                <input required name="navn" type="text" autoComplete="name" className={field} />
-              </label>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Telefon
-                  <input required name="telefon" type="tel" autoComplete="tel" inputMode="tel" pattern="[0-9 +]{8,}" title="Skriv et telefonnummer på mindst 8 cifre" className={field} />
-                </label>
-                <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                  Adresse
-                  <input required name="adresse" type="text" autoComplete="street-address" className={field} />
-                </label>
-              </div>
-              <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                Hvad drejer det sig om?
-                <textarea required name="opgave" rows={4} placeholder="Fx toilettet løber hele tiden, rækkehus i Skovlunde" className={`${field} resize-y`} />
-              </label>
-              <label className="flex flex-col gap-1.5 text-[15px] font-medium">
-                <span>
-                  Billede <span className="font-normal text-[#4A5868]">(kan udelades)</span>
-                </span>
-                <input name="billede" type="file" accept="image/*" className="text-[15px] font-normal file:mr-3 file:rounded-[2px] file:border file:border-[#8C99A6] file:bg-white file:px-3 file:py-2 file:text-[15px] file:font-medium file:text-[#0F2742]" />
-              </label>
-              <button type="submit" className="inline-flex h-[52px] items-center self-start whitespace-nowrap rounded-[2px] bg-[#0F2742] px-6 text-[17px] font-semibold text-white transition-colors hover:bg-[#0A1B2F]">
-                Send til Lene
-              </button>
             </form>
+          </div>
+
+          <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 self-start border-t-2 border-[#101820] pt-5 text-[16px] leading-[1.45] lg:col-span-5 lg:col-start-8">
+            <dt className="text-[#4B5560]">Kontor</dt>
+            <dd>Hverdage kl. 7–16, fredag til 14</dd>
+            <dt className="text-[#4B5560]">Døgnvagt</dt>
+            <dd>
+              Alle dage på{" "}
+              <a href={TEL} className={`${mono} whitespace-nowrap font-bold underline underline-offset-4`}>
+                {PHONE}
+              </a>
+            </dd>
+            <dt className="text-[#4B5560]">Område</dt>
+            <dd>Herlev, Ballerup, Gladsaxe og Rødovre</dd>
+            <dt className="text-[#4B5560]">Værksted</dt>
+            <dd>{ADDRESS}</dd>
+            <dt className="text-[#4B5560]">Autorisation</dt>
+            <dd>
+              VVS-installatør nr. 00000 (eksempel)
+              <span className="mt-0.5 block text-[14px] text-[#4B5560]">På din side linker vi til Sikkerhedsstyrelsens register.</span>
+            </dd>
+            <dt className="text-[#4B5560]">Garanti</dt>
+            <dd>TEKNIQ Installatørernes garantiordning (eksempel)</dd>
+            <dt className="text-[#4B5560]">CVR</dt>
+            <dd>00 00 00 00 (eksempel)</dd>
+          </dl>
+        </section>
+
+        {/* What the vans are actually for */}
+        <section id="opgaver" className="bg-[#101820] text-white [&_:focus-visible]:outline-white">
+          <div className={`${wrap} py-16 sm:py-24`}>
+            <div className="grid gap-x-10 gap-y-5 lg:grid-cols-12">
+              <h2 className={`${h2} lg:col-span-5`}>Mest små opgaver.</h2>
+              <p className="max-w-[52ch] text-[17px] leading-[1.6] text-[#C9D1D8] lg:col-span-6 lg:col-start-7">
+                Toiletter, vandvarmere, afløb og fjernvarme, og et par gange om året et helt badeværelse. Jordvarme og solvarme laver vi ikke, men vi giver dig gerne nummeret på en, der gør.
+              </p>
+            </div>
+            <div className="mt-12 grid gap-x-10 gap-y-8 lg:grid-cols-12">
+              <figure className="lg:col-span-8">
+                <Img id="1690603935238-b60582bcb273" w={1400} alt="Nyt badeværelse med hvide fliser og bruseniche" className="aspect-[4/3] w-full object-cover sm:aspect-[3/2]" />
+                <figcaption className="mt-3 text-[14px] text-[#A7B1BA]">Nyt badeværelse</figcaption>
+              </figure>
+              <figure className="lg:col-span-4 lg:self-end">
+                <Img id="1768321913920-d3ac011e0683" w={900} alt="Nye vandrør og el-rør i en åben væg" className="aspect-[3/2] w-full object-cover lg:aspect-[4/5]" />
+                <figcaption className="mt-3 text-[14px] text-[#A7B1BA]">Rør i væggen, før fliserne kommer på</figcaption>
+              </figure>
+            </div>
+            <p className="mt-10 text-[14px] text-[#A7B1BA]">Fotos er pladsholdere fra Unsplash. På din side står billeder fra jeres egne opgaver.</p>
+          </div>
+        </section>
+
+        {/* Price list */}
+        <section id="priser" className={`${wrap} py-16 sm:py-24`}>
+          <div className="grid gap-x-10 gap-y-4 lg:grid-cols-12">
+            <h2 className={`${h2} lg:col-span-5`}>Priser</h2>
+            <p className="max-w-[48ch] text-[17px] leading-[1.55] text-[#2E3A44] lg:col-span-6 lg:col-start-7">
+              Eksempelpriser inkl. moms. Tiden står på regningen, og dele står med navn og pris.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-x-10 gap-y-12 lg:grid-cols-2">
+            <Prices title="Timer og kørsel" rows={HOURLY} />
+            <Prices title="Faste priser med kørsel og smådele" rows={FIXED} />
+          </div>
+          <div className="mt-14 border-t-2 border-[#101820] lg:ml-[calc(50%+1.25rem)]">
+            {FAQ.map((f) => (
+              <details key={f.q} className="group border-b border-[#C5CCD1]">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-4 text-[17px] font-bold [&::-webkit-details-marker]:hidden">
+                  {f.q}
+                  <span aria-hidden className={`${mono} text-[22px] leading-[1.05] group-open:hidden`}>
+                    +
+                  </span>
+                  <span aria-hidden className={`${mono} hidden text-[22px] leading-[1.05] group-open:inline`}>
+                    –
+                  </span>
+                </summary>
+                <p className="max-w-[56ch] pb-5 text-[17px] leading-[1.55] text-[#2E3A44]">{f.a}</p>
+              </details>
+            ))}
           </div>
         </section>
       </main>
 
-      <footer className="bg-[#0A1B2F] pb-24 text-[15px] text-[#C9D3DD] sm:pb-0">
-        <div className={`${wrap} flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3 py-10`}>
-          <span className={`${display} text-2xl font-extrabold text-white`}>Holm VVS</span>
+      <footer className="bg-[#101820] pb-24 text-[15px] text-[#A7B1BA] sm:pb-0 [&_:focus-visible]:outline-white">
+        <div className={`${wrap} flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 py-10`}>
+          <span className="text-[22px] font-extrabold tracking-[-0.03em] text-white">Holm VVS</span>
           <span>{ADDRESS}</span>
           <span>CVR 00 00 00 00 (eksempel)</span>
-          <span>Aut. nr. 00000 (eksempel)</span>
-          <a href={TEL} className="font-semibold text-white underline underline-offset-2">
+          <a href={TEL} className={`${mono} font-bold text-white underline underline-offset-4`}>
             {PHONE}
           </a>
         </div>
       </footer>
 
-      {/* Phone: emergency call and the written route, always within thumb's reach */}
-      <div className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-[1.3fr_1fr] gap-2.5 border-t border-[#D5DADC] bg-white px-4 pb-4 pt-3 sm:hidden">
-        <a href={TEL} className={`${callBtn} flex h-[52px] gap-2`}>
-          <PhoneGlyph className="size-4" />
-          <span className="min-[360px]:hidden">Ring</span>
-          <span className="hidden min-[360px]:inline">Ring døgnvagt</span>
+      {/* Phone: call, or text a photo of what is dripping */}
+      <div className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t-2 border-[#101820] bg-white px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 sm:hidden">
+        <a href={TEL} className={`${red} h-[52px] flex-1 text-[17px]`}>
+          Ring døgnvagten
         </a>
-        <a href="#kontakt" className="grid h-[52px] place-items-center whitespace-nowrap rounded-[2px] border border-[#0F2742] font-semibold">
-          <span className="min-[360px]:hidden">Skriv</span>
-          <span className="hidden min-[360px]:inline">Skriv til os</span>
+        <a href={SMS} className={`${blue} h-[52px] px-5 text-[17px]`}>
+          SMS
         </a>
       </div>
     </div>
