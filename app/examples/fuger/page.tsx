@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Red_Hat_Display, Red_Hat_Mono } from "next/font/google";
+import { Funnel_Display, Funnel_Sans } from "next/font/google";
 import { FugerSite } from "@/components/examples/fuger";
 
-// A clean, technical sans for text, and its mono sibling for meters, prices and the job log: an opmålingsseddel.
-const display = Red_Hat_Display({ subsets: ["latin"], weight: ["400", "500", "700", "800"], variable: "--font-taet" });
-const mono = Red_Hat_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-taet-mono" });
+// A grotesk with clipped, nozzle-like terminals for headings, and its plainer sibling for reading.
+const display = Funnel_Display({ subsets: ["latin"], variable: "--font-taet" });
+const sans = Funnel_Sans({ subsets: ["latin"], variable: "--font-taet-sans" });
 
 export const metadata: Metadata = {
   title: { absolute: "Fugefirmaet Tæt – fugemand i Esbjerg (eksempel)" },
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className={`${display.variable} ${mono.variable}`}>
+    <div className={`${display.variable} ${sans.variable}`}>
       <FugerSite />
     </div>
   );
