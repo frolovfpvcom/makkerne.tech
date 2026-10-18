@@ -213,14 +213,22 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
                 {Array.from({ length: SLICES }, (_, k) => (
                   <span
                     key={k}
-                    className="absolute top-0 block overflow-hidden bg-paper-2"
+                    className="absolute block overflow-hidden bg-paper-2"
                     style={{
                       // Only the outer strips round off, so the tile reads as one card with soft corners.
                       borderRadius: k === 0 ? `${u(RADIUS)} 0 0 ${u(RADIUS)}` : k === SLICES - 1 ? `0 ${u(RADIUS)} ${u(RADIUS)} 0` : undefined,
-                      left: u((aspectRatio - share) / 2),
-                      // A pixel wider than its share, so neighbouring facets overlap and no hairline opens.
-                      width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
-                      height: u(1),
+                      // Every strip reaches a pixel past both its neighbours, so no hairline opens between facets.
+                      left: `calc(${u((aspectRatio - share) / 2)} - 1px)`,
+                      width: `calc(${u(share)} + 2px)`,
+                      top: -1,
+                      height: `calc(${u(1)} + 2px)`,
+                      // A clear pixel round the tile's outer edges. A 3D-turned box's own edges are drawn
+                      // unsmoothed and step at every facet, so the visible edge sits inside it instead,
+                      // where the browser smooths it like any image edge.
+                      borderStyle: "solid",
+                      borderColor: "transparent",
+                      borderWidth: `1px ${k === SLICES - 1 ? 1 : 0}px 1px ${k === 0 ? 1 : 0}px`,
+                      backgroundClip: "padding-box",
                       transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
                     }}
                   >
@@ -230,7 +238,7 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
                       alt=""
                       draggable={false}
                       className="absolute top-0 max-w-none object-cover object-top"
-                      style={{ left: u(-k * share), width: u(aspectRatio), height: u(1) }}
+                      style={{ left: k === 0 ? u(0) : `calc(${u(-k * share)} + 1px)`, width: u(aspectRatio), height: u(1) }}
                     />
                   </span>
                 ))}
