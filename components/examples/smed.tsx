@@ -5,8 +5,8 @@ import { DemoNote, Img } from "./shared";
 
 /*
  * Nørbæk Smedie is shown the way steel is: black, heavy and exact. The page is dark, the photos are
- * big, and the measurements sit under them the way they would on a drawing. The heading is cut into
- * the photo on a black plate. One light section does the arithmetic for a railing, line by line.
+ * big, and the measurements sit under them the way they would on a drawing. The heading sits on the
+ * photo itself, with only a shade behind it. One light section does the arithmetic for a railing, line by line.
  * Red-oxide primer is the only colour, kept for "send us the measurements".
  */
 
@@ -150,20 +150,23 @@ export function SmedSite() {
       </header>
 
       <main>
-        {/* The workshop, with the heading cut into it on a black plate */}
+        {/* The workshop, with the heading set straight onto the photo */}
         <section id="top" className="relative">
-          <Img
-            priority
-            id="1558611997-dd5b20e08c71"
-            w={2400}
-            alt="Smed svejser en ramme i stål på værkstedet"
-            className="aspect-[4/5] max-h-[78vh] w-full object-cover sm:aspect-[16/9] lg:aspect-auto lg:h-[calc(100svh-89px)] lg:max-h-[1040px] lg:min-h-[600px]"
-          />
-          {/* The plate runs off the left edge, so the heading looks cut into the photo. On a big screen the whole intro sits on it. */}
+          <div className="relative">
+            <Img
+              priority
+              id="1558611997-dd5b20e08c71"
+              w={2400}
+              alt="Smed svejser en ramme i stål på værkstedet"
+              className="aspect-[4/5] max-h-[78vh] w-full object-cover sm:aspect-[16/9] lg:aspect-auto lg:h-[calc(100svh-89px)] lg:max-h-[1040px] lg:min-h-[600px]"
+            />
+            {/* Shade, not a box: the photo darkens toward the page below it, and on a big screen also toward the text on the left, so the white type stays readable while the work shows through. */}
+            <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,#151617_0%,rgb(21_22_23/0.7)_22%,rgb(21_22_23/0)_55%)] lg:bg-[linear-gradient(to_top,rgb(21_22_23/0.85)_0%,rgb(21_22_23/0.35)_45%,rgb(21_22_23/0)_70%),linear-gradient(to_right,rgb(21_22_23/0.8)_0%,rgb(21_22_23/0.55)_40%,rgb(21_22_23/0)_68%)]" />
+          </div>
           <div className="relative -mt-20 sm:-mt-36 lg:absolute lg:inset-x-0 lg:bottom-0 lg:mt-0">
             <div className={wrap}>
-              <div className="relative lg:w-fit lg:bg-[#151617] lg:pb-14 lg:pr-12 lg:before:absolute lg:before:inset-y-0 lg:before:right-full lg:before:w-screen lg:before:bg-[#151617]">
-                <div className="relative w-fit bg-[#151617] pr-6 pt-6 before:absolute before:inset-y-0 before:right-full before:w-screen before:bg-[#151617] sm:pr-10 sm:pt-9">
+              <div className="relative lg:w-fit lg:pb-14 lg:pr-12">
+                <div className="relative w-fit pr-6 pt-6 [text-shadow:0_1px_12px_rgb(21_22_23/0.6)] sm:pr-10 sm:pt-9">
                   <p className="text-[16px] text-[#A8AEB0]">Klejnsmed i Silkeborg</p>
                   <h1 className={`${display} mt-2 text-[48px] font-black leading-[0.94] tracking-[0.005em] min-[360px]:text-[56px] sm:text-[104px] lg:text-[112px] xl:text-[128px] [@media(min-width:1024px)_and_(max-height:820px)]:text-[92px]`}>
                     Gelændere,
