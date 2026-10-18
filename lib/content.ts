@@ -41,7 +41,7 @@ const da = {
   },
   examples: {
     title: "Sådan kan din side se ud",
-    lead: "Ti eksempler, ét til hvert fag. Vælg dit eget, og klik rundt på siden, som en kunde ville gøre. Din egen side bliver lavet til dit firma.",
+    lead: "Ti eksempler, ét til hvert fag. Klik på en af dem for at åbne den og prøve den, som en kunde ville. Din egen side bliver lavet til dit firma.",
     pick: "Vælg dit fag",
     try: "Klik og prøv siden",
     open: "Åbn siden",
@@ -328,7 +328,7 @@ const en: Dict = {
   },
   examples: {
     title: "This is what your site could look like",
-    lead: "Ten examples, one for each trade. Pick yours and click around the site like a customer would. Yours is made for your business.",
+    lead: "Ten examples, one for each trade. Click one to open it and try it like a customer would. Yours is made for your business.",
     pick: "Pick your trade",
     try: "Click to try the site",
     open: "Open the site",

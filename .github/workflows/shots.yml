@@ -1,0 +1,32 @@
+# Takes fresh screenshots of the ten example sites for the front page and commits them.
+# Runs by hand, or on a push that touches the workflow or the script. The sandbox Claude works in
+# can't reach Unsplash or Google Fonts, so the screenshots are made here instead.
+name: Example screenshots
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/shots.yml", "scripts/shots.mjs"]
+permissions:
+  contents: write
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Turbopack fails to fetch some Google fonts on the runner; webpack builds the same pages.
+      - run: npx next build --webpack
+      - run: npm i --no-save playwright@1.49.1 && npx playwright install --with-deps chromium
+      - run: |
+          npm start &
+          npx -y wait-on@8 http://localhost:3000
+          node scripts/shots.mjs
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add public/examples/shots
+          git diff --cached --quiet || (git commit -m "Update example screenshots" && git push)
