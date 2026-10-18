@@ -14,7 +14,8 @@ import * as React from "react";
  * about that same axis carries the whole tile along the arc. Only a tile's
  * delay differs, and that sets where on the arc it sits.
  *
- * Hovering any tile pauses every tile, and a tile is a link to its example.
+ * Hovering any tile pauses every tile and lifts that one off the arc toward
+ * you, and a tile is a link to its example.
  * The only JS is a ResizeObserver that sizes the loop, and a handler that
  * hands a tile its next example each time it wraps, out of sight.
  * ─────────────────────────────────────────────────────────────── */
@@ -36,6 +37,9 @@ function arc(bend: number) {
 
 // A tile is never wider than this share of the row, so a phone still shows its neighbours.
 const MAX_WIDTH = 70;
+
+// Corner radius, as a share of the tile's height.
+const RADIUS = 0.035;
 
 /**
  * Lays the loop on the cylinder. Angles come back in degrees: `unit` is the arc one tile-height
@@ -85,6 +89,7 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
   const orbit = `cr-o-${id}`;
   const band = `cr-b-${id}`;
   const tile = `cr-t-${id}`;
+  const lift = `cr-l-${id}`;
   const bend = (Math.min(85, Math.max(5, curve)) * Math.PI) / 180;
 
   // Null until the observer has measured the row; the band stays hidden until then.
@@ -135,6 +140,13 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
     // Hovering any tile stops the whole row, so the one under the pointer holds still to be clicked.
     // !important because the inline `animation` shorthand sets the play state too.
     `.${band}:has(.${tile}:hover) .${tile}{animation-play-state:paused!important}` +
+    // The tile under the pointer comes forward off the arc and grows a little. Its own transform
+    // carries it round the cylinder, so the lift sits on a wrapper inside it.
+    `.${lift}{transition:transform 320ms cubic-bezier(.2,.8,.2,1)}` +
+    // One flat shadow behind the strips; a shadow on each strip would fall on its neighbour as a stripe.
+    `.${lift}>i{opacity:0;transition:opacity 320ms ease-out}` +
+    `.${tile}:hover .${lift}>i{opacity:1}` +
+    `.${tile}:hover .${lift}{transform:translateZ(${u(0.22)}) scale(1.08);transition-duration:220ms}` +
     // Pausing rather than removing the motion leaves the row as a finished still.
     `@media(prefers-reduced-motion:reduce){.${tile}{animation-play-state:paused!important}}`;
 
@@ -193,28 +205,36 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
                 });
               }}
             >
-              {Array.from({ length: SLICES }, (_, k) => (
-                <span
-                  key={k}
-                  className="absolute top-0 block overflow-hidden bg-paper-2"
-                  style={{
-                    left: u((aspectRatio - share) / 2),
-                    // A pixel wider than its share, so neighbouring facets overlap and no hairline opens.
-                    width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
-                    height: u(1),
-                    transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
-                  }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- one image cut into strips */}
-                  <img
-                    src={item.src}
-                    alt=""
-                    draggable={false}
-                    className="absolute top-0 max-w-none object-cover object-top"
-                    style={{ left: u(-k * share), width: u(aspectRatio), height: u(1) }}
-                  />
-                </span>
-              ))}
+              <span className={`${lift} absolute inset-0 block`} style={{ transformStyle: "preserve-3d" }}>
+                <i
+                  className="absolute inset-0 block"
+                  style={{ borderRadius: u(RADIUS), boxShadow: `0 ${u(0.05)} ${u(0.12)} rgb(0 0 0 / 0.18)`, transform: `translateZ(${u(-0.02)})` }}
+                />
+                {Array.from({ length: SLICES }, (_, k) => (
+                  <span
+                    key={k}
+                    className="absolute top-0 block overflow-hidden bg-paper-2"
+                    style={{
+                      // Only the outer strips round off, so the tile reads as one card with soft corners.
+                      borderRadius: k === 0 ? `${u(RADIUS)} 0 0 ${u(RADIUS)}` : k === SLICES - 1 ? `0 ${u(RADIUS)} ${u(RADIUS)} 0` : undefined,
+                      left: u((aspectRatio - share) / 2),
+                      // A pixel wider than its share, so neighbouring facets overlap and no hairline opens.
+                      width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
+                      height: u(1),
+                      transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element -- one image cut into strips */}
+                    <img
+                      src={item.src}
+                      alt=""
+                      draggable={false}
+                      className="absolute top-0 max-w-none object-cover object-top"
+                      style={{ left: u(-k * share), width: u(aspectRatio), height: u(1) }}
+                    />
+                  </span>
+                ))}
+              </span>
             </a>
           );
         })}
