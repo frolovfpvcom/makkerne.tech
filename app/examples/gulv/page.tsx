@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Karla, Newsreader } from "next/font/google";
+import { Jost } from "next/font/google";
 import { GulvSite } from "@/components/examples/gulv";
 
-// A calm book serif for headings, like the label on a tin of floor oil, and a plain, warm grotesk for the rest.
-const serif = Newsreader({ subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"], variable: "--font-boegh-serif" });
-const sans = Karla({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-boegh" });
+// A light geometric sans, like an old Scandinavian furniture catalogue, so the floors get the attention.
+const jost = Jost({ subsets: ["latin"], variable: "--font-boegh" });
 
 export const metadata: Metadata = {
   title: { absolute: "Bøgh Gulve – gulvlægger og gulvsliber i Hillerød (eksempel)" },
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className={`${serif.variable} ${sans.variable}`}>
+    <div className={jost.variable}>
       <GulvSite />
     </div>
   );
