@@ -17,6 +17,29 @@ function hideScrollbar(e: React.SyntheticEvent<HTMLIFrameElement>) {
 }
 
 /**
+ * The colour at the very bottom of the site, so the strip under it (where a real iPhone keeps the
+ * home indicator) continues the site's own call bar instead of cutting it off at the round corner.
+ */
+function bottomColour(win: Window | null | undefined) {
+  try {
+    if (!win) return null;
+    let el = win.document.elementFromPoint(2, win.innerHeight - 2);
+    while (el) {
+      const bg = win.getComputedStyle(el).backgroundColor;
+      if (bg && bg !== "transparent" && !/rgba\(.*,\s*0\)$/.test(bg)) return bg;
+      el = el.parentElement;
+    }
+  } catch {}
+  return null;
+}
+
+/** Whether a computed rgb() colour is dark, so the home indicator can be drawn light on it. */
+function isDark(rgb: string) {
+  const [r, g, b] = (rgb.match(/\d+(\.\d+)?/g) ?? []).map(Number);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 128;
+}
+
+/**
  * An iPhone: thin titanium edge, black bezel, big rounded corners, the Dynamic Island in a white
  * status bar, and the side buttons. The screen shows one of the example sites at real phone width
  * below the status bar, so the island never covers any of the site; it never takes clicks itself.
@@ -27,6 +50,11 @@ export function IPhone({ src, title, width = 300, height = 600 }: { src: string;
   const screenW = width - bezel * 2;
   const screenH = height - bezel * 2;
   const statusBar = Math.round(width * 0.115);
+  // The bottom of a real iPhone screen is kept free for the home indicator; sites pad their call
+  // bars into it with env(safe-area-inset-bottom), which is 0 in this frame, so the mockup keeps
+  // the strip itself. Tall enough that the round corners never reach the buttons above it.
+  const homeBar = Math.round(height * 0.04);
+  const [chin, setChin] = useState("#ffffff");
   const scale = screenW / PHONE_WIDTH;
   // Which site has finished loading, so a newly picked trade never shows a blank screen.
   const [loaded, setLoaded] = useState<string | null>(null);
@@ -36,7 +64,10 @@ export function IPhone({ src, title, width = 300, height = 600 }: { src: string;
     const check = () => {
       try {
         const doc = frameRef.current?.contentDocument;
-        if (doc?.readyState === "complete" && doc.location.href !== "about:blank") setLoaded(src);
+        if (doc?.readyState === "complete" && doc.location.href !== "about:blank") {
+          setChin(bottomColour(frameRef.current?.contentWindow) ?? "#ffffff");
+          setLoaded(src);
+        }
       } catch {}
     };
     const id = setTimeout(check, 0);
@@ -76,7 +107,7 @@ export function IPhone({ src, title, width = 300, height = 600 }: { src: string;
               </svg>
             </span>
           </div>
-          <div className="relative overflow-hidden bg-paper" style={{ height: screenH - statusBar }}>
+          <div className="relative overflow-hidden bg-paper" style={{ height: screenH - statusBar - homeBar }}>
             <iframe
               key={src}
               ref={frameRef}
@@ -87,14 +118,19 @@ export function IPhone({ src, title, width = 300, height = 600 }: { src: string;
               aria-hidden
               onLoad={(e) => {
                 hideScrollbar(e);
+                setChin(bottomColour(e.currentTarget.contentWindow) ?? "#ffffff");
                 setLoaded(src);
               }}
               className="pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-paper"
-              style={{ width: PHONE_WIDTH, height: (screenH - statusBar) / scale, transform: `scale(${scale})` }}
+              style={{ width: PHONE_WIDTH, height: (screenH - statusBar - homeBar) / scale, transform: `scale(${scale})` }}
             />
             <div aria-hidden className={`absolute inset-0 grid place-items-center bg-paper transition-opacity duration-300 ${loaded === src ? "pointer-events-none opacity-0" : "opacity-100"}`}>
               <span className="h-1.5 w-16 animate-pulse bg-brand" />
             </div>
+          </div>
+          {/* Home indicator, on the same colour as the bottom of the site above it. */}
+          <div aria-hidden className="relative grid place-items-center" style={{ height: homeBar, background: loaded === src ? chin : undefined }}>
+            <span className={`h-[4px] w-[36%] rounded-full ${isDark(chin) && loaded === src ? "bg-white/85" : "bg-black/85"}`} style={{ marginTop: -homeBar * 0.15 }} />
           </div>
         </div>
       </div>

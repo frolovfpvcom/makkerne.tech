@@ -355,12 +355,12 @@ export function VvsSite() {
         </div>
       </footer>
 
-      {/* Phone: call, or text a photo of what is dripping */}
-      <div className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t-2 border-[#101820] bg-white px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 sm:hidden">
-        <a href={TEL} className={`${red} h-[52px] flex-1 text-[17px]`}>
-          Ring døgnvagten
+      {/* Phone: the van's own colours, the number on the red button, and a photo by text as the quiet second choice */}
+      <div className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t border-[#3A4651] bg-[#101820] px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 text-white sm:hidden [&_:focus-visible]:outline-white">
+        <a href={TEL} className={`${red} h-[52px] min-w-0 flex-1 gap-2 text-[17px]`}>
+          Ring <span className={mono}>{PHONE}</span>
         </a>
-        <a href={SMS} className={`${blue} h-[52px] px-5 text-[17px]`}>
+        <a href={SMS} aria-label="Send en SMS" className="inline-flex h-[52px] items-center whitespace-nowrap border-2 border-white px-5 text-[17px] font-bold hover:bg-white hover:text-[#101820]">
           SMS
         </a>
       </div>
