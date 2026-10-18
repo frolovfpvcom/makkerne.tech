@@ -38,6 +38,14 @@ function arc(bend: number) {
 // A tile is never wider than this share of the row, so a phone still shows its neighbours.
 const MAX_WIDTH = 70;
 
+// A strip's outline: its full width, less the pixel it shares with each neighbour along the top
+// and bottom pixel.
+const EDGE_CLIP = [
+  "1px 0", "calc(100% - 1px) 0", "calc(100% - 1px) 1px", "100% 1px",
+  "100% calc(100% - 1px)", "calc(100% - 1px) calc(100% - 1px)", "calc(100% - 1px) 100%",
+  "1px 100%", "1px calc(100% - 1px)", "0 calc(100% - 1px)", "0 1px", "1px 1px",
+].join(",");
+
 // Corner radius, as a share of the tile's height.
 const RADIUS = 0.035;
 
@@ -233,6 +241,9 @@ export function CurvedRow({ items, speed = 9, tileHeight = 64, aspectRatio = 16 
                       borderColor: "transparent",
                       borderWidth: `1px ${k === SLICES - 1 ? 1 : 0}px 1px ${k === 0 ? 1 : 0}px`,
                       backgroundClip: "padding-box",
+                      // The overlap stops short of the top and bottom edges. Where two strips overlap, their
+                      // smoothed edge pixels stack and show as a dark tick at every seam.
+                      clipPath: `polygon(${EDGE_CLIP})`,
                       transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
                     }}
                   >
