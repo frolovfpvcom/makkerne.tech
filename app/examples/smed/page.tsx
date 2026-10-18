@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Chivo, Chivo_Mono } from "next/font/google";
+import { Archivo, Big_Shoulders } from "next/font/google";
 import { SmedSite } from "@/components/examples/smed";
 
-// A firm, slightly industrial grotesk for everything, and its mono for measures, positions and RAL codes: the workshop drawing.
-const chivo = Chivo({ subsets: ["latin"], variable: "--font-norbaek" });
-const mono = Chivo_Mono({ subsets: ["latin"], variable: "--font-norbaek-mono" });
+// Tall, condensed capitals from a city built on steel for the headings, and a sturdy grotesk for everything you read.
+const display = Big_Shoulders({ subsets: ["latin"], weight: ["700", "800", "900"], adjustFontFallback: false, variable: "--font-norbaek-display" });
+const body = Archivo({ subsets: ["latin"], variable: "--font-norbaek" });
 
 export const metadata: Metadata = {
   title: { absolute: "Nørbæk Smedie – klejnsmed i Silkeborg (eksempel)" },
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className={`${chivo.variable} ${mono.variable}`}>
+    <div className={`${display.variable} ${body.variable}`}>
       <SmedSite />
     </div>
   );
