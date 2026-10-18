@@ -194,6 +194,8 @@ const da = {
     trade: {
       title: "Dit fag",
       options: ["VVS", "Tømrer", "Maler", "Tag", "Elektriker", "Murer", "Gulv", "Fuger", "Anlægsgartner", "Smed", "Andet fag"],
+      write: "Skriv dit fag",
+      hints: ["Skriv dit fag", "Fx glarmester", "Fx kloakmester", "Fx snedker", "Fx brolægger", "Fx skorstensfejer"],
     },
     size: {
       title: "Hvor stor",
@@ -415,6 +417,8 @@ const en: Dict = {
     trade: {
       title: "Your trade",
       options: ["Plumber", "Carpenter", "Painter", "Roofer", "Electrician", "Bricklayer", "Floors", "Sealing", "Landscaper", "Metalwork", "Other trade"],
+      write: "Write your trade",
+      hints: ["Write your trade", "E.g. glazier", "E.g. drain layer", "E.g. joiner", "E.g. paver", "E.g. chimney sweep"],
     },
     size: {
       title: "How big",

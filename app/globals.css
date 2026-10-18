@@ -30,6 +30,10 @@ body {
   outline: 2px solid var(--color-brand);
   outline-offset: 3px;
 }
+/* A text field already shows where you type, so it only darkens its border. */
+[data-field]:focus-visible {
+  outline: none;
+}
 
 /* Buttons (padded links and buttons) give a small press when tapped. */
 a[class*="px-"],

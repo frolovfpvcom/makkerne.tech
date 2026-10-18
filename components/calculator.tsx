@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { EMAIL } from "@/lib/content";
 import { useLang } from "./lang";
 
@@ -50,6 +50,19 @@ export function Calculator() {
   const [size, setSize] = useState(0);
   const [extras, setExtras] = useState<number[]>([]);
   const [care, setCare] = useState(0);
+  // "Andet fag" is the last option; picking it opens a field to write the trade in.
+  const other = c.trade.options.length - 1;
+  const [otherTrade, setOtherTrade] = useState("");
+  const [hint, setHint] = useState(0);
+  const otherRef = useRef<HTMLInputElement>(null);
+  const tradeName = trade === null ? null : trade === other && otherTrade.trim() ? otherTrade.trim() : c.trade.options[trade];
+
+  // While the field is empty, its placeholder runs through a few trades that are not on the list.
+  useEffect(() => {
+    if (trade !== other || otherTrade) return;
+    const id = setInterval(() => setHint((h) => (h + 1) % c.trade.hints.length), 1800);
+    return () => clearInterval(id);
+  }, [trade, other, otherTrade, c.trade.hints.length]);
 
   const num = (n: number) => n.toLocaleString(lang === "da" ? "da-DK" : "en-GB");
   const kr = (n: number) => (lang === "da" ? `${num(n)} kr.` : `DKK ${num(n)}`);
@@ -59,7 +72,7 @@ export function Calculator() {
   const mailto = () => {
     const [lTrade, lSize, lExtras, lCare, lPrice] = c.mailLines;
     const body = [
-      `${lTrade}: ${trade === null ? "" : c.trade.options[trade]}`,
+      `${lTrade}: ${tradeName ?? ""}`,
       `${lSize}: ${c.size.options[size].label}`,
       `${lExtras}: ${extras.length ? [...extras].sort((a, b) => a - b).map((i) => c.features.options[i].label).join(", ") : c.none}`,
       `${lCare}: ${c.care.options[care].label}`,
@@ -70,20 +83,50 @@ export function Calculator() {
     return `mailto:${EMAIL}?subject=${encodeURIComponent(c.mailSubject)}&body=${encodeURIComponent(body)}`;
   };
 
+  const tradeChip = (o: string, i: number) => (
+    <label
+      key={o}
+      className="flex h-9 cursor-pointer items-center border border-ink/25 bg-card px-3.5 font-cond text-lg font-bold uppercase leading-none transition-colors hover:border-ink has-checked:border-ink has-checked:bg-ink has-checked:text-paper has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand"
+    >
+      <input
+        type="radio"
+        name="fag"
+        checked={trade === i}
+        onChange={() => {
+          setTrade(i);
+          if (i === other) requestAnimationFrame(() => otherRef.current?.focus());
+        }}
+        className="sr-only"
+      />
+      {o}
+    </label>
+  );
+
   return (
     <div id="beregner" className="grid scroll-mt-24 gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
       <form onSubmit={(e) => e.preventDefault()} className="min-w-0 border-t-2 border-ink">
         <Row title={c.trade.title}>
-          <div className="flex flex-wrap gap-2">
-            {c.trade.options.map((o, i) => (
-              <label
-                key={o}
-                className="cursor-pointer border border-ink/25 bg-card px-3.5 py-2 font-cond text-lg font-bold uppercase leading-none transition-colors hover:border-ink has-checked:border-ink has-checked:bg-ink has-checked:text-paper has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand"
-              >
-                <input type="radio" name="fag" checked={trade === i} onChange={() => setTrade(i)} className="sr-only" />
-                {o}
-              </label>
-            ))}
+          <div className="flex flex-wrap items-start gap-2">
+            {c.trade.options.slice(0, other).map((o, i) => tradeChip(o, i))}
+            {/* "Andet fag" and its field wrap together, so the field always sits right next to it. */}
+            <span className="flex gap-2">
+              {tradeChip(c.trade.options[other], other)}
+              {trade === other && (
+                <input
+                  ref={otherRef}
+                  type="text"
+                  value={otherTrade}
+                  onChange={(e) => setOtherTrade(e.target.value)}
+                  maxLength={40}
+                  aria-label={c.trade.write}
+                  placeholder={c.trade.hints[hint]}
+                  autoComplete="off"
+                  enterKeyHint="done"
+                  data-field
+                  className="h-9 w-44 min-w-0 border border-ink bg-card px-3.5 font-cond text-lg font-bold uppercase placeholder:text-ink/40 focus:shadow-[inset_0_0_0_1px_var(--color-ink)]"
+                />
+              )}
+            </span>
           </div>
         </Row>
         <Row title={c.size.title}>
@@ -116,7 +159,7 @@ export function Calculator() {
       <aside className="self-start border-t-2 border-ink pt-5 lg:sticky lg:top-24" aria-live="polite">
         <p className="font-cond text-xl font-bold uppercase">{c.estimate}</p>
         <p className="mt-1 text-sm text-ink/60">
-          {trade === null ? c.pickTrade : c.trade.options[trade]} · {c.size.options[size].label}
+          {tradeName ?? c.pickTrade} · {c.size.options[size].label}
         </p>
         <p className="mt-4 font-cond text-6xl font-extrabold leading-none tabular-nums">{kr(sitePrice)}</p>
         <p className="mt-2">
