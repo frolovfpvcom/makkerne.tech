@@ -311,9 +311,15 @@ export function Footer() {
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>
         </nav>
-        <p className="text-xs text-paper/50">
-          {t.footer} · {t.updated}
-        </p>
+        <div className="flex flex-col gap-2 text-xs text-paper/50">
+          <p>
+            {t.footer} · {t.updated}
+          </p>
+          <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-paper/70">
+            <Link href="/vilkaar/" className="underline underline-offset-4 hover:text-brand">{t.legal.terms}</Link>
+            <Link href="/privatliv/" className="underline underline-offset-4 hover:text-brand">{t.legal.privacy}</Link>
+          </p>
+        </div>
       </div>
     </footer>
   );

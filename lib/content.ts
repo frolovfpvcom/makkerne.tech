@@ -303,6 +303,7 @@ const da = {
   },
   footer: "© 2026 Makkerne",
   updated: "Priser opdateret oktober 2026",
+  legal: { terms: "Vilkår", privacy: "Privatliv og cookies", danishOnly: "" },
 };
 
 export type Dict = typeof da;
@@ -559,6 +560,7 @@ const en: Dict = {
   },
   footer: "© 2026 Makkerne",
   updated: "Prices updated October 2026",
+  legal: { terms: "Terms", privacy: "Privacy and cookies", danishOnly: "This page is only in Danish. Write to us if you have questions in English." },
 };
 
 export const dict: Record<Lang, Dict> = { da, en };

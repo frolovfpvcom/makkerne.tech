@@ -4,9 +4,17 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-/** Unsplash photo by id, cropped to the requested width. */
+// The widths Next's image optimiser accepts by default (deviceSizes).
+const SIZES = [640, 750, 828, 1080, 1200, 1920, 2048, 3840];
+
+/**
+ * Unsplash photo by id, cropped to the requested width. It goes through our own image
+ * optimiser, so the visitor's browser never contacts Unsplash (see /privatliv/).
+ */
 export function photo(id: string, w = 1600) {
-  return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=75`;
+  const size = SIZES.find((s) => s >= w) ?? SIZES[SIZES.length - 1];
+  const src = `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${size}&q=75`;
+  return `/_next/image?url=${encodeURIComponent(src)}&w=${size}&q=75`;
 }
 
 /** A stock photo. `priority` is for the hero: load it straight away instead of lazily (it is the LCP image). */
