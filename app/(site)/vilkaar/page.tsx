@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalPage, Section, Udfyld } from "@/components/legal";
+import { LegalPage, Section } from "@/components/legal";
 import { EMAIL } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -37,7 +37,7 @@ export default function Page() {
     >
       <Section id="hvem" title="Hvem du handler med">
         <p>
-          Makkerne drives af Peter Frolov og Nikolaj <Udfyld>efternavn</Udfyld>. CVR-nr. <Udfyld>CVR-nr.</Udfyld>, <Udfyld>adresse</Udfyld>. Du fanger os på{" "}
+          Makkerne drives af Peter Frolov og Nikolaj Blond. Du fanger os på{" "}
           <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
         </p>
         <p>Vi laver hjemmesider til firmaer. Vilkårene gælder for aftaler med erhvervskunder, ikke med privatpersoner.</p>

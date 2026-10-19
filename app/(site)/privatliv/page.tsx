@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalPage, Section, Udfyld } from "@/components/legal";
+import { LegalPage, Section } from "@/components/legal";
 import { TEAM } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -34,8 +34,7 @@ export default function Page() {
     >
       <Section id="hvem" title="Hvem er ansvarlig">
         <p>
-          Makkerne er dataansvarlig for de oplysninger, vi har om dig. Makkerne drives af Peter Frolov og Nikolaj <Udfyld>efternavn</Udfyld>, CVR-nr.{" "}
-          <Udfyld>CVR-nr.</Udfyld>, <Udfyld>adresse</Udfyld>.
+          Makkerne er dataansvarlig for de oplysninger, vi har om dig. Makkerne drives af Peter Frolov og Nikolaj Blond.
         </p>
         <p>
           Har du spørgsmål, så skriv til{" "}

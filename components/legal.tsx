@@ -67,8 +67,3 @@ export function Section({ id, title, children }: { id: string; title: string; ch
     </section>
   );
 }
-
-/** Something only Peter and Nikolaj can fill in. Marked so it is easy to spot on the page and to find in the code. */
-export function Udfyld({ children }: { children: React.ReactNode }) {
-  return <mark className="bg-brand/50 px-0.5 text-ink">[{children}]</mark>;
-}
