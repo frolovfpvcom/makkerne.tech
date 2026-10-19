@@ -4,8 +4,13 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+import STORED from "@/lib/photos.json";
+
 // The widths Next's image optimiser accepts by default (deviceSizes).
 const SIZES = [640, 750, 828, 1080, 1200, 1920, 2048, 3840];
+// The widths each photo is stored in under public/examples/photos/ (see scripts/photos.mjs).
+const PHOTO_WIDTHS = [480, 828, 1200, 1600, 2048];
+const stored = new Set<string>(STORED);
 
 /**
  * Unsplash photo by id, cropped to the requested width. It goes through our own image
@@ -17,11 +22,36 @@ export function photo(id: string, w = 1600) {
   return `/_next/image?url=${encodeURIComponent(src)}&w=${size}&q=75`;
 }
 
+/**
+ * The photo's stored widths up to `w`, for srcset. A larger screen gets `w` as before; a phone gets
+ * one sized to its own screen instead.
+ */
+function srcSet(id: string, w: number) {
+  if (!stored.has(id)) return null;
+  const top = PHOTO_WIDTHS.findIndex((s) => s >= w);
+  const widths = top === -1 ? PHOTO_WIDTHS : PHOTO_WIDTHS.slice(0, top + 1);
+  return {
+    src: `/examples/photos/${id}-${widths.at(-1)}.webp`,
+    srcSet: widths.map((s) => `/examples/photos/${id}-${s}.webp ${s}w`).join(", "),
+    sizes: `(max-width: 767px) 100vw, ${w}px`,
+  };
+}
+
 /** A stock photo. `priority` is for the hero: load it straight away instead of lazily (it is the LCP image). */
-export function Img({ id, w, alt, className, priority = false }: { id: string; w?: number; alt: string; className?: string; priority?: boolean }) {
+export function Img({ id, w = 1600, alt, className, priority = false, sizes }: { id: string; w?: number; alt: string; className?: string; priority?: boolean; sizes?: string }) {
+  const set = srcSet(id, w);
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- remote stock photos, sized via the URL
-    <img src={photo(id, w)} alt={alt} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} decoding="async" className={className} />
+    // eslint-disable-next-line @next/next/no-img-element -- stored stock photos in a few widths
+    <img
+      src={set?.src ?? photo(id, w)}
+      srcSet={set?.srcSet}
+      sizes={set ? (sizes ?? set.sizes) : undefined}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "auto"}
+      decoding="async"
+      className={className}
+    />
   );
 }
 

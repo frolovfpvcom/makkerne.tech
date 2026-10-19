@@ -1,0 +1,23 @@
+# Times how fast the examples show up on the live site (see scripts/perf.mjs). The numbers land in
+# the run's summary. Runs by hand, or on a push that touches the workflow or the script.
+name: Example speed
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: Site to measure
+        default: https://makkerne-tech.vercel.app
+  push:
+    paths: [".github/workflows/perf.yml", "scripts/perf.mjs"]
+jobs:
+  perf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm i --no-save playwright@1.49.1 && npx playwright install --with-deps chromium
+      - run: node scripts/perf.mjs
+        env:
+          BASE: ${{ inputs.base || 'https://makkerne-tech.vercel.app' }}

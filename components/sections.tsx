@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { EMAIL, TEAM } from "@/lib/content";
 import { ACCENT } from "@/lib/accent";
 import { useLang } from "./lang";
-import { BrowserSite } from "./live-site";
+import { BrowserSite, usePreloadShots } from "./live-site";
 import { CurvedRow } from "./curved-row";
 import { Logo } from "./header";
 import { Calculator } from "./calculator";
@@ -29,7 +29,7 @@ export function Examples() {
   const { t } = useLang();
   const e = t.examples;
   const [hover, setHover] = useState<number | null>(null);
-  const tiles = useMemo(() => e.items.map((it) => ({ src: `/examples/shots/${it.slug}.jpg`, href: it.href })), [e.items]);
+  const tiles = useMemo(() => e.items.map((it) => ({ src: `/examples/shots/${it.slug}.webp`, href: it.href })), [e.items]);
   const on = hover === null ? null : e.items[hover];
   // Coming straight to /#eksempler, the browser jumps before the hero has its final height on a
   // phone; jump again once it has, so the heading is not left under the header.
@@ -98,6 +98,8 @@ function ExampleCarousel() {
   const [dir, setDir] = useState(1);
   const [seen, setSeen] = useState<number[]>([0]);
   if (!seen.includes(sel)) setSeen([...seen, sel]);
+  // The pictures of the examples either side, so an arrow shows the next one at once.
+  usePreloadShots([sel - 1, sel + 1].map((i) => e.items[((i % n) + n) % n].slug), "desktop", "mobile");
   const go = (i: number) => {
     setDir(i > sel ? 1 : -1);
     setTrade(((i % n) + n) % n);
@@ -141,7 +143,7 @@ function ExampleCarousel() {
             className={`grid items-center gap-8 transition-opacity duration-300 [grid-area:1/1] lg:grid-cols-12 lg:gap-14 ${i === sel ? "opacity-100" : "pointer-events-none invisible opacity-0"}`}
           >
             <div className="min-w-0 lg:col-span-7">
-              {seen.includes(i) && <BrowserSite src={item.href} title={item.name} tryLabel={e.try} accent={ACCENT[item.slug]} />}
+              {seen.includes(i) && <BrowserSite src={item.href} slug={item.slug} title={item.name} tryLabel={e.try} accent={ACCENT[item.slug]} />}
             </div>
             <div className="min-w-0 lg:col-span-5">
               <AnimatePresence mode="wait">

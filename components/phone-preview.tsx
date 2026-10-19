@@ -1,20 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { Example } from "@/lib/content";
+import CHIN from "@/lib/chin.json";
 import { setTrade, useTrade } from "./trade-store";
+import { ShotThenLive, usePreloadShots } from "./live-site";
 
 const PHONE_WIDTH = 390;
-
-function hideScrollbar(e: React.SyntheticEvent<HTMLIFrameElement>) {
-  try {
-    const doc = e.currentTarget.contentDocument;
-    if (!doc) return;
-    const style = doc.createElement("style");
-    style.textContent = "html{scrollbar-width:none}html::-webkit-scrollbar{display:none}";
-    doc.head.appendChild(style);
-  } catch {}
-}
 
 /**
  * The colour at the very bottom of the site, so the strip under it (where a real iPhone keeps the
@@ -44,7 +36,7 @@ function isDark(rgb: string) {
  * status bar, and the side buttons. The screen shows one of the example sites at real phone width
  * below the status bar, so the island never covers any of the site; it never takes clicks itself.
  */
-export function IPhone({ src, title, width = 300, height = 600 }: { src: string; title: string; width?: number; height?: number }) {
+export function IPhone({ src, slug, title, width = 300, height = 600 }: { src: string; slug: string; title: string; width?: number; height?: number }) {
   const bezel = Math.max(7, Math.round(width * 0.034));
   const radius = Math.round(width * 0.17);
   const screenW = width - bezel * 2;
@@ -54,25 +46,10 @@ export function IPhone({ src, title, width = 300, height = 600 }: { src: string;
   // bars into it with env(safe-area-inset-bottom), which is 0 in this frame, so the mockup keeps
   // the strip itself. Tall enough that the round corners never reach the buttons above it.
   const homeBar = Math.round(height * 0.04);
-  const [chin, setChin] = useState("#ffffff");
+  // Taken from the screenshot until the live site has loaded and can be asked itself.
+  const [live, setLive] = useState<{ src: string; chin: string } | null>(null);
+  const chin = live?.src === src ? live.chin : ((CHIN as Record<string, string>)[slug] ?? "#ffffff");
   const scale = screenW / PHONE_WIDTH;
-  // Which site has finished loading, so a newly picked trade never shows a blank screen.
-  const [loaded, setLoaded] = useState<string | null>(null);
-  const frameRef = useRef<HTMLIFrameElement>(null);
-  // The first site can finish loading before React is ready to hear about it; catch that case.
-  useEffect(() => {
-    const check = () => {
-      try {
-        const doc = frameRef.current?.contentDocument;
-        if (doc?.readyState === "complete" && doc.location.href !== "about:blank") {
-          setChin(bottomColour(frameRef.current?.contentWindow) ?? "#ffffff");
-          setLoaded(src);
-        }
-      } catch {}
-    };
-    const id = setTimeout(check, 0);
-    return () => clearTimeout(id);
-  }, [src]);
   // Side buttons, as a share of the phone's height: action, volume up, volume down (left) and power (right).
   const button = "absolute w-[3px] rounded-sm bg-gradient-to-b from-[#3a3a3c] via-[#1c1c1e] to-[#3a3a3c]";
   return (
@@ -108,29 +85,21 @@ export function IPhone({ src, title, width = 300, height = 600 }: { src: string;
             </span>
           </div>
           <div className="relative overflow-hidden bg-paper" style={{ height: screenH - statusBar - homeBar }}>
-            <iframe
+            <ShotThenLive
               key={src}
-              ref={frameRef}
               src={src}
+              shot={`/examples/shots/phone/${slug}.webp`}
               title={title}
-              loading="lazy"
-              tabIndex={-1}
-              aria-hidden
-              onLoad={(e) => {
-                hideScrollbar(e);
-                setChin(bottomColour(e.currentTarget.contentWindow) ?? "#ffffff");
-                setLoaded(src);
-              }}
-              className="pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-paper"
-              style={{ width: PHONE_WIDTH, height: (screenH - statusBar - homeBar) / scale, transform: `scale(${scale})` }}
+              width={PHONE_WIDTH}
+              height={(screenH - statusBar - homeBar) / scale}
+              scale={scale}
+              priority
+              onLive={(win) => setLive({ src, chin: bottomColour(win) ?? "#ffffff" })}
             />
-            <div aria-hidden className={`absolute inset-0 grid place-items-center bg-paper transition-opacity duration-300 ${loaded === src ? "pointer-events-none opacity-0" : "opacity-100"}`}>
-              <span className="h-1.5 w-16 animate-pulse bg-brand" />
-            </div>
           </div>
           {/* Home indicator, on the same colour as the bottom of the site above it. */}
-          <div aria-hidden className="relative grid place-items-center" style={{ height: homeBar, background: loaded === src ? chin : undefined }}>
-            <span className={`h-[4px] w-[36%] rounded-full ${isDark(chin) && loaded === src ? "bg-white/85" : "bg-black/85"}`} style={{ marginTop: -homeBar * 0.15 }} />
+          <div aria-hidden className="relative grid place-items-center" style={{ height: homeBar, background: chin }}>
+            <span className={`h-[4px] w-[36%] rounded-full ${isDark(chin) ? "bg-white/85" : "bg-black/85"}`} style={{ marginTop: -homeBar * 0.15 }} />
           </div>
         </div>
       </div>
@@ -165,10 +134,11 @@ export function PhonePreview({ items, title, cta }: { items: Example[]; title: s
   const item = items[sel] ?? items[0];
   const height = useSyncExternalStore(onResize, phoneHeight, () => 560);
   const go = (i: number) => setTrade(((i % n) + n) % n);
+  usePreloadShots([sel - 1, sel + 1].map((i) => items[((i % n) + n) % n].slug), "phone");
   const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
   return (
     <div className="flex flex-col items-center">
-      <IPhone src={item.href} title={`${title}: ${item.name}`} width={height / 2} height={height} />
+      <IPhone src={item.href} slug={item.slug} title={`${title}: ${item.name}`} width={height / 2} height={height} />
       <div className="mt-6 flex items-center gap-2">
         <span aria-live="polite" className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
           <span className="sr-only">{item.name}, </span>

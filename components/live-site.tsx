@@ -12,6 +12,93 @@ function hideScrollbar(e: React.SyntheticEvent<HTMLIFrameElement>) {
   } catch {}
 }
 
+/** How long an example has to stay on screen before its live site starts loading behind the picture. */
+const LIVE_DELAY = 700;
+
+/**
+ * An example as a screenshot first, which shows at once, with the real site loaded behind it a moment
+ * later and faded in over it when it has finished loading. Flipping quickly through the examples
+ * only ever loads the pictures; the live site waits until the visitor stays on one, and until the
+ * page around it has loaded. `shot` must show the site at the same size as the frame.
+ */
+export function ShotThenLive({
+  src,
+  shot,
+  title,
+  width,
+  height,
+  scale,
+  priority = false,
+  onLive,
+}: {
+  src: string;
+  shot: string;
+  title: string;
+  width: number;
+  height: number;
+  scale: number;
+  priority?: boolean;
+  onLive?: (win: Window | null) => void;
+}) {
+  const [mount, setMount] = useState(false);
+  const [live, setLive] = useState(false);
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const start = () => (timer = setTimeout(() => setMount(true), LIVE_DELAY));
+    if (document.readyState === "complete") start();
+    else addEventListener("load", start, { once: true });
+    return () => {
+      removeEventListener("load", start);
+      clearTimeout(timer);
+    };
+  }, []);
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element -- a screenshot made to the frame's exact size */}
+      <img
+        data-shot
+        src={shot}
+        alt=""
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+        className="absolute inset-0 size-full object-cover object-top"
+      />
+      {mount && (
+        <iframe
+          src={src}
+          title={title}
+          loading="lazy"
+          tabIndex={-1}
+          aria-hidden
+          onLoad={(e) => {
+            hideScrollbar(e);
+            setLive(true);
+            onLive?.(e.currentTarget.contentWindow);
+          }}
+          className={`pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-paper transition-opacity duration-300 ${live ? "opacity-100" : "opacity-0"}`}
+          style={{ width, height, transform: `scale(${scale})` }}
+        />
+      )}
+    </>
+  );
+}
+
+/**
+ * Fetches the pictures of the examples either side of the current one, so the arrows show them at
+ * once: from the folder `wide`, or `narrow` on a phone.
+ */
+export function usePreloadShots(slugs: string[], wide: string, narrow = wide) {
+  const key = slugs.join(" ");
+  useEffect(() => {
+    const dir = window.innerWidth < 640 ? narrow : wide;
+    const load = () => key.split(" ").forEach((slug) => (new Image().src = `/examples/shots/${dir}/${slug}.webp`));
+    if (document.readyState === "complete") load();
+    else addEventListener("load", load, { once: true });
+    return () => removeEventListener("load", load);
+  }, [key, wide, narrow]);
+}
+
 const DESKTOP_WIDTH = 1280;
 const PHONE_WIDTH = 390;
 
@@ -20,15 +107,16 @@ const PHONE_WIDTH = 390;
  */
 function useScaledFrame() {
   const boxRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ w: DESKTOP_WIDTH, h: 800, scale: 0.5 });
+  const [size, setSize] = useState({ w: DESKTOP_WIDTH, h: 800, scale: 0.5, ready: false });
   useEffect(() => {
     const box = boxRef.current;
     if (!box) return;
     const measure = () => {
       if (!box.clientWidth) return;
-      const w = box.clientWidth >= 500 ? DESKTOP_WIDTH : PHONE_WIDTH;
+      // A wide box shows the site as on a computer, a tall one (on phones) as on a phone.
+      const w = box.clientWidth > box.clientHeight ? DESKTOP_WIDTH : PHONE_WIDTH;
       const scale = box.clientWidth / w;
-      setSize({ w, h: Math.ceil(box.clientHeight / scale), scale });
+      setSize({ w, h: Math.ceil(box.clientHeight / scale), scale, ready: true });
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -39,11 +127,11 @@ function useScaledFrame() {
 }
 
 /**
- * A real, running example site in a soft, rounded browser window with the usual browser buttons and a strip in
+ * An example site in a soft, rounded browser window with the usual browser buttons and a strip in
  * the example's own colour along the bottom. The preview never takes clicks or scroll; clicking it
  * opens the real site in a new tab.
  */
-export function BrowserSite({ src, title, tryLabel, accent }: { src: string; title: string; tryLabel: string; accent: string }) {
+export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: string; slug: string; title: string; tryLabel: string; accent: string }) {
   const { boxRef, size } = useScaledFrame();
   const path = src.replace(/^\//, "makkerne.tech/").replace(/\/$/, "");
 
@@ -74,16 +162,18 @@ export function BrowserSite({ src, title, tryLabel, accent }: { src: string; tit
         </span>
       </div>
       <div ref={boxRef} className="relative aspect-[9/14] overflow-hidden bg-paper sm:aspect-[16/10]">
-        <iframe
-          src={src}
-          title={title}
-          loading="lazy"
-          tabIndex={-1}
-          aria-hidden
-          onLoad={hideScrollbar}
-          className="pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-paper"
-          style={{ width: size.w, height: size.h, transform: `scale(${size.scale})` }}
-        />
+        {size.ready && (
+          <ShotThenLive
+            key={size.w}
+            src={src}
+            shot={`/examples/shots/${size.w === DESKTOP_WIDTH ? "desktop" : "mobile"}/${slug}.webp`}
+            title={title}
+            width={size.w}
+            height={size.h}
+            scale={size.scale}
+            priority
+          />
+        )}
         {/* Clicking anywhere on the picture opens the real site, just like the address bar. */}
         <a href={src} target="_blank" rel="noopener" className="absolute inset-0 flex items-end justify-center pb-6">
           <span className="rounded-xl bg-black/45 px-6 py-3 text-base font-semibold text-white/85 opacity-100 backdrop-blur-sm transition sm:opacity-0 sm:group-hover:opacity-100">

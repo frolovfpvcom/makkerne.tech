@@ -16,7 +16,7 @@ Fire interaktive eksempelsider til håndværkere ligger i appen selv og vises li
 - `/examples/tag/` – Tagværk, tag og tømrer, bygget efter bedre-tag.dk (`components/examples/tag.tsx`)
 
 Fælles byggeklodser (før/efter-slider, tilbudsformular, tjek af område) ligger i `components/examples/shared.tsx`.
-Billederne er Unsplash-fotos, der hentes direkte fra images.unsplash.com.
+Billederne er Unsplash-fotos, gemt i `public/examples/photos/` i fem bredder, så en telefon får et billede i telefonstørrelse. Skærmbillederne af eksemplerne (`public/examples/shots/`) vises straks i telefonen på forsiden og på /eksempelsider/, mens den levende side hentes bagved. Begge laves af GitHub-workflowet "Example screenshots" (`scripts/photos.mjs`, `scripts/shots.mjs`); kør det igen, når et eksempel ændres. Et nyt foto, der ikke er gemt endnu, hentes stadig gennem Next' billedoptimering. Workflowet "Example speed" (`scripts/perf.mjs`) måler, hvor hurtigt eksemplerne vises på den live side.
 
 ## Kør lokalt
 
