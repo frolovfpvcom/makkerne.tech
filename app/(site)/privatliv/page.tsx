@@ -37,17 +37,18 @@ export default function Page() {
           Makkerne er dataansvarlig for de oplysninger, vi har om dig. Makkerne drives af Peter Frolov og Nikolaj Blond.
         </p>
         <p>
-          Har du spørgsmål, så skriv til{" "}
-          {TEAM.map((p, i) => (
-            <span key={p.email}>
-              {i > 0 && " eller "}
-              <a href={`mailto:${p.email}`} className="break-all">
+          Har du spørgsmål, så skriv til en af os:
+        </p>
+        <ul className="!list-none !pl-0">
+          {TEAM.map((p) => (
+            <li key={p.email} className="flex flex-wrap gap-x-3 !pl-0">
+              <span className="w-16 font-medium">{p.name}</span>
+              <a href={`mailto:${p.email}`} className="whitespace-nowrap">
                 {p.email}
               </a>
-            </span>
+            </li>
           ))}
-          .
-        </p>
+        </ul>
       </Section>
 
       <Section id="cookies" title="Cookies">

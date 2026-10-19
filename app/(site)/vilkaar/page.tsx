@@ -38,7 +38,7 @@ export default function Page() {
       <Section id="hvem" title="Hvem du handler med">
         <p>
           Makkerne drives af Peter Frolov og Nikolaj Blond. Du fanger os på{" "}
-          <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+          <a href={`mailto:${EMAIL}`} className="whitespace-nowrap">{EMAIL}</a>.
         </p>
         <p>Vi laver hjemmesider til firmaer. Vilkårene gælder for aftaler med erhvervskunder, ikke med privatpersoner.</p>
       </Section>
