@@ -281,7 +281,7 @@ export function Faq({ hideHead = false }: { hideHead?: boolean }) {
 }
 
 /** Email is the only way in. The button opens a mail with the three things we need already listed. */
-export function Contact() {
+export function Contact({ people = true }: { people?: boolean }) {
   const { t } = useLang();
   const c = t.contact;
   // Which address was just copied, so only that line says "Copied".
@@ -298,13 +298,14 @@ export function Contact() {
   return (
     <section id="kontakt" className="bg-ink text-paper">
       {/* The text keeps to the page's column; the photos run all the way to the right edge. */}
-      <div className="grid gap-14 px-4 py-20 sm:px-8 sm:py-28 lg:grid-cols-[minmax(0,28rem)_1fr] lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))]">
-        <div>
+      <div className={`grid gap-14 px-4 py-20 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
+        {/* Without the photos the band is short: heading and text on the left, the button and addresses on the right. */}
+        <div className={people ? "" : "lg:grid lg:grid-flow-col lg:grid-cols-[minmax(0,32rem)_auto] lg:grid-rows-[auto_auto] lg:items-start lg:justify-items-start lg:justify-between lg:gap-x-16"}>
           <h2 className="text-balance font-cond text-5xl font-extrabold uppercase leading-[0.95] sm:text-6xl">{c.title}</h2>
           <p className="mt-5 max-w-md text-lg text-paper/70">{c.lead}</p>
           <a
             href={`mailto:${EMAIL}?subject=${encodeURIComponent(c.subject)}&body=${encodeURIComponent(c.body)}`}
-            className="mt-8 inline-flex bg-brand px-7 py-4 font-cond text-xl font-bold uppercase text-ink transition hover:bg-brand-dark"
+            className={`mt-8 inline-flex bg-brand px-7 py-4 font-cond text-xl font-bold uppercase text-ink transition hover:bg-brand-dark ${people ? "" : "lg:mt-0"}`}
           >
             {c.write}
           </a>
@@ -338,7 +339,7 @@ export function Contact() {
             ))}
           </ul>
         </div>
-        <div className="flex flex-col lg:border-l lg:border-paper/15 lg:pl-14">
+        {people && <div className="flex flex-col lg:border-l lg:border-paper/15 lg:pl-14">
           <p className="text-2xl font-bold">{c.who}</p>
           <div className="mt-6 grid flex-1 grid-cols-2 gap-4 sm:gap-6">
             {TEAM.map((p) => (
@@ -354,7 +355,7 @@ export function Contact() {
               </figure>
             ))}
           </div>
-        </div>
+        </div>}
       </div>
     </section>
   );
@@ -371,6 +372,7 @@ export function Footer() {
           <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>
+          <Link href="/om-os/" className="hover:text-brand">{t.nav.about}</Link>
         </nav>
         <div className="flex flex-col gap-2 text-xs text-paper/50">
           <p>

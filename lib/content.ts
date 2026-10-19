@@ -3,8 +3,8 @@ export type Lang = "da" | "en";
 export const EMAIL = "blond.nikolaj@gmail.com";
 
 export const TEAM = [
-  { name: "Peter", email: "peterfrolov09@gmail.com", photo: "/team/peter.webp" },
-  { name: "Nikolaj", email: "blond.nikolaj@gmail.com", photo: "/team/nikolaj.webp" },
+  { name: "Peter", fullName: "Peter Frolov", email: "peterfrolov09@gmail.com", photo: "/team/peter.webp" },
+  { name: "Nikolaj", fullName: "Nikolaj Blond", email: "blond.nikolaj@gmail.com", photo: "/team/nikolaj.webp" },
 ];
 
 export type Example = {
@@ -27,6 +27,7 @@ const da = {
     price: "Pris",
     process: "Sådan foregår det",
     faq: "Spørgsmål",
+    about: "Om os",
     cta: "Få et udkast",
     menuOpen: "Åbn menu",
     menuClose: "Luk menu",
@@ -270,6 +271,18 @@ const da = {
       { q: "Kan jeg ændre noget bagefter?", a: "Ja. Vi retter til undervejs, og når siden er live, kan du altid skrive til os, hvis noget skal opdateres." },
     ],
   },
+  about: {
+    title: "Hvem er vi?",
+    lead: "Makkerne er Peter Frolov og Nikolaj Blond. Vi laver hjemmesider til håndværkere, og vi gør det selv, fra første mail til siden er live.",
+    howTitle: "Sådan arbejder vi",
+    how: [
+      { t: "Du ser et udkast, før du betaler.", d: "Udkastet er gratis. Du siger først ja, når du har set det." },
+      { t: "Vi skriver teksterne.", d: "Fortæl os i en mail, hvad du laver. Billederne kan du tage med telefonen på næste opgave." },
+      { t: "Du taler med os.", d: "Der er ingen sælger imellem. Den, du skriver med, er den, der bygger siden." },
+      { t: "Siden er din.", d: "Domænet står i dit navn, og stopper du, får du en kopi af siden med." },
+    ],
+    honest: "Vi er nye. Firmaerne i vores eksempler er opdigtede og viser, hvad vi kan bygge. Du bliver en af vores første kunder.",
+  },
   contact: {
     title: "Skriv til os",
     lead: "Send dit firmanavn, dit fag og din by, så går vi i gang med udkastet. Vi svarer typisk samme dag.",
@@ -293,6 +306,7 @@ const en: Dict = {
     price: "Price",
     process: "How it works",
     faq: "Questions",
+    about: "About us",
     cta: "Get a draft",
     menuOpen: "Open menu",
     menuClose: "Close menu",
@@ -505,6 +519,18 @@ const en: Dict = {
       { q: "What about the domain?", a: "If you already have a domain, we move it over so you keep your address. If not, we set one up in your own name. You always own it yourself." },
       { q: "Can I change things afterwards?", a: "Yes. We adjust along the way, and once the site is live you can always write to us if something needs updating." },
     ],
+  },
+  about: {
+    title: "Who are we?",
+    lead: "Makkerne is Peter Frolov and Nikolaj Blond. We build websites for tradespeople, and we do it ourselves, from the first email until the site is live.",
+    howTitle: "How we work",
+    how: [
+      { t: "You see a draft before you pay.", d: "The draft is free. You only say yes once you have seen it." },
+      { t: "We write the texts.", d: "Tell us in an email what you do. You can take the photos with your phone on your next job." },
+      { t: "You talk to us.", d: "There is no salesperson in between. The person you write to is the person who builds the site." },
+      { t: "The site is yours.", d: "The domain is in your name, and if you stop, you get a copy of the site." },
+    ],
+    honest: "We are new. The businesses in our examples are made up and show what we can build. You will be one of our first customers.",
   },
   contact: {
     title: "Write to us",

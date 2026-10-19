@@ -36,6 +36,7 @@ export function Header() {
     { href: "/pris/", label: t.nav.price },
     { href: "/proces/", label: t.nav.process },
     { href: "/faq/", label: t.nav.faq },
+    { href: "/om-os/", label: t.nav.about },
   ];
   // The one call to action: the price calculator, on the front page or the price page.
   const ctaHref = pathname === "/" ? "#beregner" : "/pris/#beregner";
