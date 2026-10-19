@@ -169,8 +169,8 @@ type View = "phone" | "desktop";
 /**
  * Front page: one of the example sites on a phone, Holm VVS first, or on a laptop. The switch above
  * picks the device and the counter and arrows under it step through all ten, the same controls as on
- * the examples page. On a computer the box keeps the phone's height in both views, so the switch and
- * the arrows stay where they are and the heading beside them never moves.
+ * the examples page. Both sit snugly above and below whichever device is shown. On a laptop screen the
+ * laptop grows a little past its column on both sides, and the switch and the arrows centre on it.
  */
 export function PhonePreview({
   items,
@@ -191,70 +191,82 @@ export function PhonePreview({
   const height = useSyncExternalStore(onResize, phoneHeight, () => 560);
   const [view, setView] = useState<View>("phone");
   const boxRef = useRef<HTMLDivElement>(null);
-  const [boxW, setBoxW] = useState(0);
+  // The box's width, and on a laptop screen how much room there is to its right before the window edge.
+  const [box, setBox] = useState({ w: 0, right: 0, wide: false });
   useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    const measure = () => setBoxW(box.clientWidth);
+    const el = boxRef.current;
+    if (!el) return;
+    const measure = () => setBox({ w: el.clientWidth, right: window.innerWidth - el.getBoundingClientRect().right, wide: window.innerWidth >= 1024 });
     measure();
     const ro = new ResizeObserver(measure);
-    ro.observe(box);
-    return () => ro.disconnect();
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
+  // Into the gap beside the heading, and on the right only as far as the base sticks out past the
+  // screen, so the screen itself still ends on the same line as the header.
+  const SPILL_LEFT = 32;
+  const laptopW = box.wide ? Math.round(box.w + SPILL_LEFT + Math.min(48, Math.max(0, box.right - 16))) : Math.min(box.w, 560);
+  const grow = view === "desktop" && box.wide;
   const go = (i: number) => setTrade(((i % n) + n) % n);
   usePreloadShots([sel - 1, sel + 1].map((i) => items[((i % n) + n) % n].slug), view);
   const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
   const tab = "flex h-11 items-center gap-2 px-4 font-cond text-lg font-bold uppercase tracking-wide transition";
   return (
-    <div ref={boxRef} className="flex w-full flex-col items-center">
-      <div role="group" aria-label={labels.view} className="mb-6 flex border-2 border-ink bg-card">
-        {(["phone", "desktop"] as const).map((v) => (
-          <button
-            key={v}
-            type="button"
-            aria-pressed={view === v}
-            onClick={() => setView(v)}
-            className={`${tab} ${view === v ? "bg-ink text-paper" : "text-ink hover:bg-brand"}`}
-          >
-            {v === "phone" ? (
-              <svg aria-hidden viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-                <rect x="6.5" y="2.5" width="11" height="19" rx="2.5" />
-                <path d="M10.5 18h3" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg aria-hidden viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-                <rect x="4" y="4.5" width="16" height="11" rx="1.5" />
-                <path d="M2 19.5h20" strokeLinecap="round" />
-              </svg>
-            )}
-            {v === "phone" ? labels.phone : labels.desktop}
+    <div ref={boxRef} className="w-full">
+      <div className="flex flex-col items-center" style={grow ? { width: laptopW, marginLeft: -SPILL_LEFT } : undefined}>
+        <div role="group" aria-label={labels.view} className="mb-6 flex border-2 border-ink bg-card">
+          {(["phone", "desktop"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              aria-pressed={view === v}
+              onClick={() => setView(v)}
+              className={`${tab} ${view === v ? "bg-ink text-paper" : "text-ink hover:bg-brand"}`}
+            >
+              {v === "phone" ? (
+                <svg aria-hidden viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+                  <rect x="6.5" y="2.5" width="11" height="19" rx="2.5" />
+                  <path d="M10.5 18h3" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <svg aria-hidden viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+                  <rect x="4" y="4.5" width="16" height="11" rx="1.5" />
+                  <path d="M2 19.5h20" strokeLinecap="round" />
+                </svg>
+              )}
+              {v === "phone" ? labels.phone : labels.desktop}
+            </button>
+          ))}
+        </div>
+        <div className="flex w-full items-center justify-center" style={view === "phone" ? { height } : undefined}>
+          {view === "phone" ? (
+            <IPhone src={item.href} slug={item.slug} title={`${title}: ${item.name}`} width={height / 2} height={height} />
+          ) : (
+            box.w > 0 && <Laptop src={item.href} slug={item.slug} title={`${desktopTitle}: ${item.name}`} width={laptopW} />
+          )}
+        </div>
+        <div className="mt-6 flex items-center gap-2">
+          <span aria-live="polite" className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
+            <span className="sr-only">{item.name}, </span>
+            {String(sel + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+          </span>
+          <button type="button" onClick={() => go(sel - 1)} aria-label="Forrige eksempel" className={arrow}>
+            <span aria-hidden className="text-xl">←</span>
           </button>
-        ))}
-      </div>
-      <div className={`flex w-full items-center justify-center ${view === "desktop" ? "max-lg:!h-auto" : ""}`} style={{ height }}>
-        {view === "phone" ? (
-          <IPhone src={item.href} slug={item.slug} title={`${title}: ${item.name}`} width={height / 2} height={height} />
-        ) : (
-          boxW > 0 && <Laptop src={item.href} slug={item.slug} title={`${desktopTitle}: ${item.name}`} width={Math.min(boxW, 560)} />
+          <button type="button" onClick={() => go(sel + 1)} aria-label="Næste eksempel" className={arrow}>
+            <span aria-hidden className="text-xl">→</span>
+          </button>
+        </div>
+        {cta && (
+          <a href={item.href} target="_blank" rel="noopener" className="mt-5 text-sm font-medium text-ink/70 underline underline-offset-4 transition hover:text-ink">
+            {item.name} · {cta} ↗
+          </a>
         )}
       </div>
-      <div className="mt-6 flex items-center gap-2">
-        <span aria-live="polite" className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
-          <span className="sr-only">{item.name}, </span>
-          {String(sel + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
-        </span>
-        <button type="button" onClick={() => go(sel - 1)} aria-label="Forrige eksempel" className={arrow}>
-          <span aria-hidden className="text-xl">←</span>
-        </button>
-        <button type="button" onClick={() => go(sel + 1)} aria-label="Næste eksempel" className={arrow}>
-          <span aria-hidden className="text-xl">→</span>
-        </button>
-      </div>
-      {cta && (
-        <a href={item.href} target="_blank" rel="noopener" className="mt-5 text-sm font-medium text-ink/70 underline underline-offset-4 transition hover:text-ink">
-          {item.name} · {cta} ↗
-        </a>
-      )}
     </div>
   );
 }
