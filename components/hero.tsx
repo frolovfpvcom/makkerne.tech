@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useLang } from "./lang";
 import { PhonePreview } from "./phone-preview";
 
 /**
  * First view: what we make and for whom, a button to the examples and one to the price, and a
- * real example site on a phone. On a computer it fills the screen, so the examples start below the fold.
+ * real example site on a phone. The first button opens the examples page. On a computer it fills the screen.
  */
 export function Hero() {
   const { t } = useLang();
@@ -23,12 +24,12 @@ export function Hero() {
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink/80 sm:text-xl">{h.lead}</p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <a
-              href="#eksempler"
+            <Link
+              href="/eksempelsider/"
               className="inline-flex items-center justify-center gap-3 bg-brand px-8 py-4 font-cond text-xl font-bold uppercase tracking-wide text-ink transition hover:bg-brand-dark sm:text-2xl"
             >
-              {h.cta} <span aria-hidden>↓</span>
-            </a>
+              {h.cta} <span aria-hidden>→</span>
+            </Link>
             <a
               href="#beregner"
               className="inline-flex items-center justify-center border-2 border-ink bg-card px-7 py-3.5 font-cond text-xl font-bold uppercase tracking-wide text-ink transition hover:bg-paper-2 sm:text-2xl"
