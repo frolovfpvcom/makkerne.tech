@@ -75,9 +75,7 @@ export function LangToggle({ className = "" }: { className?: string }) {
           aria-pressed={lang === l}
           aria-label={l === "da" ? "Dansk" : "English"}
           lang={l}
-          className={`grid h-9 w-11 place-items-center border-2 transition ${
-            lang === l ? "border-ink" : "border-transparent opacity-50 hover:opacity-100"
-          }`}
+          className={`grid h-9 w-11 place-items-center transition ${lang === l ? "" : "opacity-40 hover:opacity-100"}`}
         >
           <Flag lang={l} />
         </button>
