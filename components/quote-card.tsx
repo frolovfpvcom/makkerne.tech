@@ -12,7 +12,9 @@ import { reachStage } from "./progress-store";
  * mail asking for a free draft with every choice written in. Picking a trade also turns the phone
  * next to it to that trade's example.
  */
-export function QuoteCard({ className = "" }: { className?: string }) {
+export function QuoteCard({ className = "", big = false }: { className?: string; big?: boolean }) {
+  // In the hero on a computer everything is drawn a size up, so the card stands level with the phone.
+  const L = (cls: string) => (big ? ` ${cls}` : "");
   const { t, lang } = useLang();
   const c = t.calc;
   const [step, setStep] = useState(0);
@@ -85,9 +87,9 @@ export function QuoteCard({ className = "" }: { className?: string }) {
 
   return (
     <div id="beregner" className={`scroll-mt-24 border-2 border-ink bg-card ${className}`}>
-      <div className="flex items-center justify-between gap-3 bg-ink px-4 py-2.5 text-paper sm:px-5">
-        <p className="font-cond text-lg font-bold uppercase leading-none tracking-wide text-brand">{c.head}</p>
-        <p className="whitespace-nowrap text-sm leading-none text-paper/75">{c.free}</p>
+      <div className={`flex items-center justify-between gap-3 bg-ink px-4 py-2.5 text-paper sm:px-5${L("lg:px-7 lg:py-3.5")}`}>
+        <p className={`font-cond text-lg font-bold uppercase leading-none tracking-wide text-brand${L("lg:text-2xl")}`}>{c.head}</p>
+        <p className={`whitespace-nowrap text-sm leading-none text-paper/75${L("lg:text-base")}`}>{c.free}</p>
       </div>
 
       {/* Where you are: the three answers so far, each a way back to change it. */}
@@ -102,7 +104,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
                 disabled={!reachable}
                 onClick={() => go(i)}
                 aria-current={step === i ? "step" : undefined}
-                className="block w-full min-w-0 px-3 py-2 text-left enabled:cursor-pointer enabled:hover:bg-paper sm:px-4"
+                className={`block w-full min-w-0 px-3 py-2 text-left enabled:cursor-pointer enabled:hover:bg-paper sm:px-4${L("lg:px-7 lg:py-2.5")}`}
               >
                 <span className={`block h-1 ${step === i ? "bg-ink" : done[i] ? "bg-ink/40" : "bg-ink/10"}`} aria-hidden />
                 <span className="mt-1.5 block font-cond text-sm font-bold uppercase leading-tight text-ink/50">
@@ -115,20 +117,20 @@ export function QuoteCard({ className = "" }: { className?: string }) {
         })}
       </ol>
 
-      <div className="px-4 pb-5 pt-4 sm:px-5">
-        <p ref={headRef} tabIndex={-1} className="font-cond text-2xl font-bold uppercase leading-tight outline-none sm:text-[1.75rem]">
+      <div className={`px-4 pb-5 pt-4 sm:px-5${L("lg:px-7 lg:pb-7 lg:pt-6")}`}>
+        <p ref={headRef} tabIndex={-1} className={`font-cond text-2xl font-bold uppercase leading-tight outline-none sm:text-[1.75rem]${L("lg:text-4xl")}`}>
           {questions[step]}
         </p>
 
         {step === 0 && (
-          <div className="mt-3.5 flex flex-wrap gap-2">
+          <div className={`mt-3.5 flex flex-wrap gap-2${L("lg:mt-5 lg:gap-2.5")}`}>
             {c.trade.options.slice(0, other).map((o, i) => (
               <button
                 key={o}
                 type="button"
                 aria-pressed={trade === i}
                 onClick={() => pickTrade(i)}
-                className="h-10 cursor-pointer border border-ink/25 bg-paper px-3.5 font-cond text-lg font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
+                className={`h-10 cursor-pointer border border-ink/25 bg-paper px-3.5 font-cond text-lg${L("lg:h-12 lg:px-4 lg:text-xl")} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
               >
                 {o}
               </button>
@@ -137,7 +139,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
               type="button"
               aria-pressed={trade === other}
               onClick={() => pickTrade(other)}
-              className="h-10 cursor-pointer border border-dashed border-ink/40 bg-paper px-3.5 font-cond text-lg font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
+              className={`h-10 cursor-pointer border border-dashed border-ink/40 bg-paper px-3.5 font-cond text-lg${L("lg:h-12 lg:px-4 lg:text-xl")} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
             >
               {c.trade.options[other]}
             </button>
@@ -172,7 +174,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
         )}
 
         {step === 1 && (
-          <div className="mt-3.5 grid gap-2">
+          <div className={`mt-3.5 grid gap-2${L("lg:mt-5 lg:gap-2.5")}`}>
             {c.size.options.map((o, i) => (
               <button
                 key={o.label}
@@ -182,20 +184,20 @@ export function QuoteCard({ className = "" }: { className?: string }) {
                   setSize(i);
                   go(2);
                 }}
-                className={`${option} min-h-14 py-2.5`}
+                className={`${option} min-h-14 py-2.5${L("lg:min-h-[4.5rem] lg:px-5 lg:text-lg")}`}
               >
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold leading-snug">{o.label}</span>
                   <span className="block text-sm leading-snug text-ink/60">{o.note}</span>
                 </span>
-                <span className="whitespace-nowrap font-cond text-xl font-bold tabular-nums">{kr(o.price)}</span>
+                <span className={`whitespace-nowrap font-cond text-xl font-bold tabular-nums${L("lg:text-2xl")}`}>{kr(o.price)}</span>
               </button>
             ))}
           </div>
         )}
 
         {step === 2 && (
-          <div className="mt-3.5 grid gap-2">
+          <div className={`mt-3.5 grid gap-2${L("lg:mt-5 lg:gap-2.5")}`}>
             {c.care.options.map((o, i) => (
               <button
                 key={o.label}
@@ -206,7 +208,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
                   go(3);
                   reachStage(2);
                 }}
-                className={`${option} min-h-14 py-2.5 ${i === c.care.best ? "border-2 border-ink bg-card" : ""}`}
+                className={`${option} min-h-14 py-2.5${L("lg:min-h-[4.5rem] lg:px-5 lg:text-lg")} ${i === c.care.best ? "border-2 border-ink bg-card" : ""}`}
               >
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold leading-snug">
@@ -216,7 +218,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
                   <span className="block text-sm leading-snug text-ink/60">{o.short}</span>
                 </span>
                 <span className="text-right">
-                  <span className="block whitespace-nowrap font-cond text-xl font-bold leading-none tabular-nums">{kr(o.monthly)}</span>
+                  <span className={`block whitespace-nowrap font-cond text-xl font-bold leading-none tabular-nums${L("lg:text-2xl")}`}>{kr(o.monthly)}</span>
                   <span className="block whitespace-nowrap text-xs text-ink/55">{c.monthly}</span>
                 </span>
               </button>
@@ -277,7 +279,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
           </p>
         )}
         {step === 0 && (
-          <p className="mt-3.5 text-sm text-ink/60">
+          <p className={`mt-3.5 text-sm text-ink/60${L("lg:mt-5 lg:text-base")}`}>
             {c.fromSite} <span className="font-semibold text-ink tabular-nums">{kr(c.size.options[0].price)}</span> · {c.fromCare}{" "}
             <span className="font-semibold text-ink tabular-nums">
               {kr(c.care.options[0].monthly)} {c.monthly}
