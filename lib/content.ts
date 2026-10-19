@@ -186,7 +186,6 @@ const da = {
       rows: [
         ["Pris", "Fra 4.500 kr. efter antal sider", "Ofte 10.000 kr. og op", "Gratis at starte"],
         ["Løbende betaling", "Drift fra 249 kr./md.", "Ofte en dyr serviceaftale", "Månedligt abonnement"],
-        ["Hvem skriver teksterne", "Vi gør", "Typisk dem", "Dig"],
         ["Ser du siden, før du betaler", "Ja, udkastet er gratis", "Sjældent", "Ja"],
         ["Din tid", "En mail", "Møder og mails", "Mange aftener"],
       ],
@@ -423,7 +422,6 @@ const en: Dict = {
       rows: [
         ["Price", "From DKK 4,500 by number of pages", "Often DKK 10,000 and up", "Free to start"],
         ["Ongoing payment", "Care from DKK 249/month", "Often a pricey service plan", "Monthly subscription"],
-        ["Who writes the texts", "We do", "Usually them", "You"],
         ["See the site before you pay", "Yes, the draft is free", "Rarely", "Yes"],
         ["Your time", "One email", "Meetings and emails", "Many evenings"],
       ],
