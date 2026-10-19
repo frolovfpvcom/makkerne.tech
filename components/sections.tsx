@@ -11,6 +11,7 @@ import { CurvedRow } from "./curved-row";
 import { Logo } from "./header";
 import { QuoteCard } from "./quote-card";
 import { setTrade, useTrade } from "./trade-store";
+import { useStage } from "./progress-store";
 
 function SectionHead({ title, lead, light = false }: { title: string; lead?: string; light?: boolean }) {
   return (
@@ -314,24 +315,60 @@ export function Comparison() {
   );
 }
 
+// On a wide screen each step takes this share of the row and the four spread out evenly, so the
+// dots sit at 0 %, about 37 %, about 63 % and 100 % of the line.
+const STEP_W = 23;
+const DOT_AT = [0, 1, 2, 3].map((i) => (i === 0 ? 0 : i === 3 ? 100 : STEP_W * (i + 0.5) + ((100 - 4 * STEP_W) / 3) * i));
+
+/**
+ * How it goes, as a timeline: looking at the site, the free draft, the price, the mail. The marker
+ * "Du er her" moves on as the visitor uses the price card (see progress-store), and the line fills
+ * up to it. Across the page on a computer, down the side on a phone.
+ */
 export function Process({ hideHead = false }: { hideHead?: boolean }) {
   const { t } = useLang();
   const p = t.process;
+  const stage = useStage();
+  const last = p.steps.length - 1;
   return (
     <section id="proces" className="border-y border-ink/15 bg-paper-2">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
         {!hideHead && <SectionHead title={p.title} lead={p.lead} />}
-        <ol className="max-w-3xl border-t border-ink/20">
-          {p.steps.map((s) => (
-            <li key={s.n} className="grid grid-cols-[3rem_1fr] gap-x-5 border-b border-ink/20 py-7 sm:grid-cols-[4rem_1fr]">
-              <p className="font-cond text-5xl font-extrabold leading-none text-ink/30 sm:text-6xl">{s.n}</p>
-              <div>
-                <h3 className="font-cond text-2xl font-bold uppercase sm:text-3xl">{s.title}</h3>
-                <p className="mt-2 max-w-xl leading-relaxed text-ink/70">{s.text}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <div className="relative">
+          {/* The line across, and how far along it the visitor is. */}
+          <div aria-hidden className="absolute inset-x-0 top-[7px] hidden h-0.5 bg-ink/15 lg:block">
+            <div className="h-full bg-ink transition-[width] duration-700 ease-out motion-reduce:transition-none" style={{ width: `${DOT_AT[stage]}%` }} />
+          </div>
+          <ol className="relative space-y-8 lg:flex lg:justify-between lg:space-y-0">
+            {p.steps.map((s, i) => {
+              const here = i === stage;
+              const passed = i < stage;
+              const align = i === 0 ? "lg:text-left" : i === last ? "lg:text-right" : "lg:text-center";
+              const dotAlign = i === 0 ? "" : i === last ? "lg:ml-auto" : "lg:mx-auto";
+              return (
+                <li key={s.title} aria-current={here ? "step" : undefined} className={`relative pl-9 lg:w-[23%] lg:pl-0 ${align}`}>
+                  {/* Down the side on a phone: the piece of line to the next step. */}
+                  {i < last && (
+                    <span aria-hidden className={`absolute bottom-[-2rem] left-[7px] top-4 w-0.5 lg:hidden ${passed ? "bg-ink" : "bg-ink/15"}`} />
+                  )}
+                  <span
+                    aria-hidden
+                    className={`absolute left-0 top-0 block size-4 rounded-full border-2 lg:static ${dotAlign} ${
+                      here ? "border-ink bg-brand ring-4 ring-brand/40" : passed ? "border-ink bg-ink" : "border-ink/30 bg-paper-2"
+                    }`}
+                  />
+                  <span className={`mt-0 block lg:mt-4 ${here ? "" : "lg:pt-7"}`}>
+                    {here && <span className={`mb-1.5 block h-[22px] w-fit bg-ink px-2 font-cond text-sm font-bold uppercase leading-[22px] text-brand ${dotAlign}`}>{p.here}</span>}
+                    <span className={`block font-cond text-2xl font-bold uppercase leading-tight ${passed || here ? "" : "text-ink/45"}`}>
+                      <span className="text-ink/35 tabular-nums">{i + 1}</span> {s.title}
+                    </span>
+                    <span className={`mt-1.5 block leading-relaxed ${passed || here ? "text-ink/75" : "text-ink/50"}`}>{s.text}</span>
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       </div>
     </section>
   );

@@ -281,10 +281,12 @@ const da = {
   process: {
     title: "Se siden, før du betaler",
     lead: "Ingen møder og ingen lange mails. Du passer dit arbejde, vi klarer resten.",
+    here: "Du er her",
     steps: [
-      { n: "1", title: "Du skriver til os", text: "Send dit firmanavn, dit fag og din by. Har du billeder af dit arbejde eller et logo, så send dem med." },
-      { n: "2", title: "Du får et udkast", text: "Vi bygger et udkast til din side ud fra det, du sender, og det vi kan finde om dig. Du ser det, før du betaler noget." },
-      { n: "3", title: "Siden går live", text: "Er du tilfreds, betaler du den pris, vi har aftalt, og vi sætter siden online på dit domæne. Vil du ikke have den, siger du bare nej tak." },
+      { title: "Du kigger på siden", text: "Se eksemplerne, og find ud af, om det er noget for dig." },
+      { title: "Gratis udkast", text: "Vælg dit fag, og hvor stor siden skal være. Udkastet koster ikke noget." },
+      { title: "Din pris", text: "Du ser hele prisen med det samme, både for siden og for drift om måneden." },
+      { title: "Du sender mailen", text: "Knappen åbner en mail med dine valg. Vi laver udkastet, og du betaler først, når du har sagt ja." },
     ],
   },
   faq: {
@@ -569,10 +571,12 @@ const en: Dict = {
   process: {
     title: "See the site before you pay",
     lead: "No meetings and no long emails. You get on with your work, we handle the rest.",
+    here: "You are here",
     steps: [
-      { n: "1", title: "You write to us", text: "Send your business name, your trade and your town. If you have photos of your work or a logo, send them too." },
-      { n: "2", title: "You get a draft", text: "We build a draft of your site from what you send and what we can find about you. You see it before you pay anything." },
-      { n: "3", title: "The site goes live", text: "If you are happy, you pay the price we agreed and we put the site online on your domain. If not, just say no thanks." },
+      { title: "You look at the site", text: "See the examples and work out whether it is for you." },
+      { title: "Free draft", text: "Pick your trade and how big the site should be. The draft costs nothing." },
+      { title: "Your price", text: "You see the whole price straight away, for the site and for monthly care." },
+      { title: "You send the mail", text: "The button opens an email with your choices. We make the draft, and you only pay once you have said yes." },
     ],
   },
   faq: {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { EMAIL } from "@/lib/content";
 import { useLang } from "./lang";
 import { setTrade as showExample } from "./trade-store";
+import { reachStage } from "./progress-store";
 
 /**
  * The price in three clicks: trade, size, care plan, one question at a time. Each answer moves on by
@@ -69,6 +70,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
 
   const pickTrade = (i: number) => {
     setTrade(i);
+    reachStage(1);
     if (i < other) {
       showExample(i);
       go(1);
@@ -202,6 +204,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
                 onClick={() => {
                   setCare(i);
                   go(3);
+                  reachStage(2);
                 }}
                 className={`${option} min-h-14 py-2.5 ${i === c.care.best ? "border-2 border-ink bg-card" : ""}`}
               >
@@ -254,7 +257,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
               </div>
             </fieldset>
 
-            <a href={mailto()} className="mt-4 flex w-full items-center justify-center gap-3 bg-brand px-6 py-4 font-cond text-xl font-bold uppercase text-ink transition hover:bg-brand-dark sm:text-2xl">
+            <a href={mailto()} onClick={() => reachStage(3)} className="mt-4 flex w-full items-center justify-center gap-3 bg-brand px-6 py-4 font-cond text-xl font-bold uppercase text-ink transition hover:bg-brand-dark sm:text-2xl">
               {c.cta} <span aria-hidden>→</span>
             </a>
             <p className="mt-2.5 text-sm leading-snug text-ink/60">{c.sendNote}</p>
