@@ -190,11 +190,9 @@ function ExampleCarousel() {
 
 /** The draft request with its price, under a short heading. */
 export function PriceSection({ hideHead = false }: { hideHead?: boolean }) {
-  const { t } = useLang();
   return (
     <section id="pris" className="scroll-mt-18 mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
-      {!hideHead && <SectionHead title={t.calc.title} lead={t.calc.lead} />}
-      <Calculator />
+      <Calculator head={!hideHead} />
     </section>
   );
 }

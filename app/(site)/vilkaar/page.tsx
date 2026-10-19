@@ -95,8 +95,8 @@ export default function Page() {
 
       <Section id="drift" title="Drift og opsigelse">
         <p>
-          Drift dækker hosting, sikkerhed, backup og små rettelser. Med Drift og vækst får du også nye billeder og tekster hver måned og hjælp til at blive fundet
-          på Google. Hvad din pakke dækker, står i tilbuddet.
+          Drift dækker hosting, sikkerhed, en kopi af siden hver nat og én lille rettelse om måneden. Med Drift og administration retter vi også tekst, priser og
+          billeder, når du beder om det (op til en time om måneden), lægger nye billeder op og holder din Google-profil opdateret. Hvad din pakke dækker, står i tilbuddet.
         </p>
         <p>
           Der er ingen binding. Du kan opsige drift med en måneds varsel til udgangen af en måned. Send en mail, så er det nok. Vi kan selv opsige med tre måneders
