@@ -124,6 +124,12 @@ function phoneHeight() {
   return 540;
 }
 
+/** In the front-page hero the phone stays in the background on a computer, so the price card leads. */
+function quietPhoneHeight() {
+  if (window.innerWidth >= 1024) return Math.max(340, Math.min(460, window.innerHeight - 380));
+  return phoneHeight();
+}
+
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 800;
 
@@ -178,17 +184,20 @@ export function PhonePreview({
   desktopTitle,
   labels,
   cta,
+  quiet = false,
 }: {
   items: Example[];
   title: string;
   desktopTitle: string;
   labels: { view: string; phone: string; desktop: string };
   cta?: string;
+  /** Smaller phone and lighter controls, so something else on the screen leads. */
+  quiet?: boolean;
 }) {
   const sel = useTrade();
   const n = items.length;
   const item = items[sel] ?? items[0];
-  const height = useSyncExternalStore(onResize, phoneHeight, () => 560);
+  const height = useSyncExternalStore(onResize, quiet ? quietPhoneHeight : phoneHeight, () => (quiet ? 460 : 560));
   const [view, setView] = useState<View>("phone");
   const boxRef = useRef<HTMLDivElement>(null);
   // The box's width, and on a laptop screen how much room there is to its right before the window edge.
@@ -213,12 +222,12 @@ export function PhonePreview({
   const grow = view === "desktop" && box.wide;
   const go = (i: number) => setTrade(((i % n) + n) % n);
   usePreloadShots([sel - 1, sel + 1].map((i) => items[((i % n) + n) % n].slug), view);
-  const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
-  const tab = "flex h-11 items-center gap-2 px-4 font-cond text-lg font-bold uppercase tracking-wide transition";
+  const arrow = `grid place-items-center border-ink bg-card transition hover:bg-brand ${quiet ? "size-11 border lg:size-10" : "size-12 border-2"}`;
+  const tab = `flex items-center gap-2 font-cond font-bold uppercase tracking-wide transition ${quiet ? "h-10 px-3.5 text-base" : "h-11 px-4 text-lg"}`;
   return (
     <div ref={boxRef} className="w-full">
       <div className="flex flex-col items-center" style={grow ? { width: laptopW, marginLeft: -SPILL_LEFT } : undefined}>
-        <div role="group" aria-label={labels.view} className="mb-6 flex border-2 border-ink bg-card">
+        <div role="group" aria-label={labels.view} className={`flex border-ink bg-card ${quiet ? "mb-4 border" : "mb-6 border-2"}`}>
           {(["phone", "desktop"] as const).map((v) => (
             <button
               key={v}
@@ -249,7 +258,7 @@ export function PhonePreview({
             box.w > 0 && <Laptop src={item.href} slug={item.slug} title={`${desktopTitle}: ${item.name}`} width={laptopW} />
           )}
         </div>
-        <div className="mt-6 flex items-center gap-2">
+        <div className={`flex items-center gap-2 ${quiet ? "mt-4" : "mt-6"}`}>
           <span aria-live="polite" className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
             <span className="sr-only">{item.name}, </span>
             {String(sel + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}

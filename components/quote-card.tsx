@@ -86,10 +86,14 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
   const questions = [c.trade.q, c.size.q, c.care.q, c.estimate];
 
   return (
-    <div id="beregner" className={`scroll-mt-24 border-2 border-ink bg-card ${className}`}>
-      <div className={`flex items-center justify-between gap-3 bg-ink px-4 py-2.5 text-paper sm:px-5${L("lg:px-7 lg:py-3.5")}`}>
-        <p className={`font-cond text-lg font-bold uppercase leading-none tracking-wide text-brand${L("lg:text-2xl")}`}>{c.head}</p>
-        <p className={`whitespace-nowrap text-sm leading-none text-paper/75${L("lg:text-base")}`}>{c.free}</p>
+    <div
+      id="beregner"
+      className={`scroll-mt-24 border-ink bg-card ${big ? "border-[3px] shadow-[6px_6px_0_0_var(--color-ink)] lg:shadow-[10px_10px_0_0_var(--color-ink)]" : "border-2"} ${className}`}
+    >
+      {/* In the hero the card's top is tape-measure yellow, the loudest thing on the screen. */}
+      <div className={`flex justify-between px-4 sm:px-5 ${big ? "flex-col gap-1.5 border-b-[3px] border-ink bg-brand py-3.5 sm:flex-row sm:items-center sm:gap-3 text-ink lg:px-7 lg:py-5" : "items-center gap-3 bg-ink py-2.5 text-paper"}`}>
+        <p className={`font-cond uppercase leading-none tracking-wide ${big ? "whitespace-nowrap text-[1.6rem] font-extrabold sm:text-[1.75rem] lg:text-4xl" : "text-lg font-bold text-brand"}`}>{c.head}</p>
+        <p className={`whitespace-nowrap text-sm leading-none ${big ? "font-semibold text-ink/80 lg:text-base" : "text-paper/75"}`}>{c.free}</p>
       </div>
 
       {/* Where you are: the three answers so far, each a way back to change it. */}
@@ -130,7 +134,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
                 type="button"
                 aria-pressed={trade === i}
                 onClick={() => pickTrade(i)}
-                className={`h-10 cursor-pointer border border-ink/25 bg-paper px-3.5 font-cond text-lg${L("lg:h-12 lg:px-4 lg:text-xl")} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
+                className={`h-10 cursor-pointer border px-3.5 font-cond text-lg ${big ? "border-ink/50 bg-white hover:bg-brand lg:h-12 lg:px-4 lg:text-xl" : "border-ink/25 bg-paper"} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
               >
                 {o}
               </button>
@@ -139,7 +143,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
               type="button"
               aria-pressed={trade === other}
               onClick={() => pickTrade(other)}
-              className={`h-10 cursor-pointer border border-dashed border-ink/40 bg-paper px-3.5 font-cond text-lg${L("lg:h-12 lg:px-4 lg:text-xl")} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
+              className={`h-10 cursor-pointer border border-dashed border-ink/40 px-3.5 font-cond text-lg ${big ? "bg-white hover:bg-brand lg:h-12 lg:px-4 lg:text-xl" : "bg-paper"} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
             >
               {c.trade.options[other]}
             </button>
