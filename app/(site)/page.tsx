@@ -1,14 +1,13 @@
 import { Hero } from "@/components/hero";
-import { Contact, Examples, Footer, PriceSection } from "@/components/sections";
+import { Contact, Examples, Footer } from "@/components/sections";
 
-/** Short on purpose: who we are, what it looks like, what it costs, and the two of us. */
+/** Short on purpose: what we make and the price at once, what it looks like, and the two of us. */
 export default function Home() {
   return (
     <>
       <main>
         <Hero />
         <Examples />
-        <PriceSection />
         <Contact />
       </main>
       <Footer />

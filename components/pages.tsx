@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { TEAM } from "@/lib/content";
 import { useLang } from "./lang";
-import { Comparison, Contact, ExamplePicker, Faq, Footer, PageIntro, PriceSection, Process } from "./sections";
+import { Comparison, Contact, ExamplePicker, Faq, Footer, PageIntro, Plans, PriceSection, Process } from "./sections";
 
 function Shell({ children, people = true }: { children: React.ReactNode; people?: boolean }) {
   return (
@@ -31,7 +31,8 @@ export function PricePage() {
   return (
     <Shell>
       <PageIntro title={t.pricing.title} lead={t.pricing.lead} />
-      <PriceSection hideHead />
+      <PriceSection />
+      <Plans />
       <Comparison />
       <Process />
     </Shell>
@@ -49,12 +50,11 @@ export function ProcessPage() {
   );
 }
 
+/** No big intro band here: the questions start right under the header, with the page's heading beside them. */
 export function FaqPage() {
-  const { t } = useLang();
   return (
     <Shell>
-      <PageIntro title={t.faq.title} />
-      <Faq hideHead />
+      <Faq page />
     </Shell>
   );
 }

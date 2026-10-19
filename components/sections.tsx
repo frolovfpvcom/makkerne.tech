@@ -9,7 +9,7 @@ import { useLang } from "./lang";
 import { BrowserSite, usePreloadShots } from "./live-site";
 import { CurvedRow } from "./curved-row";
 import { Logo } from "./header";
-import { Calculator } from "./calculator";
+import { QuoteCard } from "./quote-card";
 import { setTrade, useTrade } from "./trade-store";
 
 function SectionHead({ title, lead, light = false }: { title: string; lead?: string; light?: boolean }) {
@@ -63,7 +63,11 @@ export function Examples() {
             ))}
           </ul>
         </nav>
-        <p className="mt-8 text-sm text-ink/55">{e.disclaimer}</p>
+        {/* Half of the visitors scroll this far; the price is one click back up from here. */}
+        <a href="#beregner" className="mt-8 inline-flex items-center gap-3 bg-ink px-6 py-3.5 font-cond text-xl font-bold uppercase tracking-wide text-paper transition hover:bg-ink/85">
+          {t.calc.head} <span aria-hidden>↑</span>
+        </a>
+        <p className="mt-6 text-sm text-ink/55">{e.disclaimer}</p>
       </div>
     </section>
   );
@@ -188,11 +192,86 @@ function ExampleCarousel() {
   );
 }
 
-/** The draft request with its price, under a short heading. */
-export function PriceSection({ hideHead = false }: { hideHead?: boolean }) {
+/**
+ * The price page's top: the same three-click card as on the front page, and beside it what is
+ * always included and what happens after the button.
+ */
+export function PriceSection() {
+  const { t } = useLang();
+  const c = t.calc;
   return (
-    <section id="pris" className="scroll-mt-18 mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
-      <Calculator head={!hideHead} />
+    <section id="pris" className="scroll-mt-18 mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:gap-12">
+      <QuoteCard className="lg:col-span-7" />
+      <div className="lg:col-span-5 lg:pt-2">
+        <p className="leading-relaxed text-ink/80">{c.features.included}</p>
+        <ol className="mt-6 space-y-3 border-t border-ink/15 pt-6">
+          {c.how.map((s, i) => (
+            <li key={s} className="grid grid-cols-[1.75rem_1fr] leading-snug text-ink/80">
+              <span className="font-cond text-xl font-bold leading-none text-ink/35 tabular-nums">{i + 1}</span>
+              {s}
+            </li>
+          ))}
+        </ol>
+        <p className="mt-6 text-sm text-ink/55">{c.vat}</p>
+      </div>
+    </section>
+  );
+}
+
+function Tick() {
+  return (
+    <svg viewBox="0 0 24 24" className="mt-1 size-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M5 12.5l4.5 4.5L19 7.5" />
+    </svg>
+  );
+}
+
+/** The three care plans side by side, the recommended one framed and first to catch the eye. */
+export function Plans() {
+  const { t, lang } = useLang();
+  const c = t.calc;
+  const kr = (n: number) => (lang === "da" ? `${n.toLocaleString("da-DK")} kr.` : `DKK ${n.toLocaleString("en-GB")}`);
+  return (
+    <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-8 sm:pb-24">
+      <h2 className="font-cond text-3xl font-extrabold uppercase sm:text-4xl">{c.plansTitle}</h2>
+      <p className="mt-2 max-w-2xl leading-relaxed text-ink/70">{c.plansLead}</p>
+      <div className="mt-6 grid gap-3 md:grid-cols-3 md:items-stretch">
+        {c.care.options.map((o, i) => {
+          const best = i === c.care.best;
+          return (
+            <div key={o.label} className={`flex flex-col p-5 ${best ? "border-2 border-ink bg-card" : "border border-ink/25 bg-paper"}`}>
+              <p className="flex flex-wrap items-center justify-between gap-2 font-semibold">
+                {o.label}
+                {best && <span className="bg-brand px-1.5 py-0.5 font-cond text-sm font-bold uppercase leading-none">{c.care.pick}</span>}
+              </p>
+              <p className="mt-2 font-cond text-4xl font-extrabold leading-none tabular-nums">
+                {kr(o.monthly)} <span className="font-sans text-base font-normal text-ink/60">{c.monthly}</span>
+              </p>
+              <ul className="mt-4 space-y-1.5 border-t border-ink/15 pt-4 text-sm leading-snug text-ink/80">
+                {o.points.map((p) => (
+                  <li key={p} className="flex gap-2">
+                    <Tick />
+                    {p}
+                  </li>
+                ))}
+                {/* What this plan leaves out, so the three can be read against each other. */}
+                {o.missing.map((p) => (
+                  <li key={p} className="flex gap-2 text-ink/40">
+                    <span className="mt-px w-3.5 shrink-0 text-center" aria-hidden>
+                      –
+                    </span>
+                    <span>
+                      <span className="sr-only">{c.notIncluded}: </span>
+                      {p}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {best && <p className="mt-auto pt-4 text-sm leading-snug text-ink/70">{c.care.upsell}</p>}
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }
@@ -258,21 +337,51 @@ export function Process({ hideHead = false }: { hideHead?: boolean }) {
   );
 }
 
-export function Faq({ hideHead = false }: { hideHead?: boolean }) {
+/**
+ * The questions, kept small: the heading and a way to ask on the left, the answers on the right.
+ * On /faq/ the heading is the page's h1 and the section clears the fixed header; on /proces/ it is an h2.
+ */
+export function Faq({ page = false }: { page?: boolean }) {
   const { t } = useLang();
+  const f = t.faq;
+  const Heading = page ? "h1" : "h2";
   return (
-    <section id="faq" className="mx-auto max-w-3xl px-4 py-20 sm:px-8 sm:py-28">
-      {!hideHead && <SectionHead title={t.faq.title} />}
+    <section
+      id="faq"
+      className={`mx-auto grid max-w-6xl gap-8 px-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 ${page ? "pb-16 pt-28 sm:pt-32" : "py-16 sm:py-24"}`}
+    >
+      <div>
+        <Heading className="font-cond text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">{f.title}</Heading>
+        <p className="mt-4 max-w-sm text-pretty leading-relaxed text-ink/70">{f.lead}</p>
+        <p className="mt-3 text-sm text-ink/70">
+          {f.more}{" "}
+          <a href="#kontakt" className="font-semibold text-ink underline underline-offset-4 hover:text-brand">
+            {f.moreLink}
+          </a>
+        </p>
+      </div>
       <div className="border-t border-ink/20">
-        {t.faq.items.map((item) => (
-          <details key={item.q} className="group border-b border-ink/20 py-5">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold [&::-webkit-details-marker]:hidden">
-              {item.q}
-              <span className="text-2xl leading-none text-ink/50 transition group-open:rotate-45" aria-hidden>
+        {f.items.map((item) => (
+          <details key={item.q} className="group border-b border-ink/20">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-4 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:text-lg [&::-webkit-details-marker]:hidden">
+              <span className="text-pretty">{item.q}</span>
+              <span
+                className="flex h-6 w-5 shrink-0 items-center justify-center text-2xl leading-none text-ink/50 transition-transform group-open:rotate-45 motion-reduce:transition-none sm:h-7"
+                aria-hidden
+              >
                 +
               </span>
             </summary>
-            <p className="mt-3 max-w-2xl leading-relaxed text-ink/75">{item.a}</p>
+            <div className="max-w-prose space-y-3 pb-5 leading-relaxed text-ink/75">
+              {item.a.split("\n\n").map((para) => (
+                <p key={para}>{para}</p>
+              ))}
+              {item.link && (
+                <Link href={item.link.href} className="inline-block font-semibold text-ink underline underline-offset-4 hover:text-brand">
+                  {item.link.label}
+                </Link>
+              )}
+            </div>
           </details>
         ))}
       </div>
