@@ -171,7 +171,7 @@ export function VvsSite() {
               </a>
               <div className="mt-7 hidden flex-wrap gap-3 sm:flex">
                 <a href={TEL} className={`${red} h-14 px-8 text-lg`}>
-                  Ring døgnvagten
+                  Ring op
                 </a>
                 <a href={SMS} className="inline-flex h-14 items-center whitespace-nowrap border-2 border-white px-6 text-lg font-bold hover:bg-white hover:text-[#101820]">
                   SMS et billede

@@ -39,7 +39,7 @@ export function Hero() {
         </div>
 
         <div className="flex justify-center lg:col-span-5">
-          <PhonePreview items={t.examples.items} title={h.phone} />
+          <PhonePreview items={t.examples.items} title={h.phone} desktopTitle={h.desktop} labels={{ view: h.view, phone: h.viewPhone, desktop: h.viewDesktop }} />
         </div>
       </div>
     </section>

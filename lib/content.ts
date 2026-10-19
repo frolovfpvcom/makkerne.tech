@@ -38,6 +38,10 @@ const da = {
     cta: "Se 10 eksempler",
     calcCta: "Få et udkast",
     phone: "Sådan ser en af vores sider ud på telefonen",
+    desktop: "Sådan ser en af vores sider ud på en computer",
+    view: "Vis siden på",
+    viewPhone: "Telefon",
+    viewDesktop: "Computer",
   },
   examples: {
     title: "Sådan kan din side se ud",
@@ -301,6 +305,10 @@ const en: Dict = {
     cta: "See 10 examples",
     calcCta: "Get a draft",
     phone: "What one of our sites looks like on a phone",
+    desktop: "What one of our sites looks like on a computer",
+    view: "Show the site on",
+    viewPhone: "Phone",
+    viewDesktop: "Computer",
   },
   examples: {
     title: "This is what your site could look like",

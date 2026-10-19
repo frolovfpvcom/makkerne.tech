@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Example } from "@/lib/content";
 import CHIN from "@/lib/chin.json";
 import { setTrade, useTrade } from "./trade-store";
@@ -114,31 +114,130 @@ function onResize(cb: () => void) {
 
 /**
  * A smaller phone on small screens, and on a low laptop screen one that fits under the header
- * with its arrows below it.
+ * with the view switch above it and its arrows below it.
  * Read straight from the window, so the hero has its final height on the first render after a
  * menu click and a jump to #eksempler lands in the right place.
  */
 function phoneHeight() {
   if (window.innerWidth < 640) return 460;
-  if (window.innerWidth >= 1024) return Math.max(460, Math.min(560, window.innerHeight - 270));
+  if (window.innerWidth >= 1024) return Math.max(380, Math.min(560, window.innerHeight - 340));
   return 540;
 }
 
+const DESKTOP_WIDTH = 1280;
+const DESKTOP_HEIGHT = 800;
+
 /**
- * Front page: the phone with one of the example sites on screen, Holm VVS first. The counter and
- * arrows under it step through all of them, the same controls as on the examples page.
+ * A laptop: black bezel with a camera dot, the example site at 1280 px wide on its 16:10 screen,
+ * and a thin aluminium base with the opening notch. Like the phone, it never takes clicks itself.
  */
-export function PhonePreview({ items, title, cta }: { items: Example[]; title: string; cta?: string }) {
+function Laptop({ src, slug, title, width }: { src: string; slug: string; title: string; width: number }) {
+  const screenW = Math.round(width * 0.86);
+  const bezel = Math.max(6, Math.round(screenW * 0.022));
+  const innerW = screenW - bezel * 2;
+  const innerH = Math.round((innerW * DESKTOP_HEIGHT) / DESKTOP_WIDTH);
+  const base = Math.max(8, Math.round(width * 0.022));
+  return (
+    <div className="flex flex-col items-center" style={{ width }}>
+      <div
+        className="relative bg-[#0b0b0c] shadow-[inset_0_0_0_1.5px_#4a4a4d,inset_0_0_0_3px_#1c1c1e]"
+        style={{ width: screenW, padding: bezel, paddingTop: bezel * 1.5, borderRadius: `${bezel * 1.8}px ${bezel * 1.8}px 0 0` }}
+      >
+        <span aria-hidden className="absolute left-1/2 size-[4px] -translate-x-1/2 rounded-full bg-[#2c2c2e]" style={{ top: bezel * 0.55 }} />
+        <div className="relative overflow-hidden bg-paper" style={{ width: innerW, height: innerH }}>
+          <ShotThenLive
+            key={src}
+            src={src}
+            shot={`/examples/shots/desktop/${slug}.webp`}
+            title={title}
+            width={DESKTOP_WIDTH}
+            height={DESKTOP_HEIGHT}
+            scale={innerW / DESKTOP_WIDTH}
+            priority
+          />
+        </div>
+      </div>
+      <div aria-hidden className="relative w-full rounded-b-[10px] border-b-2 border-[#9a9a9e] bg-[#cfcfd2] shadow-[0_30px_50px_-26px_rgba(22,21,19,0.55)]" style={{ height: base }}>
+        <span className="absolute left-1/2 top-0 h-[38%] w-[14%] -translate-x-1/2 rounded-b-md bg-[#b4b4b8]" />
+      </div>
+    </div>
+  );
+}
+
+type View = "phone" | "desktop";
+
+/**
+ * Front page: one of the example sites on a phone, Holm VVS first, or on a laptop. The switch above
+ * picks the device and the counter and arrows under it step through all ten, the same controls as on
+ * the examples page. On a computer the box keeps the phone's height in both views, so the switch and
+ * the arrows stay where they are and the heading beside them never moves.
+ */
+export function PhonePreview({
+  items,
+  title,
+  desktopTitle,
+  labels,
+  cta,
+}: {
+  items: Example[];
+  title: string;
+  desktopTitle: string;
+  labels: { view: string; phone: string; desktop: string };
+  cta?: string;
+}) {
   const sel = useTrade();
   const n = items.length;
   const item = items[sel] ?? items[0];
   const height = useSyncExternalStore(onResize, phoneHeight, () => 560);
+  const [view, setView] = useState<View>("phone");
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [boxW, setBoxW] = useState(0);
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const measure = () => setBoxW(box.clientWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(box);
+    return () => ro.disconnect();
+  }, []);
   const go = (i: number) => setTrade(((i % n) + n) % n);
-  usePreloadShots([sel - 1, sel + 1].map((i) => items[((i % n) + n) % n].slug), "phone");
+  usePreloadShots([sel - 1, sel + 1].map((i) => items[((i % n) + n) % n].slug), view);
   const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
+  const tab = "flex h-11 items-center gap-2 px-4 font-cond text-lg font-bold uppercase tracking-wide transition";
   return (
-    <div className="flex flex-col items-center">
-      <IPhone src={item.href} slug={item.slug} title={`${title}: ${item.name}`} width={height / 2} height={height} />
+    <div ref={boxRef} className="flex w-full flex-col items-center">
+      <div role="group" aria-label={labels.view} className="mb-6 flex border-2 border-ink bg-card">
+        {(["phone", "desktop"] as const).map((v) => (
+          <button
+            key={v}
+            type="button"
+            aria-pressed={view === v}
+            onClick={() => setView(v)}
+            className={`${tab} ${view === v ? "bg-ink text-paper" : "text-ink hover:bg-brand"}`}
+          >
+            {v === "phone" ? (
+              <svg aria-hidden viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+                <rect x="6.5" y="2.5" width="11" height="19" rx="2.5" />
+                <path d="M10.5 18h3" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg aria-hidden viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+                <rect x="4" y="4.5" width="16" height="11" rx="1.5" />
+                <path d="M2 19.5h20" strokeLinecap="round" />
+              </svg>
+            )}
+            {v === "phone" ? labels.phone : labels.desktop}
+          </button>
+        ))}
+      </div>
+      <div className={`flex w-full items-center justify-center ${view === "desktop" ? "max-lg:!h-auto" : ""}`} style={{ height }}>
+        {view === "phone" ? (
+          <IPhone src={item.href} slug={item.slug} title={`${title}: ${item.name}`} width={height / 2} height={height} />
+        ) : (
+          boxW > 0 && <Laptop src={item.href} slug={item.slug} title={`${desktopTitle}: ${item.name}`} width={Math.min(boxW, 560)} />
+        )}
+      </div>
       <div className="mt-6 flex items-center gap-2">
         <span aria-live="polite" className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
           <span className="sr-only">{item.name}, </span>
