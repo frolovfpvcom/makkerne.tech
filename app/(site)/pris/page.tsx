@@ -3,7 +3,7 @@ import { PricePage } from "@/components/pages";
 
 export const metadata: Metadata = {
   title: "Pris",
-  description: "Se hvad din hjemmeside koster på et minut. Fast pris, før vi går i gang, og et gratis udkast, før du betaler.",
+  description: "Se hvad din hjemmeside koster på et minut. Du kender hele prisen, før vi går i gang, og et gratis udkast, før du betaler.",
 };
 
 export default function Page() {

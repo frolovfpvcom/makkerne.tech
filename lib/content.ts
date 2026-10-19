@@ -184,7 +184,7 @@ const da = {
       title: "Sådan står vi i forhold til de andre",
       cols: ["", "Makkerne", "Bureau", "Byg selv (Wix o.l.)"],
       rows: [
-        ["Pris", "Fast pris, før vi går i gang", "Ofte 10.000 kr. og op", "Gratis at starte"],
+        ["Pris", "Fra 4.500 kr. efter antal sider", "Ofte 10.000 kr. og op", "Gratis at starte"],
         ["Løbende betaling", "Drift fra 249 kr./md.", "Ofte en dyr serviceaftale", "Månedligt abonnement"],
         ["Hvem skriver teksterne", "Vi gør", "Typisk dem", "Dig"],
         ["Ser du siden, før du betaler", "Ja, udkastet er gratis", "Sjældent", "Ja"],
@@ -260,7 +260,7 @@ const da = {
   faq: {
     title: "Det bliver vi tit spurgt om",
     items: [
-      { q: "Hvad koster en side?", a: "Det afhænger af, hvor stor siden skal være, og hvad den skal kunne. Brug prisberegneren, så ser du din pris på et minut. Du får altid en fast pris, før vi går i gang." },
+      { q: "Hvad koster en side?", a: "Det afhænger af, hvor stor siden skal være, og hvad den skal kunne. Brug prisberegneren, så ser du din pris på et minut. Du kender hele prisen, både for siden og den månedlige drift, før vi går i gang." },
       { q: "Hvad koster udkastet?", a: "Ingenting. Du betaler kun, hvis du vil have siden." },
       { q: "Hvad får jeg for det månedlige beløb?", a: "Med Drift ligger siden online og er sikker, vi gemmer en kopi hver nat og holder det tekniske opdateret, og du får én lille rettelse om måneden. Med Drift og administration passer vi siden for dig: vi retter tekst, priser og billeder, når du beder om det, lægger nye billeder op hver måned og holder din Google-profil opdateret. Det koster 0 kr. at komme i gang." },
       { q: "Hvem taler jeg med?", a: "Med os, dem der bygger siden. Der er ingen sælger eller kontaktperson imellem." },
@@ -421,7 +421,7 @@ const en: Dict = {
       title: "How we compare",
       cols: ["", "Makkerne", "Agency", "DIY (Wix etc.)"],
       rows: [
-        ["Price", "Fixed price before we start", "Often DKK 10,000 and up", "Free to start"],
+        ["Price", "From DKK 4,500 by number of pages", "Often DKK 10,000 and up", "Free to start"],
         ["Ongoing payment", "Care from DKK 249/month", "Often a pricey service plan", "Monthly subscription"],
         ["Who writes the texts", "We do", "Usually them", "You"],
         ["See the site before you pay", "Yes, the draft is free", "Rarely", "Yes"],
@@ -497,7 +497,7 @@ const en: Dict = {
   faq: {
     title: "What people often ask us",
     items: [
-      { q: "What does a site cost?", a: "It depends on how big the site is and what it should do. Use the price calculator to see your price in a minute. You always get a fixed price before we start." },
+      { q: "What does a site cost?", a: "It depends on how big the site is and what it should do. Use the price calculator to see your price in a minute. You know the full price, for the site and the monthly care, before we start." },
       { q: "What does the draft cost?", a: "Nothing. You only pay if you want the site." },
       { q: "What do I get for the monthly fee?", a: "With Care the site is online and secure, we save a copy every night and keep the technical side up to date, and you get one small change a month. With Care and admin we look after the site for you: we change text, prices and photos when you ask, add new photos every month and keep your Google profile up to date. It costs DKK 0 to get started." },
       { q: "Who do I talk to?", a: "To us, the people building the site. There is no salesperson or account manager in between." },
