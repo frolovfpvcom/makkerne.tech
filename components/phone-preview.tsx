@@ -206,10 +206,10 @@ export function PhonePreview({
       window.removeEventListener("resize", measure);
     };
   }, []);
-  // Most of the gap beside the heading, and on the right up to 96 px past the column while keeping
-  // 16 px from the window edge.
-  const SPILL_LEFT = 40;
-  const laptopW = box.wide ? Math.round(box.w + SPILL_LEFT + Math.min(96, Math.max(0, box.right - 16))) : Math.min(box.w, 560);
+  // Into the gap beside the heading, and on the right only as far as the base sticks out past the
+  // screen, so the screen itself still ends on the same line as the header.
+  const SPILL_LEFT = 32;
+  const laptopW = box.wide ? Math.round(box.w + SPILL_LEFT + Math.min(48, Math.max(0, box.right - 16))) : Math.min(box.w, 560);
   const grow = view === "desktop" && box.wide;
   const go = (i: number) => setTrade(((i % n) + n) % n);
   usePreloadShots([sel - 1, sel + 1].map((i) => items[((i % n) + n) % n].slug), view);
