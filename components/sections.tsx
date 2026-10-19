@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { EMAIL, TEAM } from "@/lib/content";
 import { ACCENT } from "@/lib/accent";
@@ -308,17 +308,35 @@ export function Contact() {
           >
             {c.write}
           </a>
-          {/* Two columns, so the "Copy" links line up under each other. */}
-          <div className="mt-5 grid w-fit grid-cols-[auto_auto] items-center gap-x-4 gap-y-2 text-paper/70">
+          {/* Each address opens the mail program; the small button beside it copies it. */}
+          <ul className="mt-5 grid w-fit max-w-full grid-cols-[minmax(0,auto)_auto] items-center gap-x-1 text-paper/70">
             {mails.map((mail) => (
-              <Fragment key={mail}>
-                <span className="break-all">{mail}</span>
-                <button type="button" onClick={() => copy(mail)} className="justify-self-start text-sm underline underline-offset-4 transition hover:text-paper">
-                  {copied === mail ? `${c.copied} ✓` : c.copy}
+              <li key={mail} className="col-span-2 grid grid-cols-subgrid items-center">
+                <a href={`mailto:${mail}`} className="min-w-0 break-all underline-offset-4 transition hover:text-brand hover:underline">
+                  {mail}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => copy(mail)}
+                  aria-label={copied === mail ? c.copied : `${c.copy} ${mail}`}
+                  title={copied === mail ? c.copied : c.copy}
+                  className="grid size-10 shrink-0 place-items-center transition hover:text-brand"
+                >
+                  {copied === mail ? (
+                    <svg viewBox="0 0 24 24" className="size-5 text-brand" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12.5l4.5 4.5L19 7.5" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="8" y="3" width="8" height="4" rx="1" />
+                      <path d="M8 5H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2" />
+                    </svg>
+                  )}
                 </button>
-              </Fragment>
+                <span role="status" className="sr-only col-span-2">{copied === mail ? c.copied : ""}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
         <div className="flex flex-col lg:border-l lg:border-paper/15 lg:pl-14">
           <p className="text-2xl font-bold">{c.who}</p>
@@ -328,8 +346,9 @@ export function Contact() {
                 <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 border-2 border-paper/15 object-cover object-top" />
                 <figcaption className="mt-3">
                   <span className="block font-cond text-xl font-bold uppercase">{p.name}</span>
-                  <a href={`mailto:${p.email}`} className="break-all text-sm text-paper/70 underline-offset-4 transition hover:text-brand hover:underline">
-                    {p.email}
+                  <a href={`mailto:${p.email}`} className="break-words text-sm text-paper/70 underline-offset-4 transition hover:text-brand hover:underline">
+                    {/* On narrow phones the address breaks after the @, not mid-word. */}
+                    {p.email.split("@")[0]}@<wbr />{p.email.split("@")[1]}
                   </a>
                 </figcaption>
               </figure>
