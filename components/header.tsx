@@ -33,8 +33,8 @@ export function Header() {
 
   const links = [
     { href: "/eksempelsider/", label: t.nav.examples },
-    { href: "/pris/", label: t.nav.price },
     { href: "/proces/", label: t.nav.process },
+    { href: "/pris/", label: t.nav.price },
     { href: "/faq/", label: t.nav.faq },
     { href: "/om-os/", label: t.nav.about },
   ];

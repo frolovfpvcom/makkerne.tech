@@ -478,8 +478,8 @@ export function Footer() {
         <Logo light />
         <nav className="flex flex-wrap gap-x-6 gap-y-2 font-cond text-lg font-bold uppercase text-paper/70">
           <Link href="/eksempelsider/" className="hover:text-brand">{t.nav.examples}</Link>
-          <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
+          <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>
           <Link href="/om-os/" className="hover:text-brand">{t.nav.about}</Link>
         </nav>
