@@ -118,7 +118,7 @@ function TradeMenu() {
   const sel = useTrade();
   return (
     <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-[#060912] text-ink lg:block">
-      <ul role="tablist" aria-orientation="vertical" className="pt-6">
+      <ul role="tablist" aria-orientation="vertical" className="pt-20">
         {e.items.map((it, i) => (
           <li key={it.slug}>
             <button
@@ -127,7 +127,7 @@ function TradeMenu() {
               aria-selected={i === sel}
               onClick={() => setTrade(i)}
               className={`group flex h-11 w-full cursor-pointer items-center justify-between gap-3 border-l-2 pl-7 pr-6 text-left text-[15px] transition-colors ${
-                i === sel ? "border-brand bg-white/[0.06] text-ink" : "border-transparent text-ink/60 hover:bg-white/[0.04] hover:text-ink"
+                i === sel ? "border-brand bg-white/[0.08] text-white" : "border-transparent text-white hover:bg-white/[0.05]"
               }`}
             >
               {it.trade}

@@ -55,7 +55,6 @@ export function Header() {
     { href: "/eksempelsider/", label: t.nav.examples },
     { href: "/proces/", label: t.nav.process },
     { href: "/pris/", label: t.nav.price },
-    { href: "/faq/", label: t.nav.faq },
     { href: "/om-os/", label: t.nav.about },
   ];
   // The one call to action: the price calculator, on the front page or the price page.
