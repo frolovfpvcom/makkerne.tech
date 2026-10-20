@@ -55,6 +55,7 @@ export function Header() {
     { href: "/eksempelsider/", label: t.nav.examples },
     { href: "/proces/", label: t.nav.process },
     { href: "/pris/", label: t.nav.price },
+    { href: "/sammenlign/", label: t.nav.compare },
     { href: "/om-os/", label: t.nav.about },
   ];
   // The one call to action: the price calculator, on the front page or the price page.
@@ -67,13 +68,13 @@ export function Header() {
         <Logo />
 
         {/* The full menu only where it fits on one line; below that the menu button takes over. */}
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center lg:flex xl:gap-1">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               aria-current={here(l.href) ? "page" : undefined}
-              className={`whitespace-nowrap rounded-full px-3.5 py-2 text-[15px] font-medium transition ${
+              className={`whitespace-nowrap rounded-full px-2 py-2 text-[15px] font-medium transition xl:px-3.5 ${
                 here(l.href) ? "bg-ink/[0.06] text-ink" : "text-ink/65 hover:bg-ink/[0.04] hover:text-ink"
               }`}
             >

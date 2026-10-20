@@ -33,7 +33,6 @@ export function PricePage() {
       <PageIntro title={t.pricing.title} lead={t.pricing.lead} />
       <PriceSection />
       <Plans />
-      <Comparison />
       <Process />
     </Shell>
   );
@@ -46,6 +45,17 @@ export function ProcessPage() {
       <PageIntro title={t.process.title} lead={t.process.lead} />
       <Process hideHead />
       <Faq />
+    </Shell>
+  );
+}
+
+/** The menu's "how we compare" page. */
+export function ComparePage() {
+  const { t } = useLang();
+  return (
+    <Shell>
+      <PageIntro title={t.compare.title} lead={t.compare.lead} />
+      <Comparison />
     </Shell>
   );
 }

@@ -335,31 +335,37 @@ export function Plans() {
 }
 
 /** Plain side-by-side with the two usual alternatives. */
+/**
+ * How we compare with an agency, a subscription firm and building it yourself. A table on a
+ * computer; on a phone each question gets its own block with our answer first. Then where we are
+ * strong, where someone else may suit you better, and the sources for the others' prices.
+ */
 export function Comparison() {
   const { t } = useLang();
-  const tb = t.pricing.table;
+  const c = t.compare;
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-8 sm:pb-28">
-      <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{tb.title}</h2>
-      <div className="mt-6 overflow-x-auto">
-        <table className="w-full min-w-[32rem] border-collapse text-left text-sm sm:text-base">
+    <>
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-20">
+        <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{c.tableTitle}</h2>
+        <table className="mt-8 hidden w-full table-fixed border-collapse text-left md:table">
           <thead>
             <tr className="border-b-2 border-ink">
-              {tb.cols.map((col, i) => (
-                <th key={i} scope="col" className={`py-3 font-cond text-lg font-bold ${i === 0 ? "pr-4" : "px-3"} ${i === 1 ? "bg-[#1b2c5c] text-brand" : ""}`}>
+              <td className="w-[18%]" />
+              {c.cols.map((col, i) => (
+                <th key={col} scope="col" className={`px-3 py-3 align-bottom font-cond text-lg font-bold leading-tight ${i === 0 ? "bg-[#1b2c5c] text-brand" : ""}`}>
                   {col}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {tb.rows.map(([label, ...cells]) => (
-              <tr key={label} className="border-b border-ink/15">
-                <th scope="row" className="py-3 pr-4 font-medium text-ink/70">
+            {c.rows.map(([label, ...cells]) => (
+              <tr key={label} className="border-b border-ink/15 align-top">
+                <th scope="row" className="py-4 pr-4 font-medium text-ink/70">
                   {label}
                 </th>
                 {cells.map((cell, i) => (
-                  <td key={i} className={`px-3 py-3 ${i === 0 ? "bg-[#1b2c5c] font-semibold" : "text-ink/75"}`}>
+                  <td key={i} className={`px-3 py-4 leading-snug ${i === 0 ? "bg-[#1b2c5c] font-semibold" : "text-ink/75"}`}>
                     {cell}
                   </td>
                 ))}
@@ -367,8 +373,73 @@ export function Comparison() {
             ))}
           </tbody>
         </table>
-      </div>
-    </section>
+        <div className="mt-6 grid gap-4 md:hidden">
+          {c.rows.map(([label, ours, ...theirs]) => (
+            <div key={label} className="rounded-xl border border-ink/15 bg-card p-4">
+              <h3 className="font-semibold">{label}</h3>
+              <p className="mt-3 rounded-lg bg-[#1b2c5c] px-3 py-2.5">
+                <span className="block text-xs font-bold uppercase tracking-wide text-brand">{c.cols[0]}</span>
+                <span className="font-semibold">{ours}</span>
+              </p>
+              <dl className="mt-3 grid gap-2.5 text-sm">
+                {theirs.map((cell, i) => (
+                  <div key={i}>
+                    <dt className="text-ink/55">{c.cols[i + 1]}</dt>
+                    <dd className="text-ink/85">{cell}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-ink/15 bg-paper-2">
+        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-10 sm:px-8 sm:py-20 lg:grid-cols-2 lg:gap-16">
+          {[
+            { title: c.strongTitle, items: c.strong, mark: "bg-brand" },
+            { title: c.otherTitle, items: c.other, mark: "bg-ink/30" },
+          ].map((col) => (
+            <div key={col.title}>
+              <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{col.title}</h2>
+              <ul className="mt-6 grid gap-5">
+                {col.items.map((it) => (
+                  <li key={it.t} className="flex gap-4">
+                    <span aria-hidden className={`mt-2 h-2.5 w-2.5 shrink-0 rounded-full ${col.mark}`} />
+                    <div>
+                      <p className="text-lg font-semibold">{it.t}</p>
+                      <p className="mt-1 leading-relaxed text-ink/75">{it.d}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-20">
+        <div className="flex flex-col gap-6 rounded-2xl border border-ink/15 bg-card p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+          <div>
+            <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{c.ctaTitle}</h2>
+            <p className="mt-2 text-lg text-ink/75">{c.ctaLead}</p>
+          </div>
+          <Link href="/pris/#beregner" className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-brand px-6 py-3.5 font-cond text-lg font-semibold text-black transition hover:bg-brand/90">
+            {t.nav.cta} →
+          </Link>
+        </div>
+        <p className="mt-8 max-w-3xl text-sm leading-relaxed text-ink/55">{c.sources}</p>
+        <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+          {c.sourceLinks.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} target="_blank" rel="noopener" className="text-ink/70 underline underline-offset-4 hover:text-brand">
+                {l.label} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   );
 }
 
@@ -575,6 +646,7 @@ export function Footer() {
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>
+          <Link href="/sammenlign/" className="hover:text-brand">{t.nav.compare}</Link>
           <Link href="/om-os/" className="hover:text-brand">{t.nav.about}</Link>
         </nav>
         <div className="flex flex-col gap-2 text-xs text-ink/50">
