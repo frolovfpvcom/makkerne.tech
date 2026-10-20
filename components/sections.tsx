@@ -13,11 +13,12 @@ import { QuoteCard } from "./quote-card";
 import { setTrade, useTrade } from "./trade-store";
 import { useStage } from "./progress-store";
 
-function SectionHead({ title, lead }: { title: string; lead?: string }) {
+function SectionHead({ title, lead, small = false }: { title: string; lead?: string; small?: boolean }) {
+  // `small` tightens the heading on phones only, so more of what follows fits on the screen.
   return (
-    <div className="mb-10 max-w-2xl">
-      <h2 className="text-balance font-cond text-4xl font-bold leading-[1.02] tracking-tight sm:text-[3.25rem]">{title}</h2>
-      {lead && <p className="mt-4 text-pretty text-lg leading-relaxed text-ink/70">{lead}</p>}
+    <div className={`max-w-2xl ${small ? "mb-5 sm:mb-10" : "mb-10"}`}>
+      <h2 className={`text-balance font-cond font-bold leading-[1.02] tracking-tight sm:text-[3.25rem] ${small ? "text-[1.75rem]" : "text-4xl"}`}>{title}</h2>
+      {lead && <p className={`text-pretty leading-relaxed text-ink/70 ${small ? "mt-2 text-base sm:mt-4 sm:text-lg" : "mt-4 text-lg"}`}>{lead}</p>}
     </div>
   );
 }
@@ -82,7 +83,7 @@ export function Examples() {
 export function ExamplePicker({ side = false, front = false }: { side?: boolean; front?: boolean }) {
   const { t } = useLang();
   const e = t.examples;
-  const head = <SectionHead title={front ? e.pickTitle : e.title} lead={front ? e.pickLead : e.lead} />;
+  const head = <SectionHead title={front ? e.pickTitle : e.title} lead={front ? e.pickLead : e.lead} small />;
   if (!side)
     return (
       <section className={front ? "" : "pt-18"}>
@@ -166,7 +167,7 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
     setDir(i > sel ? 1 : -1);
     setTrade(((i % n) + n) % n);
   };
-  const arrow = "grid size-12 place-items-center rounded-full border border-ink/20 bg-card transition hover:border-ink hover:bg-brand";
+  const arrow = "grid size-10 sm:size-12 place-items-center rounded-full border border-ink/20 bg-card transition hover:border-ink hover:bg-brand";
   return (
     <div>
       <div className={`flex items-center gap-3 ${side ? "lg:hidden" : ""}`}>
@@ -178,7 +179,7 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
               role="tab"
               aria-selected={i === sel}
               onClick={() => go(i)}
-              className={`shrink-0 rounded-full border px-4 py-2 font-semibold transition ${i === sel ? "border-ink bg-ink text-paper" : "border-ink/15 bg-card hover:border-ink"}`}
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-semibold transition sm:px-4 sm:py-2 sm:text-base ${i === sel ? "border-ink bg-ink text-paper" : "border-ink/15 bg-card hover:border-ink"}`}
             >
               {it.trade}
             </button>
@@ -197,12 +198,12 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
         </div>
       </div>
 
-      <div className={`grid ${side ? "mt-8 lg:mt-0" : "mt-8"}`}>
+      <div className={`grid ${side ? "mt-4 sm:mt-8 lg:mt-0" : "mt-4 sm:mt-8"}`}>
         {e.items.map((item, i) => (
           <article
             key={item.slug}
             aria-hidden={i !== sel}
-            className={`grid items-center gap-8 transition-opacity duration-300 [grid-area:1/1] lg:grid-cols-12 lg:gap-14 ${i === sel ? "opacity-100" : "pointer-events-none invisible opacity-0"}`}
+            className={`grid items-center gap-5 transition-opacity sm:gap-8 duration-300 [grid-area:1/1] lg:grid-cols-12 lg:gap-14 ${i === sel ? "opacity-100" : "pointer-events-none invisible opacity-0"}`}
           >
             <div className="min-w-0 lg:col-span-7">
               {seen.includes(i) && <BrowserSite src={item.href} slug={item.slug} title={item.name} tryLabel={e.try} accent={ACCENT[item.slug]} />}
@@ -214,16 +215,16 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
                     <p className="text-sm font-semibold text-ink/50">
                       {item.industry} · {item.place}
                     </p>
-                    <h3 className="mt-1 font-cond text-5xl font-bold leading-none tracking-tight">{item.name}</h3>
-                    <p className="mt-4 text-lg leading-relaxed text-ink/70">{item.short}</p>
-                    <ul className="mt-6 flex flex-wrap gap-2">
+                    <h3 className="mt-1 font-cond text-3xl font-bold sm:text-5xl leading-none tracking-tight">{item.name}</h3>
+                    <p className="mt-2 text-base leading-relaxed text-ink/70 sm:mt-4 sm:text-lg">{item.short}</p>
+                    <ul className="mt-4 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
                       {item.tags.map((tag) => (
-                        <li key={tag} className="rounded-full border border-ink/15 bg-card px-3 py-1 text-sm font-medium">
+                        <li key={tag} className="rounded-full border border-ink/15 bg-card px-2.5 py-0.5 text-xs font-medium sm:px-3 sm:py-1 sm:text-sm">
                           {tag}
                         </li>
                       ))}
                     </ul>
-                    <a href={item.href} target="_blank" rel="noopener" className="mt-7 inline-flex rounded-full bg-ink px-5 py-3 font-semibold text-paper transition hover:bg-ink/85">
+                    <a href={item.href} target="_blank" rel="noopener" className="mt-5 inline-flex rounded-full bg-ink px-4 py-2.5 text-sm font-semibold sm:mt-7 sm:px-5 sm:py-3 sm:text-base text-paper transition hover:bg-ink/85">
                       {e.open} ↗
                     </a>
                   </motion.div>
@@ -235,7 +236,7 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
       </div>
 
       {/* Arrows under the example on phones, where there is no room next to the tabs. */}
-      <div className="mt-6 flex items-center justify-between sm:hidden">
+      <div className="mt-4 flex items-center justify-between sm:hidden">
         <button type="button" onClick={() => go(sel - 1)} aria-label="Forrige eksempel" className={arrow}>
           <span aria-hidden className="text-xl">←</span>
         </button>
