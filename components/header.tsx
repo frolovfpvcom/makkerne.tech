@@ -7,6 +7,7 @@ import { INTRO_DONE } from "./intro";
 import { LangToggle, useLang } from "./lang";
 
 export function Logo() {
+  const { t } = useLang();
   return (
     <Link href="/" className="group flex shrink-0 items-center gap-2.5" aria-label="Makkerne – forside">
       {/* Peter's mark, traced from public/brand/makkerne-logo.png: a yellow M cut by a thin diagonal line. */}
@@ -16,7 +17,7 @@ export function Logo() {
       </svg>
       <span className="flex flex-col leading-none">
         <span className="font-cond text-[1.4rem] font-bold tracking-tight">Makkerne</span>
-        <span className="mt-0.5 whitespace-nowrap text-[11px] text-ink/55">Hjemmesider til håndværkere</span>
+        <span className="mt-0.5 whitespace-nowrap text-[11px] text-ink/55">{t.nav.tagline}</span>
       </span>
     </Link>
   );

@@ -23,6 +23,7 @@ export type Example = {
 
 const da = {
   nav: {
+    tagline: "Hjemmesider til håndværkere",
     examples: "Eksempler",
     price: "Udkast",
     process: "Sådan foregår det",
@@ -192,7 +193,7 @@ const da = {
     ] as Example[],
   },
   pricing: {
-    title: "Få et gratis udkast",
+    title: "Få et udkast",
     lead: "Svar på et par korte spørgsmål om din side. Så ser du prisen med det samme og kan bede om et gratis udkast.",
     table: {
       title: "Sådan står vi i forhold til de andre",
@@ -208,7 +209,7 @@ const da = {
   calc: {
     title: "Se din pris",
     lead: "Vælg, hvad din side skal have, så ser du prisen med det samme. Udkastet laver vi gratis, og du betaler først, når du har set det og sagt ja.",
-    head: "Få et gratis udkast",
+    head: "Få et udkast",
     free: "Udkastet er gratis",
     steps: ["Fag", "Til hvem", "Type", "Sider", "Design", "Funktioner", "Drift", "Send"],
     stepWord: "Trin",
@@ -402,6 +403,7 @@ export type Dict = typeof da;
 
 const en: Dict = {
   nav: {
+    tagline: "Websites for tradespeople",
     examples: "Examples",
     price: "Draft",
     process: "How it works",
@@ -541,7 +543,7 @@ const en: Dict = {
     ],
   },
   pricing: {
-    title: "Get a free draft",
+    title: "Get a draft",
     lead: "Answer a few short questions about your site. You see the price straight away and can ask for a free draft.",
     table: {
       title: "How we compare",
@@ -557,7 +559,7 @@ const en: Dict = {
   calc: {
     title: "See your price",
     lead: "Pick what your site should have and see the price straight away. We make the draft for free, and you only pay once you have seen it and said yes.",
-    head: "Get a free draft",
+    head: "Get a draft",
     free: "The draft is free",
     steps: ["Trade", "For", "Type", "Pages", "Design", "Features", "Care", "Send"],
     stepWord: "Step",
