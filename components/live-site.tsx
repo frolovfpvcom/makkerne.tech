@@ -136,14 +136,14 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
   const path = src.replace(/^\//, "makkerne.tech/").replace(/\/$/, "");
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)]">
-      <div className="flex items-center gap-3 px-4 py-3 sm:gap-4 sm:px-5">
+    <div className="group overflow-hidden rounded-xl border sm:rounded-2xl border-black/5 bg-white shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)]">
+      <div className="flex items-center gap-2.5 px-3 py-2 sm:gap-4 sm:px-5 sm:py-3">
         <span className="flex gap-1.5" aria-hidden>
-          <span className="size-3 rounded-full bg-black/15" />
-          <span className="size-3 rounded-full bg-black/15" />
-          <span className="size-3 rounded-full bg-black/15" />
+          <span className="size-2.5 rounded-full bg-black/15 sm:size-3" />
+          <span className="size-2.5 rounded-full bg-black/15 sm:size-3" />
+          <span className="size-2.5 rounded-full bg-black/15 sm:size-3" />
         </span>
-        <a href={src} target="_blank" rel="noopener" className="min-w-0 flex-1 truncate rounded-full bg-[#f3f2ef] px-4 py-1.5 text-center text-sm text-black/55 transition hover:text-black">
+        <a href={src} target="_blank" rel="noopener" className="min-w-0 flex-1 truncate rounded-full bg-[#f3f2ef] px-3 py-1 text-center text-xs text-black/55 sm:px-4 sm:py-1.5 sm:text-sm transition hover:text-black">
           {path} ↗
         </a>
         {/* The usual browser buttons on the right: share, new tab, tabs. Just for looks. */}
@@ -161,7 +161,7 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
           </svg>
         </span>
       </div>
-      <div ref={boxRef} className="relative aspect-[9/14] overflow-hidden bg-paper sm:aspect-[16/10]">
+      <div ref={boxRef} className="relative aspect-[6/7] overflow-hidden bg-paper sm:aspect-[16/10]">
         {size.ready && (
           <ShotThenLive
             key={size.w}
@@ -176,7 +176,8 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
         )}
         {/* Clicking anywhere on the picture opens the real site, just like the address bar. */}
         <a href={src} target="_blank" rel="noopener" className="absolute inset-0 flex items-end justify-center pb-6">
-          <span className="rounded-xl bg-black/45 px-6 py-3 text-base font-semibold text-white/85 opacity-100 backdrop-blur-sm transition sm:opacity-0 sm:group-hover:opacity-100">
+          {/* On a phone the label would cover the example's own call bar; the address bar and the button below say it instead. */}
+          <span className="hidden rounded-xl bg-black/45 px-6 py-3 text-base font-semibold text-white/85 opacity-0 backdrop-blur-sm transition group-hover:opacity-100 sm:inline">
             {tryLabel} ↗
           </span>
         </a>

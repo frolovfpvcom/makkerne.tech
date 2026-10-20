@@ -41,8 +41,8 @@ export function LegalPage({
           </nav>
           <article className="min-w-0 max-w-[68ch] text-[17px] leading-relaxed">
             {t.legal.danishOnly && <p className="mb-8 border-l-4 border-ink/30 pl-4 text-ink/75">{t.legal.danishOnly}</p>}
-            <div className="border-2 border-ink bg-card p-5 sm:p-7">
-              <h2 className="font-cond text-2xl font-extrabold uppercase">Kort fortalt</h2>
+            <div className="rounded-2xl border border-ink/15 bg-card p-5 sm:p-7">
+              <h2 className="font-cond text-2xl font-bold">Kort fortalt</h2>
               <ul className="mt-3 list-disc space-y-1.5 pl-5">
                 {brief.map((b) => (
                   <li key={b}>{b}</li>
@@ -62,7 +62,7 @@ export function LegalPage({
 export function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="mt-12 scroll-mt-28">
-      <h2 className="text-balance font-cond text-3xl font-extrabold uppercase leading-none sm:text-4xl">{title}</h2>
+      <h2 className="text-balance font-cond text-3xl font-bold tracking-tight leading-none sm:text-4xl">{title}</h2>
       <div className="mt-4 space-y-4 [&_a]:underline [&_a]:underline-offset-4 [&_li]:pl-1 [&_ul]:list-disc [&_ul]:space-y-1.5 [&_ul]:pl-5">{children}</div>
     </section>
   );

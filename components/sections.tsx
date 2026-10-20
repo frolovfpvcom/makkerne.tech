@@ -13,11 +13,12 @@ import { QuoteCard } from "./quote-card";
 import { setTrade, useTrade } from "./trade-store";
 import { useStage } from "./progress-store";
 
-function SectionHead({ title, lead, light = false }: { title: string; lead?: string; light?: boolean }) {
+function SectionHead({ title, lead, small = false }: { title: string; lead?: string; small?: boolean }) {
+  // `small` tightens the heading on phones only, so more of what follows fits on the screen.
   return (
-    <div className="mb-10 max-w-2xl">
-      <h2 className="text-balance font-cond text-4xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-6xl">{title}</h2>
-      {lead && <p className={`mt-4 text-pretty text-lg leading-relaxed ${light ? "text-paper/70" : "text-ink/70"}`}>{lead}</p>}
+    <div className={`max-w-2xl ${small ? "mb-5 sm:mb-10" : "mb-10"}`}>
+      <h2 className={`text-balance font-cond font-bold leading-[1.02] tracking-tight sm:text-[3.25rem] ${small ? "text-[1.75rem]" : "text-4xl"}`}>{title}</h2>
+      {lead && <p className={`text-pretty leading-relaxed text-ink/70 ${small ? "mt-2 text-base sm:mt-4 sm:text-lg" : "mt-4 text-lg"}`}>{lead}</p>}
     </div>
   );
 }
@@ -40,16 +41,16 @@ export function Examples() {
     return () => cancelAnimationFrame(id);
   }, []);
   return (
-    <section id="eksempler" className="overflow-hidden bg-[#f3f2ef] py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-8">
+    <section id="eksempler" className="overflow-hidden bg-navy py-10 text-ink sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 sm:px-8">
         <SectionHead title={e.title} lead={e.rowLead} />
       </div>
       <CurvedRow items={tiles} onHover={setHover} className="h-[180px] sm:h-[280px] lg:h-[380px] 2xl:h-[460px]" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-8">
-        <p aria-hidden className="mt-4 hidden min-h-7 text-center [@media(hover:hover)]:block font-cond text-xl font-bold uppercase tracking-wide">
+      <div className="mx-auto max-w-6xl px-4 sm:px-8">
+        <p aria-hidden className="mt-4 hidden min-h-7 text-center [@media(hover:hover)]:block font-cond text-xl font-semibold">
           {on && (
             <>
-              {on.name} <span className="text-ink/50">· {on.industry} · {on.place}</span>
+              {on.name} <span className="text-ink/55">· {on.industry} · {on.place}</span>
             </>
           )}
         </p>
@@ -65,7 +66,7 @@ export function Examples() {
           </ul>
         </nav>
         {/* Half of the visitors scroll this far; the price is one click back up from here. */}
-        <a href="#beregner" className="mt-8 inline-flex items-center gap-3 bg-ink px-6 py-3.5 font-cond text-xl font-bold uppercase tracking-wide text-paper transition hover:bg-ink/85">
+        <a href="#beregner" className="mt-8 inline-flex items-center gap-3 rounded-full bg-brand px-6 py-3.5 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black-dark">
           {t.calc.head} <span aria-hidden>↑</span>
         </a>
         <p className="mt-6 text-sm text-ink/55">{e.disclaimer}</p>
@@ -74,18 +75,74 @@ export function Examples() {
   );
 }
 
-/** The examples page: one example at a time, with trade tabs and arrows. */
-export function ExamplePicker() {
+/**
+ * One example at a time, picked by trade. On the examples page (`side`) the trades are a dark menu
+ * down the far left edge of the screen on a computer, like a shop's category list; on the front page
+ * and on phones they are a row of tabs.
+ */
+export function ExamplePicker({ side = false, front = false }: { side?: boolean; front?: boolean }) {
   const { t } = useLang();
   const e = t.examples;
+  const head = <SectionHead title={front ? e.pickTitle : e.title} lead={front ? e.pickLead : e.lead} small />;
+  if (!side)
+    return (
+      <section className={front ? "" : "pt-18"}>
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-24">
+          {head}
+          <ExampleCarousel />
+          {!front && <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>}
+        </div>
+      </section>
+    );
   return (
-    <section className="bg-[#f3f2ef] pt-18">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 sm:py-24">
-        <SectionHead title={e.title} lead={e.lead} />
-        <ExampleCarousel />
-        <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>
+    <section className="pt-18 lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
+      <TradeMenu />
+      <div className="min-w-0 px-4 py-16 sm:px-8 sm:py-20 lg:px-12 xl:px-16">
+        <div className="mx-auto max-w-6xl">
+          {head}
+          <ExampleCarousel side />
+          <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>
+        </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * The trades as a dark list pinned to the left edge while the examples are on screen. Hovering a
+ * trade lights it up with a yellow arrow; clicking shows that example.
+ */
+function TradeMenu() {
+  const { t } = useLang();
+  const e = t.examples;
+  const sel = useTrade();
+  return (
+    <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-[#060912] text-ink lg:block">
+      <ul role="tablist" aria-orientation="vertical" className="pt-20">
+        {e.items.map((it, i) => (
+          <li key={it.slug}>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={i === sel}
+              onClick={() => setTrade(i)}
+              className={`group flex h-11 w-full cursor-pointer items-center justify-between gap-3 border-l-2 pl-7 pr-6 text-left text-[15px] transition-colors ${
+                i === sel ? "border-brand bg-white/[0.08] text-white" : "border-transparent text-white hover:bg-white/[0.05]"
+              }`}
+            >
+              {it.trade}
+              <svg
+                aria-hidden
+                viewBox="0 0 10 14"
+                className={`h-2.5 w-2 shrink-0 fill-brand transition ${i === sel ? "opacity-100" : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"}`}
+              >
+                <path d="M0 0l10 7-10 7z" />
+              </svg>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 
@@ -93,9 +150,10 @@ export function ExamplePicker() {
  * One example at a time: the live site in a browser window with its text beside it. Trade tabs and
  * arrows move between them, and the hero's trade buttons pick one too. A site is only loaded the
  * first time it is shown, then stays mounted (stacked on top of the others), so switching back is
- * instant and the box never jumps in height.
+ * instant and the box never jumps in height. With `side`, the tabs give way to the left menu on a
+ * computer.
  */
-function ExampleCarousel() {
+function ExampleCarousel({ side = false }: { side?: boolean }) {
   const { t } = useLang();
   const e = t.examples;
   const n = e.items.length;
@@ -109,11 +167,11 @@ function ExampleCarousel() {
     setDir(i > sel ? 1 : -1);
     setTrade(((i % n) + n) % n);
   };
-  const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
+  const arrow = "grid size-10 sm:size-12 place-items-center rounded-full border border-ink/20 bg-card transition hover:border-ink hover:bg-brand";
   return (
     <div>
-      <div className="flex items-center gap-3">
-        <div role="tablist" aria-label={e.pick} className="-mx-4 flex flex-1 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
+      <div className={`flex items-center gap-3 ${side ? "lg:hidden" : ""}`}>
+        <div role="tablist" aria-label={e.pick} className={`${side ? "lg:hidden " : ""}-mx-4 flex flex-1 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0`}>
           {e.items.map((it, i) => (
             <button
               key={it.slug}
@@ -121,7 +179,7 @@ function ExampleCarousel() {
               role="tab"
               aria-selected={i === sel}
               onClick={() => go(i)}
-              className={`shrink-0 border-2 border-ink px-4 py-2 font-cond text-lg font-bold uppercase transition ${i === sel ? "bg-ink text-paper" : "bg-card hover:bg-brand"}`}
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-semibold transition sm:px-4 sm:py-2 sm:text-base ${i === sel ? "border-ink bg-ink text-paper" : "border-ink/15 bg-card hover:border-ink"}`}
             >
               {it.trade}
             </button>
@@ -140,12 +198,12 @@ function ExampleCarousel() {
         </div>
       </div>
 
-      <div className="mt-8 grid">
+      <div className={`grid ${side ? "mt-4 sm:mt-8 lg:mt-0" : "mt-4 sm:mt-8"}`}>
         {e.items.map((item, i) => (
           <article
             key={item.slug}
             aria-hidden={i !== sel}
-            className={`grid items-center gap-8 transition-opacity duration-300 [grid-area:1/1] lg:grid-cols-12 lg:gap-14 ${i === sel ? "opacity-100" : "pointer-events-none invisible opacity-0"}`}
+            className={`grid items-center gap-5 transition-opacity sm:gap-8 duration-300 [grid-area:1/1] lg:grid-cols-12 lg:gap-14 ${i === sel ? "opacity-100" : "pointer-events-none invisible opacity-0"}`}
           >
             <div className="min-w-0 lg:col-span-7">
               {seen.includes(i) && <BrowserSite src={item.href} slug={item.slug} title={item.name} tryLabel={e.try} accent={ACCENT[item.slug]} />}
@@ -154,19 +212,19 @@ function ExampleCarousel() {
               <AnimatePresence mode="wait">
                 {i === sel && (
                   <motion.div key={item.slug} initial={{ opacity: 0, x: dir * 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-                    <p className="font-cond text-lg font-bold uppercase tracking-wide text-ink/50">
+                    <p className="text-sm font-semibold text-ink/50">
                       {item.industry} · {item.place}
                     </p>
-                    <h3 className="mt-1 font-cond text-5xl font-extrabold uppercase leading-none">{item.name}</h3>
-                    <p className="mt-4 text-lg leading-relaxed text-ink/70">{item.short}</p>
-                    <ul className="mt-6 flex flex-wrap gap-2">
+                    <h3 className="mt-1 font-cond text-3xl font-bold sm:text-5xl leading-none tracking-tight">{item.name}</h3>
+                    <p className="mt-2 text-base leading-relaxed text-ink/70 sm:mt-4 sm:text-lg">{item.short}</p>
+                    <ul className="mt-4 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
                       {item.tags.map((tag) => (
-                        <li key={tag} className="border border-ink/20 bg-card px-3 py-1 text-sm font-medium">
+                        <li key={tag} className="rounded-full border border-ink/15 bg-card px-2.5 py-0.5 text-xs font-medium sm:px-3 sm:py-1 sm:text-sm">
                           {tag}
                         </li>
                       ))}
                     </ul>
-                    <a href={item.href} target="_blank" rel="noopener" className="mt-7 inline-block border-b-2 border-ink pb-0.5 font-cond text-xl font-bold uppercase transition hover:border-brand">
+                    <a href={item.href} target="_blank" rel="noopener" className="mt-5 inline-flex rounded-full bg-ink px-4 py-2.5 text-sm font-semibold sm:mt-7 sm:px-5 sm:py-3 sm:text-base text-paper transition hover:bg-ink/85">
                       {e.open} ↗
                     </a>
                   </motion.div>
@@ -178,7 +236,7 @@ function ExampleCarousel() {
       </div>
 
       {/* Arrows under the example on phones, where there is no room next to the tabs. */}
-      <div className="mt-6 flex items-center justify-between sm:hidden">
+      <div className="mt-4 flex items-center justify-between sm:hidden">
         <button type="button" onClick={() => go(sel - 1)} aria-label="Forrige eksempel" className={arrow}>
           <span aria-hidden className="text-xl">←</span>
         </button>
@@ -194,8 +252,8 @@ function ExampleCarousel() {
 }
 
 /**
- * The price page's top: the same three-click card as on the front page, and beside it what is
- * always included and what happens after the button.
+ * The price page's top: the same three-click card as on the front page, and beside it what happens
+ * after the button.
  */
 export function PriceSection() {
   const { t } = useLang();
@@ -204,8 +262,7 @@ export function PriceSection() {
     <section id="pris" className="scroll-mt-18 mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:gap-12">
       <QuoteCard className="lg:col-span-7" />
       <div className="lg:col-span-5 lg:pt-2">
-        <p className="leading-relaxed text-ink/80">{c.features.included}</p>
-        <ol className="mt-6 space-y-3 border-t border-ink/15 pt-6">
+        <ol className="space-y-3">
           {c.how.map((s, i) => (
             <li key={s} className="grid grid-cols-[1.75rem_1fr] leading-snug text-ink/80">
               <span className="font-cond text-xl font-bold leading-none text-ink/35 tabular-nums">{i + 1}</span>
@@ -233,19 +290,19 @@ export function Plans() {
   const c = t.calc;
   const kr = (n: number) => (lang === "da" ? `${n.toLocaleString("da-DK")} kr.` : `DKK ${n.toLocaleString("en-GB")}`);
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-8 sm:pb-24">
-      <h2 className="font-cond text-3xl font-extrabold uppercase sm:text-4xl">{c.plansTitle}</h2>
+    <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-8 sm:pb-24">
+      <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{c.plansTitle}</h2>
       <p className="mt-2 max-w-2xl leading-relaxed text-ink/70">{c.plansLead}</p>
       <div className="mt-6 grid gap-3 md:grid-cols-3 md:items-stretch">
         {c.care.options.map((o, i) => {
           const best = i === c.care.best;
           return (
-            <div key={o.label} className={`flex flex-col p-5 ${best ? "border-2 border-ink bg-card" : "border border-ink/25 bg-paper"}`}>
+            <div key={o.label} className={`flex flex-col rounded-2xl p-5 ${best ? "border border-ink/40 bg-card" : "border border-ink/15 bg-paper"}`}>
               <p className="flex flex-wrap items-center justify-between gap-2 font-semibold">
                 {o.label}
-                {best && <span className="bg-brand px-1.5 py-0.5 font-cond text-sm font-bold uppercase leading-none">{c.care.pick}</span>}
+                {best && <span className="rounded-full bg-brand px-2 py-1 text-xs font-semibold leading-none">{c.care.pick}</span>}
               </p>
-              <p className="mt-2 font-cond text-4xl font-extrabold leading-none tabular-nums">
+              <p className="mt-2 font-cond text-4xl font-bold leading-none tabular-nums">
                 {kr(o.monthly)} <span className="font-sans text-base font-normal text-ink/60">{c.monthly}</span>
               </p>
               <ul className="mt-4 space-y-1.5 border-t border-ink/15 pt-4 text-sm leading-snug text-ink/80">
@@ -278,31 +335,37 @@ export function Plans() {
 }
 
 /** Plain side-by-side with the two usual alternatives. */
+/**
+ * How we compare with an agency, a subscription firm and building it yourself. A table on a
+ * computer; on a phone each question gets its own block with our answer first. Then where we are
+ * strong, where someone else may suit you better, and the sources for the others' prices.
+ */
 export function Comparison() {
   const { t } = useLang();
-  const tb = t.pricing.table;
+  const c = t.compare;
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-8 sm:pb-28">
-      <h2 className="font-cond text-3xl font-extrabold uppercase sm:text-4xl">{tb.title}</h2>
-      <div className="mt-6 overflow-x-auto">
-        <table className="w-full min-w-[32rem] border-collapse text-left text-sm sm:text-base">
+    <>
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-20">
+        <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{c.tableTitle}</h2>
+        <table className="mt-8 hidden w-full table-fixed border-collapse text-left md:table">
           <thead>
             <tr className="border-b-2 border-ink">
-              {tb.cols.map((col, i) => (
-                <th key={i} scope="col" className={`py-3 font-cond text-lg font-bold uppercase ${i === 0 ? "pr-4" : "px-3"} ${i === 1 ? "bg-brand/40" : ""}`}>
+              <td className="w-[18%]" />
+              {c.cols.map((col, i) => (
+                <th key={col} scope="col" className={`px-3 py-3 align-bottom font-cond text-lg font-bold leading-tight ${i === 0 ? "bg-[#1b2c5c] text-brand" : ""}`}>
                   {col}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {tb.rows.map(([label, ...cells]) => (
-              <tr key={label} className="border-b border-ink/15">
-                <th scope="row" className="py-3 pr-4 font-medium text-ink/70">
+            {c.rows.map(([label, ...cells]) => (
+              <tr key={label} className="border-b border-ink/15 align-top">
+                <th scope="row" className="py-4 pr-4 font-medium text-ink/70">
                   {label}
                 </th>
                 {cells.map((cell, i) => (
-                  <td key={i} className={`px-3 py-3 ${i === 0 ? "bg-brand/40 font-semibold" : "text-ink/75"}`}>
+                  <td key={i} className={`px-3 py-4 leading-snug ${i === 0 ? "bg-[#1b2c5c] font-semibold" : "text-ink/75"}`}>
                     {cell}
                   </td>
                 ))}
@@ -310,8 +373,73 @@ export function Comparison() {
             ))}
           </tbody>
         </table>
-      </div>
-    </section>
+        <div className="mt-6 grid gap-4 md:hidden">
+          {c.rows.map(([label, ours, ...theirs]) => (
+            <div key={label} className="rounded-xl border border-ink/15 bg-card p-4">
+              <h3 className="font-semibold">{label}</h3>
+              <p className="mt-3 rounded-lg bg-[#1b2c5c] px-3 py-2.5">
+                <span className="block text-xs font-bold uppercase tracking-wide text-brand">{c.cols[0]}</span>
+                <span className="font-semibold">{ours}</span>
+              </p>
+              <dl className="mt-3 grid gap-2.5 text-sm">
+                {theirs.map((cell, i) => (
+                  <div key={i}>
+                    <dt className="text-ink/55">{c.cols[i + 1]}</dt>
+                    <dd className="text-ink/85">{cell}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-ink/15 bg-paper-2">
+        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-10 sm:px-8 sm:py-20 lg:grid-cols-2 lg:gap-16">
+          {[
+            { title: c.strongTitle, items: c.strong, mark: "bg-brand" },
+            { title: c.otherTitle, items: c.other, mark: "bg-ink/30" },
+          ].map((col) => (
+            <div key={col.title}>
+              <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{col.title}</h2>
+              <ul className="mt-6 grid gap-5">
+                {col.items.map((it) => (
+                  <li key={it.t} className="flex gap-4">
+                    <span aria-hidden className={`mt-2 h-2.5 w-2.5 shrink-0 rounded-full ${col.mark}`} />
+                    <div>
+                      <p className="text-lg font-semibold">{it.t}</p>
+                      <p className="mt-1 leading-relaxed text-ink/75">{it.d}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-20">
+        <div className="flex flex-col gap-6 rounded-2xl border border-ink/15 bg-card p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+          <div>
+            <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{c.ctaTitle}</h2>
+            <p className="mt-2 text-lg text-ink/75">{c.ctaLead}</p>
+          </div>
+          <Link href="/pris/#beregner" className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-brand px-6 py-3.5 font-cond text-lg font-semibold text-black transition hover:bg-brand/90">
+            {t.nav.cta} →
+          </Link>
+        </div>
+        <p className="mt-8 max-w-3xl text-sm leading-relaxed text-ink/55">{c.sources}</p>
+        <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+          {c.sourceLinks.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} target="_blank" rel="noopener" className="text-ink/70 underline underline-offset-4 hover:text-brand">
+                {l.label} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   );
 }
 
@@ -332,7 +460,7 @@ export function Process({ hideHead = false }: { hideHead?: boolean }) {
   const last = p.steps.length - 1;
   return (
     <section id="proces" className="border-y border-ink/15 bg-paper-2">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-24">
         {!hideHead && <SectionHead title={p.title} lead={p.lead} />}
         <div className="relative">
           {/* The line across, and how far along it the visitor is. */}
@@ -358,8 +486,8 @@ export function Process({ hideHead = false }: { hideHead?: boolean }) {
                     }`}
                   />
                   <span className={`mt-0 block lg:mt-4 ${here ? "" : "lg:pt-7"}`}>
-                    {here && <span className={`mb-1.5 block h-[22px] w-fit bg-ink px-2 font-cond text-sm font-bold uppercase leading-[22px] text-brand ${dotAlign}`}>{p.here}</span>}
-                    <span className={`block font-cond text-2xl font-bold uppercase leading-tight ${passed || here ? "" : "text-ink/45"}`}>
+                    {here && <span className={`mb-1.5 block h-[22px] w-fit rounded-full bg-brand px-2.5 text-xs font-semibold leading-[22px] text-black ${dotAlign}`}>{p.here}</span>}
+                    <span className={`block font-cond text-2xl font-bold leading-tight ${passed || here ? "" : "text-ink/45"}`}>
                       <span className="text-ink/35 tabular-nums">{i + 1}</span> {s.title}
                     </span>
                     <span className={`mt-1.5 block leading-relaxed ${passed || here ? "text-ink/75" : "text-ink/50"}`}>{s.text}</span>
@@ -385,10 +513,10 @@ export function Faq({ page = false }: { page?: boolean }) {
   return (
     <section
       id="faq"
-      className={`mx-auto grid max-w-6xl gap-8 px-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 ${page ? "pb-16 pt-28 sm:pt-32" : "py-16 sm:py-24"}`}
+      className={`mx-auto grid max-w-6xl gap-8 px-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 ${page ? "pb-16 pt-28 sm:pt-32" : "py-10 sm:py-24"}`}
     >
       <div>
-        <Heading className="font-cond text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">{f.title}</Heading>
+        <Heading className="font-cond text-4xl font-bold leading-none tracking-tight sm:text-5xl">{f.title}</Heading>
         <p className="mt-4 max-w-sm text-pretty leading-relaxed text-ink/70">{f.lead}</p>
         <p className="mt-3 text-sm text-ink/70">
           {f.more}{" "}
@@ -442,21 +570,21 @@ export function Contact({ people = true }: { people?: boolean }) {
   // The main address first, then Peter's underneath.
   const mails = [EMAIL, ...TEAM.map((p) => p.email).filter((m) => m !== EMAIL)];
   return (
-    <section id="kontakt" className="bg-ink text-paper">
+    <section id="kontakt" className="bg-[#060912] text-ink">
       {/* The text keeps to the page's column; the photos run all the way to the right edge. */}
-      <div className={`grid gap-14 px-4 py-20 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
+      <div className={`grid gap-10 px-4 py-12 sm:gap-14 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
         {/* Without the photos the band is short: heading and text on the left, the button and addresses on the right. */}
         <div className={people ? "" : "lg:grid lg:grid-flow-col lg:grid-cols-[minmax(0,32rem)_auto] lg:grid-rows-[auto_auto] lg:items-start lg:justify-items-start lg:justify-between lg:gap-x-16"}>
-          <h2 className="text-balance font-cond text-5xl font-extrabold uppercase leading-[0.95] sm:text-6xl">{c.title}</h2>
-          <p className="mt-5 max-w-md text-lg text-paper/70">{c.lead}</p>
+          <h2 className="text-balance font-cond text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl">{c.title}</h2>
+          <p className="mt-5 max-w-md text-lg text-ink/70">{c.lead}</p>
           <a
             href={`mailto:${EMAIL}?subject=${encodeURIComponent(c.subject)}&body=${encodeURIComponent(c.body)}`}
-            className={`mt-8 inline-flex bg-brand px-7 py-4 font-cond text-xl font-bold uppercase text-ink transition hover:bg-brand-dark ${people ? "" : "lg:mt-0"}`}
+            className={`mt-8 inline-flex rounded-full bg-brand px-7 py-4 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black-dark ${people ? "" : "lg:mt-0"}`}
           >
             {c.write}
           </a>
           {/* Each address opens the mail program; the small button beside it copies it. */}
-          <ul className="mt-5 grid w-fit max-w-full grid-cols-[minmax(0,auto)_auto] items-center gap-x-1 text-paper/70">
+          <ul className="mt-5 grid w-fit max-w-full grid-cols-[minmax(0,auto)_auto] items-center gap-x-1 text-ink/70">
             {mails.map((mail) => (
               <li key={mail} className="col-span-2 grid grid-cols-subgrid items-center">
                 <a href={`mailto:${mail}`} className="min-w-0 break-all underline-offset-4 transition hover:text-brand hover:underline">
@@ -485,15 +613,15 @@ export function Contact({ people = true }: { people?: boolean }) {
             ))}
           </ul>
         </div>
-        {people && <div className="flex flex-col lg:border-l lg:border-paper/15 lg:pl-14">
+        {people && <div className="flex flex-col lg:border-l lg:border-ink/15 lg:pl-14">
           <p className="text-2xl font-bold">{c.who}</p>
           <div className="mt-6 grid flex-1 grid-cols-2 gap-4 sm:gap-6">
             {TEAM.map((p) => (
               <figure key={p.email} className="flex flex-col">
-                <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 border-2 border-paper/15 object-cover object-top" />
+                <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 rounded-2xl bg-ink/5 object-cover object-top" />
                 <figcaption className="mt-3">
-                  <span className="block font-cond text-xl font-bold uppercase">{p.name}</span>
-                  <a href={`mailto:${p.email}`} className="break-words text-sm text-paper/70 underline-offset-4 transition hover:text-brand hover:underline">
+                  <span className="block font-cond text-xl font-semibold">{p.name}</span>
+                  <a href={`mailto:${p.email}`} className="break-words text-sm text-ink/70 underline-offset-4 transition hover:text-brand hover:underline">
                     {/* On narrow phones the address breaks after the @, not mid-word. */}
                     {p.email.split("@")[0]}@<wbr />{p.email.split("@")[1]}
                   </a>
@@ -510,21 +638,22 @@ export function Contact({ people = true }: { people?: boolean }) {
 export function Footer() {
   const { t } = useLang();
   return (
-    <footer className="border-t border-paper/10 bg-ink text-paper">
+    <footer className="border-t border-ink/10 bg-[#060912] pb-[env(safe-area-inset-bottom)] text-ink">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8">
-        <Logo light />
-        <nav className="flex flex-wrap gap-x-6 gap-y-2 font-cond text-lg font-bold uppercase text-paper/70">
+        <Logo />
+        <nav className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-ink/70">
           <Link href="/eksempelsider/" className="hover:text-brand">{t.nav.examples}</Link>
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>
+          <Link href="/sammenlign/" className="hover:text-brand">{t.nav.compare}</Link>
           <Link href="/om-os/" className="hover:text-brand">{t.nav.about}</Link>
         </nav>
-        <div className="flex flex-col gap-2 text-xs text-paper/50">
+        <div className="flex flex-col gap-2 text-xs text-ink/50">
           <p>
             {t.footer} · {t.updated}
           </p>
-          <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-paper/70">
+          <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink/70">
             <Link href="/vilkaar/" className="underline underline-offset-4 hover:text-brand">{t.legal.terms}</Link>
             <Link href="/privatliv/" className="underline underline-offset-4 hover:text-brand">{t.legal.privacy}</Link>
           </p>
@@ -539,7 +668,7 @@ export function PageIntro({ title, lead }: { title: string; lead?: string }) {
   return (
     <section className="border-b border-ink/15">
       <div className="mx-auto max-w-6xl px-4 pb-14 pt-32 sm:px-8 sm:pb-16 sm:pt-36">
-        <h1 className="max-w-4xl text-balance font-cond text-5xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-7xl">{title}</h1>
+        <h1 className="max-w-4xl text-balance font-cond text-5xl font-bold leading-[1.02] tracking-tight sm:text-7xl">{title}</h1>
         {lead && <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink/75">{lead}</p>}
       </div>
     </section>

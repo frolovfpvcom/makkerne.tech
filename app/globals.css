@@ -2,17 +2,21 @@
 
 @theme inline {
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  /* Makkerne's own headings: heavy, condensed, workshop-sign style. */
-  --font-cond: var(--font-barlow), "Arial Narrow", ui-sans-serif, sans-serif;
+  /* Makkerne's own headings: a warm grotesque with a bit of hand to it, set in normal case. */
+  --font-cond: var(--font-head), ui-sans-serif, system-ui, sans-serif;
   /* Display face of each example site, set per page with next/font. */
   --font-display: var(--font-example-display), ui-serif, Georgia, serif;
-  /* Raw workshop palette: concrete, ink and tape-measure yellow */
-  --color-paper: #ebe7de;
-  --color-paper-2: #ded9cd;
-  --color-card: #f5f2eb;
-  --color-ink: #161513;
+  /* Night blue, taken from the front page card: a deep navy-black page, lighter blue panels, near-white
+     text, and the logo's yellow as the one accent. */
+  --color-paper: #0a0f1d;
+  --color-paper-2: #0f1830;
+  --color-card: #131d3a;
+  --color-ink: #eef1f8;
   --color-brand: #f5c518;
-  --color-brand-dark: #d9a90b;
+  --color-brand-dark: #e2b207;
+  --color-moss: #2f3a2c;
+  /* The deep blue of the front page card, carried into the band with the examples. */
+  --color-navy: #0f1a3a;
 }
 
 html {
