@@ -40,7 +40,7 @@ export function Examples() {
     return () => cancelAnimationFrame(id);
   }, []);
   return (
-    <section id="eksempler" className="overflow-hidden bg-navy py-16 text-paper sm:py-24">
+    <section id="eksempler" className="overflow-hidden bg-navy py-16 text-ink sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
         <SectionHead title={e.title} lead={e.rowLead} light />
       </div>
@@ -49,7 +49,7 @@ export function Examples() {
         <p aria-hidden className="mt-4 hidden min-h-7 text-center [@media(hover:hover)]:block font-cond text-xl font-semibold">
           {on && (
             <>
-              {on.name} <span className="text-paper/55">· {on.industry} · {on.place}</span>
+              {on.name} <span className="text-ink/55">· {on.industry} · {on.place}</span>
             </>
           )}
         </p>
@@ -65,10 +65,10 @@ export function Examples() {
           </ul>
         </nav>
         {/* Half of the visitors scroll this far; the price is one click back up from here. */}
-        <a href="#beregner" className="mt-8 inline-flex items-center gap-3 rounded-full bg-brand px-6 py-3.5 font-cond text-lg font-semibold text-ink transition hover:bg-brand-dark">
+        <a href="#beregner" className="mt-8 inline-flex items-center gap-3 rounded-full bg-brand px-6 py-3.5 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black-dark">
           {t.calc.head} <span aria-hidden>↑</span>
         </a>
-        <p className="mt-6 text-sm text-paper/55">{e.disclaimer}</p>
+        <p className="mt-6 text-sm text-ink/55">{e.disclaimer}</p>
       </div>
     </section>
   );
@@ -116,7 +116,7 @@ function TradeMenu() {
   const e = t.examples;
   const sel = useTrade();
   return (
-    <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-ink text-paper lg:block">
+    <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-[#060912] text-ink lg:block">
       <ul role="tablist" aria-orientation="vertical" className="pt-6">
         {e.items.map((it, i) => (
           <li key={it.slug}>
@@ -126,7 +126,7 @@ function TradeMenu() {
               aria-selected={i === sel}
               onClick={() => setTrade(i)}
               className={`group flex h-11 w-full cursor-pointer items-center justify-between gap-3 border-l-2 pl-7 pr-6 text-left text-[15px] transition-colors ${
-                i === sel ? "border-brand bg-white/[0.06] text-paper" : "border-transparent text-paper/60 hover:bg-white/[0.04] hover:text-paper"
+                i === sel ? "border-brand bg-white/[0.06] text-ink" : "border-transparent text-ink/60 hover:bg-white/[0.04] hover:text-ink"
               }`}
             >
               {it.trade}
@@ -346,7 +346,7 @@ export function Comparison() {
           <thead>
             <tr className="border-b-2 border-ink">
               {tb.cols.map((col, i) => (
-                <th key={i} scope="col" className={`py-3 font-cond text-lg font-bold ${i === 0 ? "pr-4" : "px-3"} ${i === 1 ? "bg-brand/40" : ""}`}>
+                <th key={i} scope="col" className={`py-3 font-cond text-lg font-bold ${i === 0 ? "pr-4" : "px-3"} ${i === 1 ? "bg-[#1b2c5c] text-brand" : ""}`}>
                   {col}
                 </th>
               ))}
@@ -359,7 +359,7 @@ export function Comparison() {
                   {label}
                 </th>
                 {cells.map((cell, i) => (
-                  <td key={i} className={`px-3 py-3 ${i === 0 ? "bg-brand/40 font-semibold" : "text-ink/75"}`}>
+                  <td key={i} className={`px-3 py-3 ${i === 0 ? "bg-[#1b2c5c] font-semibold" : "text-ink/75"}`}>
                     {cell}
                   </td>
                 ))}
@@ -415,7 +415,7 @@ export function Process({ hideHead = false }: { hideHead?: boolean }) {
                     }`}
                   />
                   <span className={`mt-0 block lg:mt-4 ${here ? "" : "lg:pt-7"}`}>
-                    {here && <span className={`mb-1.5 block h-[22px] w-fit rounded-full bg-ink px-2.5 text-xs font-semibold leading-[22px] text-brand ${dotAlign}`}>{p.here}</span>}
+                    {here && <span className={`mb-1.5 block h-[22px] w-fit rounded-full bg-brand px-2.5 text-xs font-semibold leading-[22px] text-black ${dotAlign}`}>{p.here}</span>}
                     <span className={`block font-cond text-2xl font-bold leading-tight ${passed || here ? "" : "text-ink/45"}`}>
                       <span className="text-ink/35 tabular-nums">{i + 1}</span> {s.title}
                     </span>
@@ -499,21 +499,21 @@ export function Contact({ people = true }: { people?: boolean }) {
   // The main address first, then Peter's underneath.
   const mails = [EMAIL, ...TEAM.map((p) => p.email).filter((m) => m !== EMAIL)];
   return (
-    <section id="kontakt" className="bg-ink text-paper">
+    <section id="kontakt" className="bg-[#060912] text-ink">
       {/* The text keeps to the page's column; the photos run all the way to the right edge. */}
       <div className={`grid gap-14 px-4 py-20 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
         {/* Without the photos the band is short: heading and text on the left, the button and addresses on the right. */}
         <div className={people ? "" : "lg:grid lg:grid-flow-col lg:grid-cols-[minmax(0,32rem)_auto] lg:grid-rows-[auto_auto] lg:items-start lg:justify-items-start lg:justify-between lg:gap-x-16"}>
           <h2 className="text-balance font-cond text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl">{c.title}</h2>
-          <p className="mt-5 max-w-md text-lg text-paper/70">{c.lead}</p>
+          <p className="mt-5 max-w-md text-lg text-ink/70">{c.lead}</p>
           <a
             href={`mailto:${EMAIL}?subject=${encodeURIComponent(c.subject)}&body=${encodeURIComponent(c.body)}`}
-            className={`mt-8 inline-flex rounded-full bg-brand px-7 py-4 font-cond text-lg font-semibold text-ink transition hover:bg-brand-dark ${people ? "" : "lg:mt-0"}`}
+            className={`mt-8 inline-flex rounded-full bg-brand px-7 py-4 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black-dark ${people ? "" : "lg:mt-0"}`}
           >
             {c.write}
           </a>
           {/* Each address opens the mail program; the small button beside it copies it. */}
-          <ul className="mt-5 grid w-fit max-w-full grid-cols-[minmax(0,auto)_auto] items-center gap-x-1 text-paper/70">
+          <ul className="mt-5 grid w-fit max-w-full grid-cols-[minmax(0,auto)_auto] items-center gap-x-1 text-ink/70">
             {mails.map((mail) => (
               <li key={mail} className="col-span-2 grid grid-cols-subgrid items-center">
                 <a href={`mailto:${mail}`} className="min-w-0 break-all underline-offset-4 transition hover:text-brand hover:underline">
@@ -542,15 +542,15 @@ export function Contact({ people = true }: { people?: boolean }) {
             ))}
           </ul>
         </div>
-        {people && <div className="flex flex-col lg:border-l lg:border-paper/15 lg:pl-14">
+        {people && <div className="flex flex-col lg:border-l lg:border-ink/15 lg:pl-14">
           <p className="text-2xl font-bold">{c.who}</p>
           <div className="mt-6 grid flex-1 grid-cols-2 gap-4 sm:gap-6">
             {TEAM.map((p) => (
               <figure key={p.email} className="flex flex-col">
-                <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 rounded-2xl bg-paper/5 object-cover object-top" />
+                <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 rounded-2xl bg-ink/5 object-cover object-top" />
                 <figcaption className="mt-3">
                   <span className="block font-cond text-xl font-semibold">{p.name}</span>
-                  <a href={`mailto:${p.email}`} className="break-words text-sm text-paper/70 underline-offset-4 transition hover:text-brand hover:underline">
+                  <a href={`mailto:${p.email}`} className="break-words text-sm text-ink/70 underline-offset-4 transition hover:text-brand hover:underline">
                     {/* On narrow phones the address breaks after the @, not mid-word. */}
                     {p.email.split("@")[0]}@<wbr />{p.email.split("@")[1]}
                   </a>
@@ -567,21 +567,21 @@ export function Contact({ people = true }: { people?: boolean }) {
 export function Footer() {
   const { t } = useLang();
   return (
-    <footer className="border-t border-paper/10 bg-ink text-paper">
+    <footer className="border-t border-ink/10 bg-[#060912] text-ink">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8">
-        <Logo light />
-        <nav className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-paper/70">
+        <Logo />
+        <nav className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-ink/70">
           <Link href="/eksempelsider/" className="hover:text-brand">{t.nav.examples}</Link>
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
           <Link href="/faq/" className="hover:text-brand">{t.nav.faq}</Link>
           <Link href="/om-os/" className="hover:text-brand">{t.nav.about}</Link>
         </nav>
-        <div className="flex flex-col gap-2 text-xs text-paper/50">
+        <div className="flex flex-col gap-2 text-xs text-ink/50">
           <p>
             {t.footer} · {t.updated}
           </p>
-          <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-paper/70">
+          <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink/70">
             <Link href="/vilkaar/" className="underline underline-offset-4 hover:text-brand">{t.legal.terms}</Link>
             <Link href="/privatliv/" className="underline underline-offset-4 hover:text-brand">{t.legal.privacy}</Link>
           </p>

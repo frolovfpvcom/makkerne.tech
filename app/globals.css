@@ -6,11 +6,12 @@
   --font-cond: var(--font-head), ui-sans-serif, system-ui, sans-serif;
   /* Display face of each example site, set per page with next/font. */
   --font-display: var(--font-example-display), ui-serif, Georgia, serif;
-  /* Daylight in the workshop: warm paper, a soft near-black, and the logo's yellow used like a marker pen */
-  --color-paper: #f6f3ed;
-  --color-paper-2: #ece7dd;
-  --color-card: #fffdf9;
-  --color-ink: #1d1c19;
+  /* Night blue, taken from the front page card: a deep navy-black page, lighter blue panels, near-white
+     text, and the logo's yellow as the one accent. */
+  --color-paper: #0a0f1d;
+  --color-paper-2: #0f1830;
+  --color-card: #131d3a;
+  --color-ink: #eef1f8;
   --color-brand: #f5c518;
   --color-brand-dark: #e2b207;
   --color-moss: #2f3a2c;

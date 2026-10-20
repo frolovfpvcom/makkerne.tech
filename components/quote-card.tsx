@@ -93,7 +93,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
       {/* The card's name, and the yellow tag saying the draft costs nothing. */}
       <div className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 sm:px-5 ${big ? "pb-3 pt-5 lg:px-7 lg:pt-6" : "pb-2 pt-4"}`}>
         <p className={`font-cond font-bold leading-none tracking-tight ${big ? "text-[1.6rem] sm:text-[1.75rem] lg:text-[2rem]" : "text-xl"}`}>{c.head}</p>
-        <p className="whitespace-nowrap rounded-full bg-brand px-3 py-1.5 text-sm font-semibold leading-none text-ink">{c.free}</p>
+        <p className="whitespace-nowrap rounded-full bg-brand px-3 py-1.5 text-sm font-semibold leading-none text-black">{c.free}</p>
       </div>
 
       {/* Where you are: the three answers so far, each a way back to change it. */}
@@ -134,7 +134,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
                 type="button"
                 aria-pressed={trade === i}
                 onClick={() => pickTrade(i)}
-                className={`h-10 cursor-pointer rounded-full border px-4 text-[15px] ${big ? "border-ink/15 bg-paper hover:bg-brand lg:h-11 lg:px-5 lg:text-base" : "border-ink/15 bg-paper"} font-semibold leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
+                className={`h-10 cursor-pointer rounded-full border px-4 text-[15px] ${big ? "border-ink/15 bg-paper hover:bg-brand hover:text-black lg:h-11 lg:px-5 lg:text-base" : "border-ink/15 bg-paper"} font-semibold leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
               >
                 {o}
               </button>
@@ -143,7 +143,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
               type="button"
               aria-pressed={trade === other}
               onClick={() => pickTrade(other)}
-              className={`h-10 cursor-pointer rounded-full border border-dashed border-ink/30 px-4 text-[15px] ${big ? "bg-transparent hover:bg-brand lg:h-11 lg:px-5 lg:text-base" : "bg-transparent"} font-semibold leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
+              className={`h-10 cursor-pointer rounded-full border border-dashed border-ink/30 px-4 text-[15px] ${big ? "bg-transparent hover:bg-brand hover:text-black lg:h-11 lg:px-5 lg:text-base" : "bg-transparent"} font-semibold leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
             >
               {c.trade.options[other]}
             </button>
@@ -263,7 +263,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
               </div>
             </fieldset>
 
-            <a href={mailto()} onClick={() => reachStage(3)} className="mt-4 flex w-full items-center justify-center gap-3 rounded-full bg-brand px-6 py-4 font-cond text-xl font-semibold text-ink transition hover:bg-brand-dark">
+            <a href={mailto()} onClick={() => reachStage(3)} className="mt-4 flex w-full items-center justify-center gap-3 rounded-full bg-brand px-6 py-4 font-cond text-xl font-semibold text-black transition hover:bg-brand hover:text-black-dark">
               {c.cta} <span aria-hidden>→</span>
             </a>
             <p className="mt-2.5 text-sm leading-snug text-ink/60">{c.sendNote}</p>

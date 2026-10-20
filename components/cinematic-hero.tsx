@@ -118,7 +118,7 @@ export function CinematicHero() {
             <div className="cine-left cine-in">
               <h2 className="font-cond text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">{h.cardTitle}</h2>
               <p className="mt-5 max-w-md text-lg leading-relaxed text-blue-100/70">{h.cardLead}</p>
-              <Link href="/eksempelsider/" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-cond text-lg font-semibold text-ink transition hover:bg-brand">
+              <Link href="/eksempelsider/" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black">
                 {h.seeExamples} <span aria-hidden>→</span>
               </Link>
             </div>
