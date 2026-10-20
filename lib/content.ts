@@ -240,7 +240,7 @@ const da = {
     lead: "Vælg, hvad din side skal have, så ser du prisen med det samme. Udkastet laver vi gratis, og du betaler først, når du har set det og sagt ja.",
     head: "Få et udkast",
     free: "Udkastet er gratis",
-    steps: ["Fag", "Til hvem", "Type", "Sider", "Design", "Funktioner", "Drift", "Send"],
+    steps: ["Fag", "Til hvem", "Type", "Sider", "Design", "Tilføjelser", "Drift", "Send"],
     stepWord: "Trin",
     soFar: "Indtil nu",
     of: "af",
@@ -287,7 +287,7 @@ const da = {
       ],
     },
     features: {
-      q: "Hvad skal siden kunne?",
+      q: "Tilføjelser",
       calcQ: "Skal kunderne kunne se en pris på siden?",
       calc: [
         { label: "Ingen beregner", note: "Kun kontakt", price: 0 },
@@ -349,7 +349,7 @@ const da = {
     vat: "Ekskl. moms. Prisen i tilbuddet er den, der gælder.",
     cta: "Send og få et gratis udkast",
     mailSubject: "Udkast til min hjemmeside",
-    mailLines: ["Fag", "Til", "Type", "Sider", "Design", "Pris på siden", "Funktioner", "Drift", "Pris fra siden"],
+    mailLines: ["Fag", "Til", "Type", "Sider", "Design", "Pris på siden", "Tilføjelser", "Drift", "Pris fra siden"],
     mailEnd: "(Send gerne billeder af dit arbejde med)",
     form: {
       title: "Næsten færdig!",
@@ -618,7 +618,7 @@ const en: Dict = {
     lead: "Pick what your site should have and see the price straight away. We make the draft for free, and you only pay once you have seen it and said yes.",
     head: "Get a draft",
     free: "The draft is free",
-    steps: ["Trade", "For", "Type", "Pages", "Design", "Features", "Care", "Send"],
+    steps: ["Trade", "For", "Type", "Pages", "Design", "Add-ons", "Care", "Send"],
     stepWord: "Step",
     soFar: "So far",
     of: "of",
@@ -665,7 +665,7 @@ const en: Dict = {
       ],
     },
     features: {
-      q: "What should the site do?",
+      q: "Add-ons",
       calcQ: "Should customers see a price on the site?",
       calc: [
         { label: "No calculator", note: "Contact only", price: 0 },
@@ -727,7 +727,7 @@ const en: Dict = {
     vat: "Excl. VAT. The price in the quote is the one that applies.",
     cta: "Send and get a free draft",
     mailSubject: "Draft for my website",
-    mailLines: ["Trade", "For", "Type", "Pages", "Design", "Price on the site", "Features", "Care", "Price from the site"],
+    mailLines: ["Trade", "For", "Type", "Pages", "Design", "Price on the site", "Add-ons", "Care", "Price from the site"],
     mailEnd: "(Feel free to attach photos of your work)",
     form: {
       title: "Almost done!",
