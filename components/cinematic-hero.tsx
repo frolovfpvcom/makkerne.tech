@@ -133,7 +133,7 @@ export function CinematicHero() {
               <div ref={phone} style={{ transformStyle: "preserve-3d" }}>
                 <PhonePreview items={t.examples.items} title={h.phone} desktopTitle={h.desktop} labels={{ view: h.view, phone: h.viewPhone, desktop: h.viewDesktop }} quiet onDark phoneOnly />
               </div>
-              <div className="cine-badge cine-in absolute -left-28 top-12 hidden whitespace-nowrap rounded-2xl px-4 py-3 xl:block lg:-left-44">
+              <div className="cine-badge cine-in absolute -left-28 top-12 hidden whitespace-nowrap rounded-2xl px-4 py-3 xl:block lg:-left-60">
                 <p className="text-sm font-semibold">{h.badgeFree}</p>
                 <p className="text-xs text-blue-100/60">{h.badgeFreeNote}</p>
               </div>
@@ -148,6 +148,7 @@ export function CinematicHero() {
             </div>
 
             <div className="cine-right cine-in text-ink">
+              <h2 className="mb-4 font-cond text-3xl font-bold tracking-tight sm:text-4xl">{h.quoteTitle}</h2>
               <QuoteCard />
             </div>
           </div>
