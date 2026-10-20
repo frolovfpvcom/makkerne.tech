@@ -14,6 +14,8 @@
   --color-brand: #f5c518;
   --color-brand-dark: #e2b207;
   --color-moss: #2f3a2c;
+  /* The deep blue of the front page card, carried into the band with the examples. */
+  --color-navy: #0f1a3a;
 }
 
 html {

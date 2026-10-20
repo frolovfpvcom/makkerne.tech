@@ -66,7 +66,24 @@ export function AboutPage() {
   return (
     <Shell people={false}>
       <PageIntro title={a.title} lead={a.lead} />
-      <section className="mx-auto grid max-w-6xl gap-14 px-4 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-20">
+      <AboutSection />
+    </Shell>
+  );
+}
+
+/** The two of us and how we work; on the about page under its intro, and at the bottom of the front page. */
+export function AboutSection({ withTitle = false }: { withTitle?: boolean }) {
+  const { t } = useLang();
+  const a = t.about;
+  return (
+    <>
+      {withTitle && (
+        <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-8 sm:pt-24">
+          <h2 className="text-balance font-cond text-4xl font-bold leading-[1.02] tracking-tight sm:text-[3.25rem]">{a.title}</h2>
+          <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-ink/70">{a.lead}</p>
+        </div>
+      )}
+      <section id="om-os" className="scroll-mt-18 mx-auto grid max-w-6xl gap-14 px-4 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-20">
         <div className="grid grid-cols-2 content-start gap-4 sm:gap-6">
           {TEAM.map((p) => (
             <figure key={p.email} className="min-w-0">
@@ -107,6 +124,6 @@ export function AboutPage() {
           <p className="mt-8 max-w-xl border-l-4 border-brand pl-4 leading-relaxed text-ink/80">{a.honest}</p>
         </div>
       </section>
-    </Shell>
+    </>
   );
 }

@@ -40,7 +40,7 @@ export function Examples() {
     return () => cancelAnimationFrame(id);
   }, []);
   return (
-    <section id="eksempler" className="overflow-hidden bg-moss py-16 text-paper sm:py-24">
+    <section id="eksempler" className="overflow-hidden bg-navy py-16 text-paper sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
         <SectionHead title={e.title} lead={e.rowLead} light />
       </div>
@@ -94,7 +94,7 @@ export function ExamplePicker({ side = false, front = false }: { side?: boolean;
       </section>
     );
   return (
-    <section className="pt-18 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
+    <section className="pt-18 lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
       <TradeMenu />
       <div className="min-w-0 px-4 py-16 sm:px-8 sm:py-20 lg:px-12 xl:px-16">
         <div className="mx-auto max-w-6xl">
@@ -117,27 +117,23 @@ function TradeMenu() {
   const sel = useTrade();
   return (
     <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-ink text-paper lg:block">
-      <p className="px-6 pb-3 pt-7 text-xs font-semibold tracking-[0.08em] text-paper/45">{e.menuTitle}</p>
-      <ul role="tablist" aria-orientation="vertical" className="border-t border-paper/10">
+      <ul role="tablist" aria-orientation="vertical" className="pt-6">
         {e.items.map((it, i) => (
-          <li key={it.slug} className="border-b border-paper/10">
+          <li key={it.slug}>
             <button
               type="button"
               role="tab"
               aria-selected={i === sel}
               onClick={() => setTrade(i)}
-              className={`group flex h-14 w-full cursor-pointer items-center justify-between gap-3 px-6 text-left font-cond text-lg font-semibold transition-colors ${
-                i === sel ? "bg-black text-paper" : "text-paper/75 hover:bg-paper/[0.07] hover:text-paper"
+              className={`group flex h-11 w-full cursor-pointer items-center justify-between gap-3 border-l-2 pl-7 pr-6 text-left text-[15px] transition-colors ${
+                i === sel ? "border-brand bg-white/[0.06] text-paper" : "border-transparent text-paper/60 hover:bg-white/[0.04] hover:text-paper"
               }`}
             >
-              <span className="min-w-0">
-                {it.trade}
-                <span className={`block truncate font-sans text-xs font-normal ${i === sel ? "text-paper/60" : "text-paper/40"}`}>{it.name}</span>
-              </span>
+              {it.trade}
               <svg
                 aria-hidden
                 viewBox="0 0 10 14"
-                className={`h-3.5 w-2.5 shrink-0 fill-brand transition ${i === sel ? "opacity-100" : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"}`}
+                className={`h-2.5 w-2 shrink-0 fill-brand transition ${i === sel ? "opacity-100" : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"}`}
               >
                 <path d="M0 0l10 7-10 7z" />
               </svg>
@@ -173,7 +169,7 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
   const arrow = "grid size-12 place-items-center rounded-full border border-ink/20 bg-card transition hover:border-ink hover:bg-brand";
   return (
     <div>
-      <div className={`flex items-center gap-3 ${side ? "lg:justify-end" : ""}`}>
+      <div className={`flex items-center gap-3 ${side ? "lg:hidden" : ""}`}>
         <div role="tablist" aria-label={e.pick} className={`${side ? "lg:hidden " : ""}-mx-4 flex flex-1 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0`}>
           {e.items.map((it, i) => (
             <button
@@ -201,7 +197,7 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
         </div>
       </div>
 
-      <div className="mt-8 grid">
+      <div className={`grid ${side ? "mt-8 lg:mt-0" : "mt-8"}`}>
         {e.items.map((item, i) => (
           <article
             key={item.slug}

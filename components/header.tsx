@@ -26,6 +26,18 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  // On the front page the menu waits off screen until the visitor scrolls down to the blue card.
+  const front = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (!front) return;
+    const check = () => setScrolled(window.scrollY > window.innerHeight * 0.5);
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    return () => window.removeEventListener("scroll", check);
+  }, [front]);
+  const shown = !front || scrolled || open;
+
   // A new page from the menu always starts at the top, unless the link points at a section.
   useEffect(() => {
     if (!window.location.hash) window.scrollTo({ top: 0, behavior: "instant" });
@@ -43,7 +55,7 @@ export function Header() {
   const here = (href: string) => pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-ink/10 bg-paper">
+    <header className={`fixed inset-x-0 top-0 z-50 border-b border-ink/10 bg-paper transition-transform duration-500 ease-out ${shown ? "translate-y-0" : "-translate-y-full"}`}>
       <div className="mx-auto flex h-18 max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
         <Logo />
 

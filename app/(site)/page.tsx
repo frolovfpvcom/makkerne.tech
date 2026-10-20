@@ -1,17 +1,19 @@
-import { Hero } from "@/components/hero";
+import { CinematicHero } from "@/components/cinematic-hero";
+import { AboutSection } from "@/components/pages";
 import { Comparison, Contact, ExamplePicker, Examples, Footer, Plans } from "@/components/sections";
 
-/** What we make and the price at once, what it looks like for your trade, what it costs to keep, and the two of us. */
+/** The name, then one of our sites and the price on a blue card, the ten examples, your trade, what it costs to keep, and the two of us. */
 export default function Home() {
   return (
     <>
       <main>
-        <Hero />
+        <CinematicHero />
         <Examples />
         <ExamplePicker front />
         <Plans />
         <Comparison />
-        <Contact />
+        <AboutSection withTitle />
+        <Contact people={false} />
       </main>
       <Footer />
     </>
