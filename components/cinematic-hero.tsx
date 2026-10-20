@@ -27,6 +27,18 @@ const STYLES = `
 @media (min-width:1024px) and (prefers-reduced-motion:no-preference){
   .cine-card,.cine-in{visibility:hidden}
 }
+/* On a phone the name plays on its own dark screen over the page, then slides away; with reduced motion
+   it is only there for screen readers. */
+@media (max-width:1023px) and (prefers-reduced-motion:no-preference){
+  .cine-text{position:fixed;inset:0;z-index:60;min-height:0;background:#0a0a0b}
+  .cine-line1,.cine-line2{visibility:hidden}
+}
+@media (max-width:1023px){
+  .cine-gone,.cine-text.cine-gone{position:absolute;width:1px;height:1px;min-height:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+@media (max-width:1023px) and (prefers-reduced-motion:reduce){
+  .cine-text{position:absolute;width:1px;height:1px;min-height:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
 `;
 
 /**
@@ -99,11 +111,45 @@ export function CinematicHero() {
         cancelAnimationFrame(frame);
       };
     }, root);
+
+    // A phone or a narrow window: the name and the line come in on the dark screen, which then slides up
+    // and lets the page through. A touch, scroll or key skips it.
+    mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
+      gsap.set(".cine-line1", { autoAlpha: 0, y: 40, scale: 0.9, filter: "blur(16px)" });
+      gsap.set(".cine-line2", { autoAlpha: 1, clipPath: "inset(0 100% 0 0)" });
+      const intro = gsap
+        .timeline({ delay: 0.2, onComplete: done })
+        .to(".cine-line1", { duration: 0.8, autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "expo.out" })
+        .to(".cine-line2", { duration: 0.6, clipPath: "inset(0 0% 0 0)", ease: "power3.out" }, "-=0.5")
+        .to({}, { duration: 0.3 })
+        .to(".cine-text", { yPercent: -100, ease: "power3.inOut", duration: 0.5 })
+        .call(() => window.dispatchEvent(new Event(INTRO_DONE)), undefined, "-=0.2")
+        .fromTo([".cine-left", ".cine-right"], { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: "power3.out", duration: 0.5, stagger: 0.08 }, "-=0.35");
+      const skip = () => intro.progress(1);
+      const skipEvents = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+      skipEvents.forEach((ev) => window.addEventListener(ev, skip, { once: true, passive: true }));
+      function done() {
+        skipEvents.forEach((ev) => window.removeEventListener(ev, skip));
+        gsap.set(".cine-text", { clearProps: "transform" });
+        document.querySelector(".cine-text")?.classList.add("cine-gone");
+        window.dispatchEvent(new Event(INTRO_DONE));
+      }
+      return () => {
+        skipEvents.forEach((ev) => window.removeEventListener(ev, skip));
+        document.querySelector(".cine-text")?.classList.remove("cine-gone");
+      };
+    }, root);
+
+    // With reduced motion on a phone there is no opening, so the menu is there from the start.
+    mm.add("(max-width: 1023px) and (prefers-reduced-motion: reduce)", () => {
+      const id = setTimeout(() => window.dispatchEvent(new Event(INTRO_DONE)));
+      return () => clearTimeout(id);
+    });
     return () => mm.revert();
   }, []);
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-[#0a0a0b] text-white lg:h-dvh" style={{ perspective: "1500px" }}>
+    <section ref={root} className="relative overflow-hidden bg-[#0a0a0b] text-white lg:h-dvh lg:[perspective:1500px]">
       <style>{STYLES}</style>
       <div className="cine-grain" aria-hidden />
       <div className="cine-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden />
@@ -120,11 +166,11 @@ export function CinematicHero() {
       <div className="relative z-20 lg:pointer-events-none lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center" style={{ perspective: "1500px" }}>
         <div ref={card} className="cine-card relative w-full overflow-hidden lg:pointer-events-auto lg:h-[85vh] lg:w-[85vw] lg:rounded-[40px]">
           <div className="cine-sheen" aria-hidden />
-          <div className="relative mx-auto grid h-full max-w-7xl items-center gap-12 px-4 pb-16 pt-20 sm:px-8 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.15fr)] lg:gap-10 lg:px-12 lg:pb-8 lg:pt-24">
+          <div className="relative mx-auto grid h-full max-w-7xl items-center gap-8 px-4 pb-10 pt-24 sm:gap-12 sm:px-8 sm:pb-16 sm:pt-24 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.15fr)] lg:gap-10 lg:px-12 lg:pb-8 lg:pt-24">
             <div className="cine-left cine-in">
-              <h2 className="font-cond text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">{h.cardTitle}</h2>
-              <p className="mt-5 max-w-md text-lg leading-relaxed text-blue-100/70">{h.cardLead}</p>
-              <Link href="/eksempelsider/" className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black">
+              <h2 className="font-cond text-[2.1rem] font-bold leading-[1.05] tracking-tight sm:text-5xl">{h.cardTitle}</h2>
+              <p className="mt-3 max-w-md text-base leading-relaxed text-blue-100/70 sm:mt-5 sm:text-lg">{h.cardLead}</p>
+              <Link href="/eksempelsider/" className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 sm:mt-8 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black">
                 {h.seeExamples} <span aria-hidden>→</span>
               </Link>
             </div>
@@ -148,7 +194,7 @@ export function CinematicHero() {
             </div>
 
             <div className="cine-right cine-in text-ink">
-              <h2 className="mb-4 font-cond text-3xl font-bold tracking-tight sm:text-4xl">{h.quoteTitle}</h2>
+              <h2 className="mb-3 font-cond text-[1.75rem] font-bold tracking-tight sm:mb-4 sm:text-4xl">{h.quoteTitle}</h2>
               <QuoteCard />
             </div>
           </div>

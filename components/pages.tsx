@@ -83,7 +83,7 @@ export function AboutSection({ withTitle = false }: { withTitle?: boolean }) {
           <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-ink/70">{a.lead}</p>
         </div>
       )}
-      <section id="om-os" className="scroll-mt-18 mx-auto grid max-w-6xl gap-14 px-4 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-20">
+      <section id="om-os" className="scroll-mt-18 mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:gap-14 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-20">
         <div className="grid grid-cols-2 content-start gap-4 sm:gap-6">
           {TEAM.map((p) => (
             <figure key={p.email} className="min-w-0">

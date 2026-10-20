@@ -40,7 +40,7 @@ export function Examples() {
     return () => cancelAnimationFrame(id);
   }, []);
   return (
-    <section id="eksempler" className="overflow-hidden bg-navy py-16 text-ink sm:py-24">
+    <section id="eksempler" className="overflow-hidden bg-navy py-10 text-ink sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
         <SectionHead title={e.title} lead={e.rowLead} />
       </div>
@@ -86,7 +86,7 @@ export function ExamplePicker({ side = false, front = false }: { side?: boolean;
   if (!side)
     return (
       <section className={front ? "" : "pt-18"}>
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-24">
           {head}
           <ExampleCarousel />
           {!front && <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>}
@@ -289,7 +289,7 @@ export function Plans() {
   const c = t.calc;
   const kr = (n: number) => (lang === "da" ? `${n.toLocaleString("da-DK")} kr.` : `DKK ${n.toLocaleString("en-GB")}`);
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-8 sm:pb-24">
+    <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-8 sm:pb-24">
       <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{c.plansTitle}</h2>
       <p className="mt-2 max-w-2xl leading-relaxed text-ink/70">{c.plansLead}</p>
       <div className="mt-6 grid gap-3 md:grid-cols-3 md:items-stretch">
@@ -338,7 +338,7 @@ export function Comparison() {
   const { t } = useLang();
   const tb = t.pricing.table;
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-8 sm:pb-28">
+    <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-8 sm:pb-28">
       <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{tb.title}</h2>
       <div className="mt-6 overflow-x-auto">
         <table className="w-full min-w-[32rem] border-collapse text-left text-sm sm:text-base">
@@ -388,7 +388,7 @@ export function Process({ hideHead = false }: { hideHead?: boolean }) {
   const last = p.steps.length - 1;
   return (
     <section id="proces" className="border-y border-ink/15 bg-paper-2">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-24">
         {!hideHead && <SectionHead title={p.title} lead={p.lead} />}
         <div className="relative">
           {/* The line across, and how far along it the visitor is. */}
@@ -441,7 +441,7 @@ export function Faq({ page = false }: { page?: boolean }) {
   return (
     <section
       id="faq"
-      className={`mx-auto grid max-w-6xl gap-8 px-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 ${page ? "pb-16 pt-28 sm:pt-32" : "py-16 sm:py-24"}`}
+      className={`mx-auto grid max-w-6xl gap-8 px-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 ${page ? "pb-16 pt-28 sm:pt-32" : "py-10 sm:py-24"}`}
     >
       <div>
         <Heading className="font-cond text-4xl font-bold leading-none tracking-tight sm:text-5xl">{f.title}</Heading>
@@ -500,7 +500,7 @@ export function Contact({ people = true }: { people?: boolean }) {
   return (
     <section id="kontakt" className="bg-[#060912] text-ink">
       {/* The text keeps to the page's column; the photos run all the way to the right edge. */}
-      <div className={`grid gap-14 px-4 py-20 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
+      <div className={`grid gap-10 px-4 py-12 sm:gap-14 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
         {/* Without the photos the band is short: heading and text on the left, the button and addresses on the right. */}
         <div className={people ? "" : "lg:grid lg:grid-flow-col lg:grid-cols-[minmax(0,32rem)_auto] lg:grid-rows-[auto_auto] lg:items-start lg:justify-items-start lg:justify-between lg:gap-x-16"}>
           <h2 className="text-balance font-cond text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl">{c.title}</h2>
