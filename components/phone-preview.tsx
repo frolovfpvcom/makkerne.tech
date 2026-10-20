@@ -222,19 +222,19 @@ export function PhonePreview({
   const grow = view === "desktop" && box.wide;
   const go = (i: number) => setTrade(((i % n) + n) % n);
   usePreloadShots([sel - 1, sel + 1].map((i) => items[((i % n) + n) % n].slug), view);
-  const arrow = `grid place-items-center border-ink bg-card transition hover:bg-brand ${quiet ? "size-11 border lg:size-10" : "size-12 border-2"}`;
-  const tab = `flex items-center gap-2 font-cond font-bold uppercase tracking-wide transition ${quiet ? "h-10 px-3.5 text-base" : "h-11 px-4 text-lg"}`;
+  const arrow = `grid place-items-center rounded-full border border-ink/20 bg-card transition hover:border-ink hover:bg-brand ${quiet ? "size-11 lg:size-10" : "size-12"}`;
+  const tab = `flex items-center gap-2 rounded-full font-cond font-semibold transition ${quiet ? "h-9 px-3.5 text-[15px]" : "h-10 px-4 text-base"}`;
   return (
     <div ref={boxRef} className="w-full">
       <div className="flex flex-col items-center" style={grow ? { width: laptopW, marginLeft: -SPILL_LEFT } : undefined}>
-        <div role="group" aria-label={labels.view} className={`flex border-ink bg-card ${quiet ? "mb-4 border" : "mb-6 border-2"}`}>
+        <div role="group" aria-label={labels.view} className={`flex gap-0.5 rounded-full border border-ink/15 bg-card p-1 ${quiet ? "mb-5" : "mb-6"}`}>
           {(["phone", "desktop"] as const).map((v) => (
             <button
               key={v}
               type="button"
               aria-pressed={view === v}
               onClick={() => setView(v)}
-              className={`${tab} ${view === v ? "bg-ink text-paper" : "text-ink hover:bg-brand"}`}
+              className={`${tab} ${view === v ? "bg-ink text-paper" : "text-ink/70 hover:text-ink"}`}
             >
               {v === "phone" ? (
                 <svg aria-hidden viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
@@ -259,7 +259,7 @@ export function PhonePreview({
           )}
         </div>
         <div className={`flex items-center gap-2 ${quiet ? "mt-4" : "mt-6"}`}>
-          <span aria-live="polite" className="mr-2 font-cond text-lg font-bold tabular-nums text-ink/50">
+          <span aria-live="polite" className="mr-2 font-cond text-base font-semibold tabular-nums text-ink/45">
             <span className="sr-only">{item.name}, </span>
             {String(sel + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
           </span>

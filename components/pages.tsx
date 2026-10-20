@@ -77,10 +77,10 @@ export function AboutPage() {
                 height={2000}
                 sizes="(min-width: 1024px) 200px, 45vw"
                 preload
-                className="aspect-[4/5] w-full border-2 border-ink object-cover object-top"
+                className="aspect-[4/5] w-full rounded-2xl object-cover object-top"
               />
               <figcaption className="mt-3">
-                <span className="block font-cond text-xl font-bold uppercase leading-tight">{p.fullName}</span>
+                <span className="block font-cond text-xl font-bold leading-tight">{p.fullName}</span>
                 <a href={`mailto:${p.email}`} className="break-words text-sm text-ink/70 underline-offset-4 transition hover:text-ink hover:underline">
                   {/* On narrow phones the address breaks after the @, not mid-word. */}
                   {p.email.split("@")[0]}@<wbr />{p.email.split("@")[1]}
@@ -90,7 +90,7 @@ export function AboutPage() {
           ))}
         </div>
         <div>
-          <h2 className="font-cond text-3xl font-extrabold uppercase leading-none sm:text-4xl">{a.howTitle}</h2>
+          <h2 className="font-cond text-3xl font-bold tracking-tight leading-none sm:text-4xl">{a.howTitle}</h2>
           <ol className="mt-6 border-b border-ink/15">
             {a.how.map((h, i) => (
               <li key={h.t} className="grid grid-cols-[2.5rem_1fr] gap-x-3 border-t border-ink/15 py-5">

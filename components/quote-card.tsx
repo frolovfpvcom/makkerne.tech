@@ -82,36 +82,36 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
   };
 
   // A whole choice is one button: big to hit, and it says it is picked.
-  const option = "flex w-full cursor-pointer items-center gap-3 border border-ink/25 bg-paper px-3.5 text-left transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:shadow-[inset_0_0_0_1px_var(--color-ink)]";
+  const option = "flex w-full cursor-pointer items-center gap-3 rounded-xl border border-ink/15 bg-paper px-3.5 text-left transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:shadow-[inset_0_0_0_1px_var(--color-ink)]";
   const questions = [c.trade.q, c.size.q, c.care.q, c.estimate];
 
   return (
     <div
       id="beregner"
-      className={`scroll-mt-24 border-ink bg-card ${big ? "border-[3px] shadow-[6px_6px_0_0_var(--color-ink)] lg:shadow-[10px_10px_0_0_var(--color-ink)]" : "border-2"} ${className}`}
+      className={`scroll-mt-24 overflow-hidden rounded-3xl border bg-card ${big ? "border-ink/10 shadow-[0_24px_60px_-32px_rgba(29,28,25,0.35)]" : "border-ink/15"} ${className}`}
     >
-      {/* In the hero the card's top is tape-measure yellow, the loudest thing on the screen. */}
-      <div className={`flex justify-between px-4 sm:px-5 ${big ? "flex-col gap-1.5 border-b-[3px] border-ink bg-brand py-3.5 sm:flex-row sm:items-center sm:gap-3 text-ink lg:px-7 lg:py-5" : "items-center gap-3 bg-ink py-2.5 text-paper"}`}>
-        <p className={`font-cond uppercase leading-none tracking-wide ${big ? "whitespace-nowrap text-[1.6rem] font-extrabold sm:text-[1.75rem] lg:text-4xl" : "text-lg font-bold text-brand"}`}>{c.head}</p>
-        <p className={`whitespace-nowrap text-sm leading-none ${big ? "font-semibold text-ink/80 lg:text-base" : "text-paper/75"}`}>{c.free}</p>
+      {/* The card's name, and the yellow tag saying the draft costs nothing. */}
+      <div className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 sm:px-5 ${big ? "pb-3 pt-5 lg:px-7 lg:pt-6" : "pb-2 pt-4"}`}>
+        <p className={`font-cond font-bold leading-none tracking-tight ${big ? "text-[1.6rem] sm:text-[1.75rem] lg:text-[2rem]" : "text-xl"}`}>{c.head}</p>
+        <p className="whitespace-nowrap rounded-full bg-brand px-3 py-1.5 text-sm font-semibold leading-none text-ink">{c.free}</p>
       </div>
 
       {/* Where you are: the three answers so far, each a way back to change it. */}
-      <ol className="grid grid-cols-3 border-b border-ink/15 text-left">
+      <ol className="grid grid-cols-3 gap-2 px-2 text-left sm:px-3">
         {c.steps.map((s, i) => {
           const value = i === 0 ? tradeName : i === 1 ? (size === null ? null : c.size.options[size].label) : plan?.label;
           const reachable = i === 0 || done.slice(0, i).every(Boolean);
           return (
-            <li key={s} className="min-w-0 border-ink/15 not-last:border-r">
+            <li key={s} className="min-w-0">
               <button
                 type="button"
                 disabled={!reachable}
                 onClick={() => go(i)}
                 aria-current={step === i ? "step" : undefined}
-                className={`block w-full min-w-0 px-3 py-2 text-left enabled:cursor-pointer enabled:hover:bg-paper sm:px-4${L("lg:px-7 lg:py-2.5")}`}
+                className={`block w-full min-w-0 rounded-xl px-2 py-2 text-left enabled:cursor-pointer enabled:hover:bg-paper sm:px-2${L("lg:px-4 lg:py-2.5")}`}
               >
-                <span className={`block h-1 ${step === i ? "bg-ink" : done[i] ? "bg-ink/40" : "bg-ink/10"}`} aria-hidden />
-                <span className="mt-1.5 block font-cond text-sm font-bold uppercase leading-tight text-ink/50">
+                <span className={`block h-1 rounded-full ${step === i ? "bg-ink" : done[i] ? "bg-brand" : "bg-ink/10"}`} aria-hidden />
+                <span className="mt-2 block text-xs font-semibold leading-tight text-ink/50">
                   {i + 1} {s}
                 </span>
                 <span className="block truncate text-sm font-semibold leading-tight">{value ?? "\u00a0"}</span>
@@ -122,7 +122,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
       </ol>
 
       <div className={`px-4 pb-5 pt-4 sm:px-5${L("lg:px-7 lg:pb-7 lg:pt-6")}`}>
-        <p ref={headRef} tabIndex={-1} className={`font-cond text-2xl font-bold uppercase leading-tight outline-none sm:text-[1.75rem]${L("lg:text-4xl")}`}>
+        <p ref={headRef} tabIndex={-1} className={`font-cond text-2xl font-semibold leading-tight tracking-tight outline-none sm:text-[1.6rem]${L("lg:text-3xl")}`}>
           {questions[step]}
         </p>
 
@@ -134,7 +134,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
                 type="button"
                 aria-pressed={trade === i}
                 onClick={() => pickTrade(i)}
-                className={`h-10 cursor-pointer border px-3.5 font-cond text-lg ${big ? "border-ink/50 bg-white hover:bg-brand lg:h-12 lg:px-4 lg:text-xl" : "border-ink/25 bg-paper"} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
+                className={`h-10 cursor-pointer rounded-full border px-4 text-[15px] ${big ? "border-ink/15 bg-paper hover:bg-brand lg:h-11 lg:px-5 lg:text-base" : "border-ink/15 bg-paper"} font-semibold leading-none transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
               >
                 {o}
               </button>
@@ -143,7 +143,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
               type="button"
               aria-pressed={trade === other}
               onClick={() => pickTrade(other)}
-              className={`h-10 cursor-pointer border border-dashed border-ink/40 px-3.5 font-cond text-lg ${big ? "bg-white hover:bg-brand lg:h-12 lg:px-4 lg:text-xl" : "bg-paper"} font-bold uppercase leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
+              className={`h-10 cursor-pointer rounded-full border border-dashed border-ink/30 px-4 text-[15px] ${big ? "bg-transparent hover:bg-brand lg:h-11 lg:px-5 lg:text-base" : "bg-transparent"} font-semibold leading-none transition-colors hover:border-ink aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper`}
             >
               {c.trade.options[other]}
             </button>
@@ -167,9 +167,9 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
                   autoComplete="off"
                   enterKeyHint="next"
                   data-field
-                  className="h-10 min-w-0 flex-1 border border-ink bg-paper px-3 font-cond text-lg font-bold uppercase placeholder:text-ink/40 focus:shadow-[inset_0_0_0_1px_var(--color-ink)] sm:max-w-64"
+                  className="h-10 min-w-0 flex-1 rounded-full border border-ink bg-paper px-4 font-semibold placeholder:font-normal placeholder:text-ink/40 focus:shadow-[inset_0_0_0_1px_var(--color-ink)] sm:max-w-64"
                 />
-                <button type="submit" disabled={!otherTrade.trim()} className="h-10 shrink-0 bg-ink px-3.5 font-cond text-lg font-bold uppercase leading-none text-paper enabled:cursor-pointer disabled:opacity-40">
+                <button type="submit" disabled={!otherTrade.trim()} className="h-10 shrink-0 rounded-full bg-ink px-4 font-semibold leading-none text-paper enabled:cursor-pointer disabled:opacity-40">
                   {c.next} →
                 </button>
               </form>
@@ -194,7 +194,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
                   <span className="block font-semibold leading-snug">{o.label}</span>
                   <span className="block text-sm leading-snug text-ink/60">{o.note}</span>
                 </span>
-                <span className={`whitespace-nowrap font-cond text-xl font-bold tabular-nums${L("lg:text-2xl")}`}>{kr(o.price)}</span>
+                <span className={`whitespace-nowrap font-cond text-xl font-semibold tabular-nums${L("lg:text-2xl")}`}>{kr(o.price)}</span>
               </button>
             ))}
           </div>
@@ -212,17 +212,17 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
                   go(3);
                   reachStage(2);
                 }}
-                className={`${option} min-h-14 py-2.5${L("lg:min-h-[4.5rem] lg:px-5 lg:text-lg")} ${i === c.care.best ? "border-2 border-ink bg-card" : ""}`}
+                className={`${option} min-h-14 py-2.5${L("lg:min-h-[4.5rem] lg:px-5 lg:text-lg")} ${i === c.care.best ? "border-ink/40 bg-card" : ""}`}
               >
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold leading-snug">
                     {o.label}
-                    {i === c.care.best && <span className="bg-brand px-1.5 py-0.5 font-cond text-sm font-bold uppercase leading-none">{c.care.pick}</span>}
+                    {i === c.care.best && <span className="rounded-full bg-brand px-2 py-1 text-xs font-semibold leading-none">{c.care.pick}</span>}
                   </span>
                   <span className="block text-sm leading-snug text-ink/60">{o.short}</span>
                 </span>
                 <span className="text-right">
-                  <span className={`block whitespace-nowrap font-cond text-xl font-bold leading-none tabular-nums${L("lg:text-2xl")}`}>{kr(o.monthly)}</span>
+                  <span className={`block whitespace-nowrap font-cond text-xl font-semibold leading-none tabular-nums${L("lg:text-2xl")}`}>{kr(o.monthly)}</span>
                   <span className="block whitespace-nowrap text-xs text-ink/55">{c.monthly}</span>
                 </span>
               </button>
@@ -233,7 +233,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
         {step === 3 && plan && size !== null && (
           <div className="mt-2">
             <p className="flex flex-wrap items-baseline gap-x-3">
-              <span className="font-cond text-5xl font-extrabold leading-none tabular-nums sm:text-6xl">{kr(sitePrice)}</span>
+              <span className="font-cond text-5xl font-bold leading-none tracking-tight tabular-nums sm:text-6xl">{kr(sitePrice)}</span>
               <span className="text-ink/70">
                 + {kr(plan.monthly)} {c.monthly}
               </span>
@@ -263,7 +263,7 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
               </div>
             </fieldset>
 
-            <a href={mailto()} onClick={() => reachStage(3)} className="mt-4 flex w-full items-center justify-center gap-3 bg-brand px-6 py-4 font-cond text-xl font-bold uppercase text-ink transition hover:bg-brand-dark sm:text-2xl">
+            <a href={mailto()} onClick={() => reachStage(3)} className="mt-4 flex w-full items-center justify-center gap-3 rounded-full bg-brand px-6 py-4 font-cond text-xl font-semibold text-ink transition hover:bg-brand-dark">
               {c.cta} <span aria-hidden>→</span>
             </a>
             <p className="mt-2.5 text-sm leading-snug text-ink/60">{c.sendNote}</p>

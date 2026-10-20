@@ -16,7 +16,7 @@ import { useStage } from "./progress-store";
 function SectionHead({ title, lead, light = false }: { title: string; lead?: string; light?: boolean }) {
   return (
     <div className="mb-10 max-w-2xl">
-      <h2 className="text-balance font-cond text-4xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-6xl">{title}</h2>
+      <h2 className="text-balance font-cond text-4xl font-bold leading-[1.02] tracking-tight sm:text-[3.25rem]">{title}</h2>
       {lead && <p className={`mt-4 text-pretty text-lg leading-relaxed ${light ? "text-paper/70" : "text-ink/70"}`}>{lead}</p>}
     </div>
   );
@@ -40,16 +40,16 @@ export function Examples() {
     return () => cancelAnimationFrame(id);
   }, []);
   return (
-    <section id="eksempler" className="overflow-hidden bg-[#f3f2ef] py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-8">
-        <SectionHead title={e.title} lead={e.rowLead} />
+    <section id="eksempler" className="overflow-hidden bg-moss py-16 text-paper sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 sm:px-8">
+        <SectionHead title={e.title} lead={e.rowLead} light />
       </div>
       <CurvedRow items={tiles} onHover={setHover} className="h-[180px] sm:h-[280px] lg:h-[380px] 2xl:h-[460px]" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-8">
-        <p aria-hidden className="mt-4 hidden min-h-7 text-center [@media(hover:hover)]:block font-cond text-xl font-bold uppercase tracking-wide">
+      <div className="mx-auto max-w-6xl px-4 sm:px-8">
+        <p aria-hidden className="mt-4 hidden min-h-7 text-center [@media(hover:hover)]:block font-cond text-xl font-semibold">
           {on && (
             <>
-              {on.name} <span className="text-ink/50">· {on.industry} · {on.place}</span>
+              {on.name} <span className="text-paper/55">· {on.industry} · {on.place}</span>
             </>
           )}
         </p>
@@ -65,10 +65,10 @@ export function Examples() {
           </ul>
         </nav>
         {/* Half of the visitors scroll this far; the price is one click back up from here. */}
-        <a href="#beregner" className="mt-8 inline-flex items-center gap-3 bg-ink px-6 py-3.5 font-cond text-xl font-bold uppercase tracking-wide text-paper transition hover:bg-ink/85">
+        <a href="#beregner" className="mt-8 inline-flex items-center gap-3 rounded-full bg-brand px-6 py-3.5 font-cond text-lg font-semibold text-ink transition hover:bg-brand-dark">
           {t.calc.head} <span aria-hidden>↑</span>
         </a>
-        <p className="mt-6 text-sm text-ink/55">{e.disclaimer}</p>
+        <p className="mt-6 text-sm text-paper/55">{e.disclaimer}</p>
       </div>
     </section>
   );
@@ -79,7 +79,7 @@ export function ExamplePicker() {
   const { t } = useLang();
   const e = t.examples;
   return (
-    <section className="bg-[#f3f2ef] pt-18">
+    <section className="pt-18">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 sm:py-24">
         <SectionHead title={e.title} lead={e.lead} />
         <ExampleCarousel />
@@ -109,7 +109,7 @@ function ExampleCarousel() {
     setDir(i > sel ? 1 : -1);
     setTrade(((i % n) + n) % n);
   };
-  const arrow = "grid size-12 place-items-center border-2 border-ink bg-card transition hover:bg-brand";
+  const arrow = "grid size-12 place-items-center rounded-full border border-ink/20 bg-card transition hover:border-ink hover:bg-brand";
   return (
     <div>
       <div className="flex items-center gap-3">
@@ -121,7 +121,7 @@ function ExampleCarousel() {
               role="tab"
               aria-selected={i === sel}
               onClick={() => go(i)}
-              className={`shrink-0 border-2 border-ink px-4 py-2 font-cond text-lg font-bold uppercase transition ${i === sel ? "bg-ink text-paper" : "bg-card hover:bg-brand"}`}
+              className={`shrink-0 rounded-full border px-4 py-2 font-semibold transition ${i === sel ? "border-ink bg-ink text-paper" : "border-ink/15 bg-card hover:border-ink"}`}
             >
               {it.trade}
             </button>
@@ -154,19 +154,19 @@ function ExampleCarousel() {
               <AnimatePresence mode="wait">
                 {i === sel && (
                   <motion.div key={item.slug} initial={{ opacity: 0, x: dir * 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-                    <p className="font-cond text-lg font-bold uppercase tracking-wide text-ink/50">
+                    <p className="text-sm font-semibold text-ink/50">
                       {item.industry} · {item.place}
                     </p>
-                    <h3 className="mt-1 font-cond text-5xl font-extrabold uppercase leading-none">{item.name}</h3>
+                    <h3 className="mt-1 font-cond text-5xl font-bold leading-none tracking-tight">{item.name}</h3>
                     <p className="mt-4 text-lg leading-relaxed text-ink/70">{item.short}</p>
                     <ul className="mt-6 flex flex-wrap gap-2">
                       {item.tags.map((tag) => (
-                        <li key={tag} className="border border-ink/20 bg-card px-3 py-1 text-sm font-medium">
+                        <li key={tag} className="rounded-full border border-ink/15 bg-card px-3 py-1 text-sm font-medium">
                           {tag}
                         </li>
                       ))}
                     </ul>
-                    <a href={item.href} target="_blank" rel="noopener" className="mt-7 inline-block border-b-2 border-ink pb-0.5 font-cond text-xl font-bold uppercase transition hover:border-brand">
+                    <a href={item.href} target="_blank" rel="noopener" className="mt-7 inline-flex rounded-full bg-ink px-5 py-3 font-semibold text-paper transition hover:bg-ink/85">
                       {e.open} ↗
                     </a>
                   </motion.div>
@@ -234,18 +234,18 @@ export function Plans() {
   const kr = (n: number) => (lang === "da" ? `${n.toLocaleString("da-DK")} kr.` : `DKK ${n.toLocaleString("en-GB")}`);
   return (
     <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-8 sm:pb-24">
-      <h2 className="font-cond text-3xl font-extrabold uppercase sm:text-4xl">{c.plansTitle}</h2>
+      <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{c.plansTitle}</h2>
       <p className="mt-2 max-w-2xl leading-relaxed text-ink/70">{c.plansLead}</p>
       <div className="mt-6 grid gap-3 md:grid-cols-3 md:items-stretch">
         {c.care.options.map((o, i) => {
           const best = i === c.care.best;
           return (
-            <div key={o.label} className={`flex flex-col p-5 ${best ? "border-2 border-ink bg-card" : "border border-ink/25 bg-paper"}`}>
+            <div key={o.label} className={`flex flex-col rounded-2xl p-5 ${best ? "border border-ink/40 bg-card" : "border border-ink/15 bg-paper"}`}>
               <p className="flex flex-wrap items-center justify-between gap-2 font-semibold">
                 {o.label}
-                {best && <span className="bg-brand px-1.5 py-0.5 font-cond text-sm font-bold uppercase leading-none">{c.care.pick}</span>}
+                {best && <span className="rounded-full bg-brand px-2 py-1 text-xs font-semibold leading-none">{c.care.pick}</span>}
               </p>
-              <p className="mt-2 font-cond text-4xl font-extrabold leading-none tabular-nums">
+              <p className="mt-2 font-cond text-4xl font-bold leading-none tabular-nums">
                 {kr(o.monthly)} <span className="font-sans text-base font-normal text-ink/60">{c.monthly}</span>
               </p>
               <ul className="mt-4 space-y-1.5 border-t border-ink/15 pt-4 text-sm leading-snug text-ink/80">
@@ -283,13 +283,13 @@ export function Comparison() {
   const tb = t.pricing.table;
   return (
     <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-8 sm:pb-28">
-      <h2 className="font-cond text-3xl font-extrabold uppercase sm:text-4xl">{tb.title}</h2>
+      <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-4xl">{tb.title}</h2>
       <div className="mt-6 overflow-x-auto">
         <table className="w-full min-w-[32rem] border-collapse text-left text-sm sm:text-base">
           <thead>
             <tr className="border-b-2 border-ink">
               {tb.cols.map((col, i) => (
-                <th key={i} scope="col" className={`py-3 font-cond text-lg font-bold uppercase ${i === 0 ? "pr-4" : "px-3"} ${i === 1 ? "bg-brand/40" : ""}`}>
+                <th key={i} scope="col" className={`py-3 font-cond text-lg font-bold ${i === 0 ? "pr-4" : "px-3"} ${i === 1 ? "bg-brand/40" : ""}`}>
                   {col}
                 </th>
               ))}
@@ -358,8 +358,8 @@ export function Process({ hideHead = false }: { hideHead?: boolean }) {
                     }`}
                   />
                   <span className={`mt-0 block lg:mt-4 ${here ? "" : "lg:pt-7"}`}>
-                    {here && <span className={`mb-1.5 block h-[22px] w-fit bg-ink px-2 font-cond text-sm font-bold uppercase leading-[22px] text-brand ${dotAlign}`}>{p.here}</span>}
-                    <span className={`block font-cond text-2xl font-bold uppercase leading-tight ${passed || here ? "" : "text-ink/45"}`}>
+                    {here && <span className={`mb-1.5 block h-[22px] w-fit rounded-full bg-ink px-2.5 text-xs font-semibold leading-[22px] text-brand ${dotAlign}`}>{p.here}</span>}
+                    <span className={`block font-cond text-2xl font-bold leading-tight ${passed || here ? "" : "text-ink/45"}`}>
                       <span className="text-ink/35 tabular-nums">{i + 1}</span> {s.title}
                     </span>
                     <span className={`mt-1.5 block leading-relaxed ${passed || here ? "text-ink/75" : "text-ink/50"}`}>{s.text}</span>
@@ -388,7 +388,7 @@ export function Faq({ page = false }: { page?: boolean }) {
       className={`mx-auto grid max-w-6xl gap-8 px-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 ${page ? "pb-16 pt-28 sm:pt-32" : "py-16 sm:py-24"}`}
     >
       <div>
-        <Heading className="font-cond text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">{f.title}</Heading>
+        <Heading className="font-cond text-4xl font-bold leading-none tracking-tight sm:text-5xl">{f.title}</Heading>
         <p className="mt-4 max-w-sm text-pretty leading-relaxed text-ink/70">{f.lead}</p>
         <p className="mt-3 text-sm text-ink/70">
           {f.more}{" "}
@@ -447,11 +447,11 @@ export function Contact({ people = true }: { people?: boolean }) {
       <div className={`grid gap-14 px-4 py-20 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
         {/* Without the photos the band is short: heading and text on the left, the button and addresses on the right. */}
         <div className={people ? "" : "lg:grid lg:grid-flow-col lg:grid-cols-[minmax(0,32rem)_auto] lg:grid-rows-[auto_auto] lg:items-start lg:justify-items-start lg:justify-between lg:gap-x-16"}>
-          <h2 className="text-balance font-cond text-5xl font-extrabold uppercase leading-[0.95] sm:text-6xl">{c.title}</h2>
+          <h2 className="text-balance font-cond text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl">{c.title}</h2>
           <p className="mt-5 max-w-md text-lg text-paper/70">{c.lead}</p>
           <a
             href={`mailto:${EMAIL}?subject=${encodeURIComponent(c.subject)}&body=${encodeURIComponent(c.body)}`}
-            className={`mt-8 inline-flex bg-brand px-7 py-4 font-cond text-xl font-bold uppercase text-ink transition hover:bg-brand-dark ${people ? "" : "lg:mt-0"}`}
+            className={`mt-8 inline-flex rounded-full bg-brand px-7 py-4 font-cond text-lg font-semibold text-ink transition hover:bg-brand-dark ${people ? "" : "lg:mt-0"}`}
           >
             {c.write}
           </a>
@@ -490,9 +490,9 @@ export function Contact({ people = true }: { people?: boolean }) {
           <div className="mt-6 grid flex-1 grid-cols-2 gap-4 sm:gap-6">
             {TEAM.map((p) => (
               <figure key={p.email} className="flex flex-col">
-                <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 border-2 border-paper/15 object-cover object-top" />
+                <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 rounded-2xl bg-paper/5 object-cover object-top" />
                 <figcaption className="mt-3">
-                  <span className="block font-cond text-xl font-bold uppercase">{p.name}</span>
+                  <span className="block font-cond text-xl font-semibold">{p.name}</span>
                   <a href={`mailto:${p.email}`} className="break-words text-sm text-paper/70 underline-offset-4 transition hover:text-brand hover:underline">
                     {/* On narrow phones the address breaks after the @, not mid-word. */}
                     {p.email.split("@")[0]}@<wbr />{p.email.split("@")[1]}
@@ -513,7 +513,7 @@ export function Footer() {
     <footer className="border-t border-paper/10 bg-ink text-paper">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8">
         <Logo light />
-        <nav className="flex flex-wrap gap-x-6 gap-y-2 font-cond text-lg font-bold uppercase text-paper/70">
+        <nav className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-paper/70">
           <Link href="/eksempelsider/" className="hover:text-brand">{t.nav.examples}</Link>
           <Link href="/proces/" className="hover:text-brand">{t.nav.process}</Link>
           <Link href="/pris/" className="hover:text-brand">{t.nav.price}</Link>
@@ -539,7 +539,7 @@ export function PageIntro({ title, lead }: { title: string; lead?: string }) {
   return (
     <section className="border-b border-ink/15">
       <div className="mx-auto max-w-6xl px-4 pb-14 pt-32 sm:px-8 sm:pb-16 sm:pt-36">
-        <h1 className="max-w-4xl text-balance font-cond text-5xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-7xl">{title}</h1>
+        <h1 className="max-w-4xl text-balance font-cond text-5xl font-bold leading-[1.02] tracking-tight sm:text-7xl">{title}</h1>
         {lead && <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink/75">{lead}</p>}
       </div>
     </section>
