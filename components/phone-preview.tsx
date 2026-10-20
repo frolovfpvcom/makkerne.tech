@@ -126,6 +126,7 @@ function phoneHeight() {
 
 /** In the front-page hero the phone stays in the background on a computer, so the price card leads. */
 function quietPhoneHeight() {
+  if (window.innerWidth < 640) return 380;
   if (window.innerWidth >= 1024) return Math.max(340, Math.min(460, window.innerHeight - 380));
   return phoneHeight();
 }

@@ -8,7 +8,7 @@ import { reachStage } from "./progress-store";
 
 // A whole choice is one button: big to hit, and it says it is picked.
 const option =
-  "flex w-full min-h-14 cursor-pointer items-center gap-3 rounded-xl border border-ink/15 bg-paper px-3.5 py-2.5 text-left transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:shadow-[inset_0_0_0_1px_var(--color-ink)]";
+  "flex w-full min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-ink/15 bg-paper px-3 py-2 text-left sm:min-h-14 sm:px-3.5 sm:py-2.5 transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:shadow-[inset_0_0_0_1px_var(--color-ink)]";
 
 /** One list of big choices, used by every single-answer step. */
 function Choices({
@@ -23,14 +23,14 @@ function Choices({
   onPick: (i: number) => void;
 }) {
   return (
-    <div className="mt-3.5 grid gap-2">
+    <div className="mt-2.5 grid gap-1.5 sm:mt-3.5 sm:gap-2">
       {items.map((o, i) => (
         <button key={o.label} type="button" aria-pressed={value === i} onClick={() => onPick(i)} className={option}>
           <span className="min-w-0 flex-1">
-            <span className="block font-semibold leading-snug">{o.label}</span>
-            <span className="block text-sm leading-snug text-ink/60">{o.note}</span>
+            <span className="block text-[15px] font-semibold leading-snug sm:text-base">{o.label}</span>
+            <span className="block text-[13px] leading-snug text-ink/60 sm:text-sm">{o.note}</span>
           </span>
-          {o.price !== undefined && <span className="whitespace-nowrap font-cond text-xl font-semibold tabular-nums">{price(o.price)}</span>}
+          {o.price !== undefined && <span className="whitespace-nowrap font-cond text-lg font-semibold tabular-nums sm:text-xl">{price(o.price)}</span>}
         </button>
       ))}
     </div>
@@ -153,18 +153,18 @@ export function QuoteCard({ className = "" }: { className?: string }) {
   return (
     <div id="beregner" className={`scroll-mt-24 overflow-hidden rounded-3xl border border-ink/15 bg-card ${className}`}>
       {/* Where you are: one bar per step, each answered one a way back to change it. */}
-      <div className="px-4 pt-4 sm:px-5">
+      <div className="px-3.5 pt-3 sm:px-5 sm:pt-4">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-ink/60 tabular-nums">
+          <p className="text-xs font-semibold text-ink/60 tabular-nums sm:text-sm">
             {c.stepWord} {step + 1} {c.of} {c.steps.length}
             <span className="hidden sm:inline">
               {" "}
               · <span className="text-ink">{c.steps[step]}</span>
             </span>
           </p>
-          <p className="whitespace-nowrap rounded-full bg-brand px-3 py-1.5 text-sm font-semibold leading-none text-black">{c.free}</p>
+          <p className="whitespace-nowrap rounded-full bg-brand px-2.5 py-1 text-xs font-semibold leading-none text-black sm:px-3 sm:py-1.5 sm:text-sm">{c.free}</p>
         </div>
-        <ol className="mt-3 grid gap-1" style={{ gridTemplateColumns: `repeat(${c.steps.length}, minmax(0, 1fr))` }}>
+        <ol className="mt-1.5 grid gap-1 sm:mt-3" style={{ gridTemplateColumns: `repeat(${c.steps.length}, minmax(0, 1fr))` }}>
           {c.steps.map((s, i) => (
             <li key={s}>
               <button
@@ -173,7 +173,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
                 onClick={() => go(i)}
                 aria-current={step === i ? "step" : undefined}
                 aria-label={`${c.stepWord} ${i + 1}: ${s}`}
-                className="block w-full py-2 enabled:cursor-pointer"
+                className="block w-full py-1.5 enabled:cursor-pointer sm:py-2"
               >
                 <span className={`block h-1.5 rounded-full ${step === i ? "bg-ink" : i < step || (reachable(i + 1) && i < SEND) ? "bg-brand" : "bg-ink/10"}`} aria-hidden />
               </button>
@@ -182,20 +182,20 @@ export function QuoteCard({ className = "" }: { className?: string }) {
         </ol>
       </div>
 
-      <div className="px-4 pb-5 pt-2 sm:px-5">
-        <p ref={headRef} tabIndex={-1} className="font-cond text-2xl font-semibold leading-tight tracking-tight outline-none sm:text-[1.6rem]">
+      <div className="px-3.5 pb-3.5 pt-1 sm:px-5 sm:pb-5 sm:pt-2">
+        <p ref={headRef} tabIndex={-1} className="font-cond text-xl font-semibold leading-tight tracking-tight outline-none sm:text-[1.6rem]">
           {questions[step]}
         </p>
 
         {step === TRADE && (
-          <div className="mt-3.5 flex flex-wrap gap-2">
+          <div className="mt-2.5 flex flex-wrap gap-1.5 sm:mt-3.5 sm:gap-2">
             {c.trade.options.slice(0, other).map((o, i) => (
               <button
                 key={o}
                 type="button"
                 aria-pressed={trade === i}
                 onClick={() => pickTrade(i)}
-                className="h-10 cursor-pointer rounded-full border border-ink/15 bg-paper px-4 text-[15px] font-semibold leading-none transition-colors hover:border-ink hover:bg-brand hover:text-black aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
+                className="h-9 cursor-pointer rounded-full border border-ink/15 bg-paper px-3.5 text-sm font-semibold sm:h-10 sm:px-4 sm:text-[15px] leading-none transition-colors hover:border-ink hover:bg-brand hover:text-black aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
               >
                 {o}
               </button>
@@ -204,7 +204,7 @@ export function QuoteCard({ className = "" }: { className?: string }) {
               type="button"
               aria-pressed={trade === other}
               onClick={() => pickTrade(other)}
-              className="h-10 cursor-pointer rounded-full border border-dashed border-ink/30 bg-transparent px-4 text-[15px] font-semibold leading-none transition-colors hover:border-ink hover:bg-brand hover:text-black aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
+              className="h-9 cursor-pointer rounded-full border border-dashed border-ink/30 bg-transparent px-3.5 text-sm font-semibold sm:h-10 sm:px-4 sm:text-[15px] leading-none transition-colors hover:border-ink hover:bg-brand hover:text-black aria-pressed:border-solid aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
             >
               {c.trade.options[other]}
             </button>

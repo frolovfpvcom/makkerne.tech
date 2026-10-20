@@ -166,11 +166,11 @@ export function CinematicHero() {
       <div className="relative z-20 lg:pointer-events-none lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center" style={{ perspective: "1500px" }}>
         <div ref={card} className="cine-card relative w-full overflow-hidden lg:pointer-events-auto lg:h-[85vh] lg:w-[85vw] lg:rounded-[40px]">
           <div className="cine-sheen" aria-hidden />
-          <div className="relative mx-auto grid h-full max-w-7xl items-center gap-8 px-4 pb-10 pt-24 sm:gap-12 sm:px-8 sm:pb-16 sm:pt-24 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.15fr)] lg:gap-10 lg:px-12 lg:pb-8 lg:pt-24">
+          <div className="relative mx-auto grid h-full max-w-7xl items-center gap-6 px-4 pb-8 pt-[5.5rem] sm:gap-12 sm:px-8 sm:pb-16 sm:pt-24 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.15fr)] lg:gap-10 lg:px-12 lg:pb-8 lg:pt-24">
             <div className="cine-left cine-in">
-              <h2 className="font-cond text-[2.1rem] font-bold leading-[1.05] tracking-tight sm:text-5xl">{h.cardTitle}</h2>
-              <p className="mt-3 max-w-md text-base leading-relaxed text-blue-100/70 sm:mt-5 sm:text-lg">{h.cardLead}</p>
-              <Link href="/eksempelsider/" className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 sm:mt-8 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black">
+              <h2 className="font-cond text-[1.75rem] font-bold leading-[1.05] tracking-tight sm:text-5xl">{h.cardTitle}</h2>
+              <p className="mt-2 max-w-md text-[15px] leading-relaxed text-blue-100/70 sm:mt-5 sm:text-lg">{h.cardLead}</p>
+              <Link href="/eksempelsider/" className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 sm:mt-8 sm:px-6 sm:py-3.5 sm:text-lg font-cond text-base font-semibold text-black transition hover:bg-brand hover:text-black">
                 {h.seeExamples} <span aria-hidden>→</span>
               </Link>
             </div>
@@ -194,7 +194,7 @@ export function CinematicHero() {
             </div>
 
             <div className="cine-right cine-in text-ink">
-              <h2 className="mb-3 font-cond text-[1.75rem] font-bold tracking-tight sm:mb-4 sm:text-4xl">{h.quoteTitle}</h2>
+              <h2 className="mb-2.5 font-cond text-2xl font-bold tracking-tight sm:mb-4 sm:text-4xl">{h.quoteTitle}</h2>
               <QuoteCard />
             </div>
           </div>
