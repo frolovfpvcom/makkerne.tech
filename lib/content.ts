@@ -231,17 +231,6 @@ const da = {
         { label: "11–20 sider", note: "Til firmaer med mange ydelser, flere byer eller afdelinger.", price: 7000 },
       ],
     },
-    features: {
-      title: "Tilvalg",
-      q: "Tilføj, hvis du vil",
-      freeLabel: "Gratis",
-      options: [
-        { label: "Før og efter-billeder", short: "Før og efter", note: "Kunden trækker i billedet og ser forskellen.", price: 300 },
-        { label: "Booking af besigtigelse", short: "Booking", note: "Kunden vælger selv en ledig tid i din kalender.", price: 500 },
-        { label: "Prisberegner til dine kunder", short: "Prisberegner", note: "Kunden ser en vejledende pris uden at ringe.", price: 1000 },
-        { label: "Siden på engelsk også", short: "Engelsk", note: "Til kunder, der ikke læser dansk.", price: 0 },
-      ],
-    },
     care: {
       title: "Når siden er live",
       q: "Skal vi passe siden bagefter?",
@@ -285,8 +274,7 @@ const da = {
     vat: "Ekskl. moms. Prisen i tilbuddet er den, der gælder.",
     cta: "Bed om et gratis udkast",
     mailSubject: "Udkast til min hjemmeside",
-    mailLines: ["Fag", "Størrelse", "Tilvalg", "Drift", "Pris fra siden"],
-    none: "Ingen",
+    mailLines: ["Fag", "Størrelse", "Drift", "Pris fra siden"],
     mailEnd: "Firmanavn:\nBy:\nTelefon:\n\n(Send gerne billeder af dit arbejde med)",
   },
   process: {
@@ -532,17 +520,6 @@ const en: Dict = {
         { label: "11–20 pages", note: "For firms with many services, several towns or branches.", price: 7000 },
       ],
     },
-    features: {
-      title: "Extras",
-      q: "Add if you like",
-      freeLabel: "Free",
-      options: [
-        { label: "Before and after photos", short: "Before and after", note: "Customers drag across the photo and see the difference.", price: 300 },
-        { label: "Site visit booking", short: "Booking", note: "Customers pick a free slot in your calendar.", price: 500 },
-        { label: "Price calculator for your customers", short: "Price calculator", note: "Customers get a rough price before they call.", price: 1000 },
-        { label: "The site in English too", short: "English", note: "For customers who do not read Danish.", price: 0 },
-      ],
-    },
     care: {
       title: "Once the site is live",
       q: "Shall we look after the site afterwards?",
@@ -586,8 +563,7 @@ const en: Dict = {
     vat: "Excl. VAT. The price in the quote is the one that applies.",
     cta: "Ask for a free draft",
     mailSubject: "Draft for my website",
-    mailLines: ["Trade", "Size", "Extras", "Care", "Price from the site"],
-    none: "None",
+    mailLines: ["Trade", "Size", "Care", "Price from the site"],
     mailEnd: "Business name:\nTown:\nPhone:\n\n(Feel free to attach photos of your work)",
   },
   process: {

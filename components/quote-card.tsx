@@ -8,7 +8,7 @@ import { reachStage } from "./progress-store";
 
 /**
  * The price in three clicks: trade, size, care plan, one question at a time. Each answer moves on by
- * itself, and the last step shows the price, a few optional extras and the one button, which opens a
+ * itself, and the last step shows the price and the one button, which opens a
  * mail asking for a free draft with every choice written in. Picking a trade also turns the phone
  * next to it to that trade's example.
  */
@@ -21,7 +21,6 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
   const [trade, setTrade] = useState<number | null>(null);
   const [size, setSize] = useState<number | null>(null);
   const [care, setCare] = useState<number | null>(null);
-  const [extras, setExtras] = useState<number[]>([]);
   // "Andet fag" is the last option; picking it opens a field to write the trade in.
   const other = c.trade.options.length - 1;
   const [otherTrade, setOtherTrade] = useState("");
@@ -51,17 +50,15 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
 
   const num = (n: number) => n.toLocaleString(lang === "da" ? "da-DK" : "en-GB");
   const kr = (n: number) => (lang === "da" ? `${num(n)} kr.` : `DKK ${num(n)}`);
-  const picked = [...extras].sort((a, b) => a - b);
-  const sitePrice = (size === null ? 0 : c.size.options[size].price) + picked.reduce((sum, i) => sum + c.features.options[i].price, 0);
+  const sitePrice = size === null ? 0 : c.size.options[size].price;
   const plan = care === null ? null : c.care.options[care];
   const done = [trade !== null && (trade !== other || otherTrade.trim() !== ""), size !== null, care !== null];
 
   const mailto = () => {
-    const [lTrade, lSize, lExtras, lCare, lPrice] = c.mailLines;
+    const [lTrade, lSize, lCare, lPrice] = c.mailLines;
     const body = [
       `${lTrade}: ${tradeName ?? ""}`,
       `${lSize}: ${size === null ? "" : c.size.options[size].label}`,
-      `${lExtras}: ${picked.length ? picked.map((i) => c.features.options[i].label).join(", ") : c.none}`,
       `${lCare}: ${plan?.label ?? ""}`,
       `${lPrice}: ${kr(sitePrice)}${plan ? ` + ${kr(plan.monthly)} ${c.monthly}` : ""}`,
       "",
@@ -242,26 +239,6 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
               {c.once} · {c.vat}
             </p>
 
-            <fieldset className="mt-4 border-t border-ink/15 pt-3">
-              <legend className="sr-only">{c.features.q}</legend>
-              <p aria-hidden className="text-sm font-semibold">{c.features.q}</p>
-              <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1">
-                {c.features.options.map((o, i) => (
-                  <label key={o.label} title={o.note} className="flex min-h-9 cursor-pointer items-center gap-2 text-sm leading-tight">
-                    <input
-                      type="checkbox"
-                      checked={extras.includes(i)}
-                      onChange={() => setExtras((x) => (x.includes(i) ? x.filter((j) => j !== i) : [...x, i]))}
-                      className="size-4 shrink-0 accent-ink"
-                    />
-                    <span className="min-w-0">
-                      {o.short}{" "}
-                      <span className="whitespace-nowrap text-ink/55 tabular-nums">{o.price ? `+${kr(o.price)}` : c.features.freeLabel}</span>
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
 
             <a href={mailto()} onClick={() => reachStage(3)} className="mt-4 flex w-full items-center justify-center gap-3 rounded-full bg-brand px-6 py-4 font-cond text-xl font-semibold text-black transition hover:bg-brand hover:text-black-dark">
               {c.cta} <span aria-hidden>→</span>
