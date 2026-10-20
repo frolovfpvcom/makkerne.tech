@@ -32,7 +32,7 @@ const STYLES = `
 /**
  * Front page opening. A dark screen with the name and what we do; then, by itself, a deep blue card
  * rises over it and grows to fill the screen, and in it are one of our sites on a phone, the price in
- * three clicks, and the way to the examples. On a computer it plays as the page opens; on a phone, or
+ * the free-draft guide, and the way to the examples. On a computer it plays as the page opens; on a phone, or
  * with reduced motion, the two simply follow each other.
  */
 export function CinematicHero() {
