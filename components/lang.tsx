@@ -66,7 +66,7 @@ function Flag({ lang }: { lang: Lang }) {
 export function LangToggle({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLang();
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
+    <div className={`flex items-center rounded-full bg-[#05070f] p-0.5 ring-1 ring-ink/10 ${className}`}>
       {(["da", "en"] as const).map((l) => (
         <button
           key={l}
@@ -75,7 +75,7 @@ export function LangToggle({ className = "" }: { className?: string }) {
           aria-pressed={lang === l}
           aria-label={l === "da" ? "Dansk" : "English"}
           lang={l}
-          className={`grid h-9 w-11 place-items-center transition ${lang === l ? "" : "opacity-40 hover:opacity-100"}`}
+          className={`grid h-8 w-8 place-items-center rounded-full transition ${lang === l ? "" : "opacity-40 hover:opacity-100"}`}
         >
           <Flag lang={l} />
         </button>
