@@ -13,11 +13,11 @@ import { QuoteCard } from "./quote-card";
 import { setTrade, useTrade } from "./trade-store";
 import { useStage } from "./progress-store";
 
-function SectionHead({ title, lead, light = false }: { title: string; lead?: string; light?: boolean }) {
+function SectionHead({ title, lead }: { title: string; lead?: string }) {
   return (
     <div className="mb-10 max-w-2xl">
       <h2 className="text-balance font-cond text-4xl font-bold leading-[1.02] tracking-tight sm:text-[3.25rem]">{title}</h2>
-      {lead && <p className={`mt-4 text-pretty text-lg leading-relaxed ${light ? "text-paper/70" : "text-ink/70"}`}>{lead}</p>}
+      {lead && <p className="mt-4 text-pretty text-lg leading-relaxed text-ink/70">{lead}</p>}
     </div>
   );
 }
@@ -42,7 +42,7 @@ export function Examples() {
   return (
     <section id="eksempler" className="overflow-hidden bg-navy py-16 text-ink sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
-        <SectionHead title={e.title} lead={e.rowLead} light />
+        <SectionHead title={e.title} lead={e.rowLead} />
       </div>
       <CurvedRow items={tiles} onHover={setHover} className="h-[180px] sm:h-[280px] lg:h-[380px] 2xl:h-[460px]" />
       <div className="mx-auto max-w-6xl px-4 sm:px-8">

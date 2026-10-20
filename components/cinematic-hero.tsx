@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { INTRO_DONE } from "./intro";
 import { useLang } from "./lang";
 import { PhonePreview } from "./phone-preview";
 import { QuoteCard } from "./quote-card";
 
-if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 // Film grain, the faint grid behind the title, and the deep blue card. On a computer the card and its
 // contents start hidden, so nothing flashes before the scroll timeline takes over.
@@ -31,10 +30,10 @@ const STYLES = `
 `;
 
 /**
- * Front page opening. A dark screen with the name and what we do; scrolling lifts a deep blue card up
- * over it that grows to fill the screen, and in it are one of our sites on a phone, the price in three
- * clicks, and the way to the examples. On a computer the section is pinned while this plays; on a
- * phone, or with reduced motion, the two simply follow each other.
+ * Front page opening. A dark screen with the name and what we do; then, by itself, a deep blue card
+ * rises over it and grows to fill the screen, and in it are one of our sites on a phone, the price in
+ * three clicks, and the way to the examples. On a computer it plays as the page opens; on a phone, or
+ * with reduced motion, the two simply follow each other.
  */
 export function CinematicHero() {
   const { t, lang } = useLang();
@@ -69,23 +68,31 @@ export function CinematicHero() {
       gsap.set(".cine-card", { y: window.innerHeight + 200, autoAlpha: 1 });
       gsap.set(".cine-in", { autoAlpha: 0 });
 
-      gsap
-        .timeline({ delay: 0.2 })
-        .to(".cine-line1", { duration: 1.6, autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "expo.out" })
-        .to(".cine-line2", { duration: 1.3, clipPath: "inset(0 0% 0 0)", ease: "power4.inOut" }, "-=1.0");
-
-      gsap
-        .timeline({ scrollTrigger: { trigger: root.current, start: "top top", end: "+=2400", pin: true, scrub: 1, anticipatePin: 1 } })
-        .to([".cine-text", ".cine-grid"], { scale: 1.15, filter: "blur(20px)", opacity: 0.2, ease: "power2.inOut", duration: 2 }, 0)
-        .to(".cine-card", { y: 0, ease: "power3.inOut", duration: 2 }, 0)
-        .to(".cine-card", { width: "100vw", height: "100vh", borderRadius: 0, ease: "power3.inOut", duration: 1.5 })
-        .fromTo(".cine-phone", { y: 300, z: -500, rotationX: 50, rotationY: -30, autoAlpha: 0, scale: 0.6 }, { y: 0, z: 0, rotationX: 0, rotationY: 0, autoAlpha: 1, scale: 1, ease: "expo.out", duration: 2.5 }, "-=0.8")
-        .fromTo(".cine-badge", { y: 80, autoAlpha: 0, scale: 0.8 }, { y: 0, autoAlpha: 1, scale: 1, ease: "back.out(1.5)", duration: 1.5, stagger: 0.2 }, "-=2.0")
-        .fromTo(".cine-left", { x: -50, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power4.out", duration: 1.5 }, "-=1.5")
-        .fromTo(".cine-right", { x: 50, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "expo.out", duration: 1.5 }, "<")
-        .to({}, { duration: 1 });
+      // Plays by itself as the page opens: the name, a short pause, then the blue card rises, fills the
+      // screen and its contents come in. Scrolling, a click or a key skips straight to the end.
+      const intro = gsap
+        .timeline({ delay: 0.2, onComplete: done })
+        .to(".cine-line1", { duration: 1.2, autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "expo.out" })
+        .to(".cine-line2", { duration: 1.0, clipPath: "inset(0 0% 0 0)", ease: "power4.inOut" }, "-=0.7")
+        .to({}, { duration: 0.6 })
+        .addLabel("card")
+        .to([".cine-text", ".cine-grid"], { scale: 1.15, filter: "blur(20px)", opacity: 0.2, ease: "power2.inOut", duration: 1.1 }, "card")
+        .to(".cine-card", { y: 0, ease: "power3.inOut", duration: 1.1 }, "card")
+        .to(".cine-card", { width: "100vw", height: "100vh", borderRadius: 0, ease: "power3.inOut", duration: 0.8 })
+        .fromTo(".cine-phone", { y: 300, z: -500, rotationX: 50, rotationY: -30, autoAlpha: 0, scale: 0.6 }, { y: 0, z: 0, rotationX: 0, rotationY: 0, autoAlpha: 1, scale: 1, ease: "expo.out", duration: 1.4 }, "-=0.4")
+        .fromTo(".cine-badge", { y: 60, autoAlpha: 0, scale: 0.85 }, { y: 0, autoAlpha: 1, scale: 1, ease: "back.out(1.5)", duration: 0.8, stagger: 0.12 }, "-=1.0")
+        .fromTo(".cine-left", { x: -40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power4.out", duration: 0.9 }, "-=1.0")
+        .fromTo(".cine-right", { x: 40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "expo.out", duration: 0.9 }, "<");
+      const skip = () => intro.progress(1);
+      const skipEvents = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+      skipEvents.forEach((ev) => window.addEventListener(ev, skip, { once: true, passive: true }));
+      function done() {
+        skipEvents.forEach((ev) => window.removeEventListener(ev, skip));
+        window.dispatchEvent(new Event(INTRO_DONE));
+      }
 
       return () => {
+        skipEvents.forEach((ev) => window.removeEventListener(ev, skip));
         window.removeEventListener("mousemove", move);
         cancelAnimationFrame(frame);
       };
@@ -100,14 +107,11 @@ export function CinematicHero() {
       <div className="cine-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden />
 
       {/* The name and what we do, alone on the dark screen. */}
-      <div className="cine-text relative z-10 flex min-h-[88svh] flex-col items-center justify-center px-4 text-center lg:absolute lg:inset-0 lg:min-h-0">
+      <div className="cine-text relative z-10 flex min-h-[70svh] flex-col items-center justify-center px-4 text-center lg:absolute lg:inset-0 lg:min-h-0">
         <h1 className="font-cond font-bold tracking-tight">
           <span className="cine-line1 cine-title block text-6xl sm:text-7xl lg:text-[7rem]">{h.tagline1}</span>
           <span className="cine-line2 cine-silver mt-3 block text-balance text-3xl leading-tight sm:text-5xl lg:text-[3.5rem]">{h.tagline2}</span>
         </h1>
-        <p className="mt-10 text-sm text-white/45" aria-hidden>
-          {h.scroll} ↓
-        </p>
       </div>
 
       {/* The blue card: phone, text and the price card. */}

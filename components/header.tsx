@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { INTRO_DONE } from "./intro";
 import { LangToggle, useLang } from "./lang";
 
 export function Logo() {
@@ -26,15 +27,21 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  // On the front page the menu waits off screen until the visitor scrolls down to the blue card.
+  // On the front page the menu waits off screen until the blue card is there: when the opening has
+  // played on a computer, or when the visitor scrolls down to it on a phone.
   const front = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     if (!front) return;
-    const check = () => setScrolled(window.scrollY > window.innerHeight * 0.5);
+    const check = () => setScrolled((s) => s || window.scrollY > window.innerHeight * 0.5);
+    const reveal = () => setScrolled(true);
     check();
     window.addEventListener("scroll", check, { passive: true });
-    return () => window.removeEventListener("scroll", check);
+    window.addEventListener(INTRO_DONE, reveal);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener(INTRO_DONE, reveal);
+    };
   }, [front]);
   const shown = !front || scrolled || open;
 
