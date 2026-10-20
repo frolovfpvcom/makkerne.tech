@@ -275,7 +275,7 @@ const da = {
       q: "Hvad slags side skal det være?",
       options: [
         { label: "Firmapræsentation", note: "Vis dit arbejde, og få kunderne til at ringe eller skrive.", price: 0 },
-        { label: "E-handel", note: "Sælg varer på siden med kurv og betaling.", price: 4000 },
+        { label: "E-handel", note: "Sælg varer på siden med kurv og betaling.", price: 2000 },
       ],
     },
     design: {
@@ -653,7 +653,7 @@ const en: Dict = {
       q: "What kind of site should it be?",
       options: [
         { label: "Company presentation", note: "Show your work and get customers to call or write.", price: 0 },
-        { label: "Online shop", note: "Sell goods on the site with a basket and payment.", price: 4000 },
+        { label: "Online shop", note: "Sell goods on the site with a basket and payment.", price: 2000 },
       ],
     },
     design: {
