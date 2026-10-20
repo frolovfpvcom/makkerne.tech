@@ -20,8 +20,6 @@ const STYLES = `
 .cine-title{color:#fff;text-shadow:0 10px 30px rgb(255 255 255/.18),0 2px 4px rgb(255 255 255/.1)}
 .cine-silver{background:linear-gradient(180deg,#fff 0%,rgb(255 255 255/.45) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;transform:translateZ(0)}
 .cine-card{background:linear-gradient(145deg,#162c6d 0%,#0a101d 100%)}
-.cine-sheen{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(800px circle at var(--mx,50%) var(--my,50%),rgb(255 255 255/.06) 0%,transparent 40%)}
 .cine-badge{background:linear-gradient(135deg,rgb(255 255 255/.1) 0%,rgb(255 255 255/.02) 100%);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   box-shadow:0 0 0 1px rgb(255 255 255/.1),0 25px 50px -12px rgb(0 0 0/.8)}
 @media (min-width:1024px) and (prefers-reduced-motion:no-preference){
@@ -59,15 +57,12 @@ export function CinematicHero() {
   useEffect(() => {
     const mm = gsap.matchMedia();
     mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
-      // The light on the card follows the mouse, and the phone tilts a little towards it.
+      // The phone tilts a little towards the mouse.
       let frame = 0;
       const move = (e: MouseEvent) => {
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
-          if (!card.current || !phone.current) return;
-          const r = card.current.getBoundingClientRect();
-          card.current.style.setProperty("--mx", `${e.clientX - r.left}px`);
-          card.current.style.setProperty("--my", `${e.clientY - r.top}px`);
+          if (!phone.current) return;
           const x = (e.clientX / window.innerWidth - 0.5) * 2;
           const y = (e.clientY / window.innerHeight - 0.5) * 2;
           gsap.to(phone.current, { rotationY: x * 8, rotationX: -y * 8, ease: "power3.out", duration: 1.2 });
@@ -165,7 +160,6 @@ export function CinematicHero() {
       {/* The blue card: phone, text and the price card. */}
       <div className="relative z-20 lg:pointer-events-none lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center" style={{ perspective: "1500px" }}>
         <div ref={card} className="cine-card relative w-full overflow-hidden lg:pointer-events-auto lg:h-[85vh] lg:w-[85vw] lg:rounded-[40px]">
-          <div className="cine-sheen" aria-hidden />
           <div className="relative mx-auto grid h-full max-w-7xl items-center gap-6 px-4 pb-8 pt-[5.5rem] sm:gap-12 sm:px-8 sm:pb-16 sm:pt-24 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.15fr)] lg:gap-10 lg:px-12 lg:pb-8 lg:pt-24">
             <div className="cine-left cine-in">
               <h2 className="font-cond text-[1.75rem] font-bold leading-[1.05] tracking-tight sm:text-5xl">{h.cardTitle}</h2>
