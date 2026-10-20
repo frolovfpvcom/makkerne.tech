@@ -74,18 +74,78 @@ export function Examples() {
   );
 }
 
-/** The examples page: one example at a time, with trade tabs and arrows. */
-export function ExamplePicker() {
+/**
+ * One example at a time, picked by trade. On the examples page (`side`) the trades are a dark menu
+ * down the far left edge of the screen on a computer, like a shop's category list; on the front page
+ * and on phones they are a row of tabs.
+ */
+export function ExamplePicker({ side = false, front = false }: { side?: boolean; front?: boolean }) {
   const { t } = useLang();
   const e = t.examples;
+  const head = <SectionHead title={front ? e.pickTitle : e.title} lead={front ? e.pickLead : e.lead} />;
+  if (!side)
+    return (
+      <section className={front ? "" : "pt-18"}>
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
+          {head}
+          <ExampleCarousel />
+          {!front && <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>}
+        </div>
+      </section>
+    );
   return (
-    <section className="pt-18">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 sm:py-24">
-        <SectionHead title={e.title} lead={e.lead} />
-        <ExampleCarousel />
-        <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>
+    <section className="pt-18 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
+      <TradeMenu />
+      <div className="min-w-0 px-4 py-16 sm:px-8 sm:py-20 lg:px-12 xl:px-16">
+        <div className="mx-auto max-w-6xl">
+          {head}
+          <ExampleCarousel side />
+          <p className="mt-10 text-sm text-ink/55">{e.disclaimer}</p>
+        </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * The trades as a dark list pinned to the left edge while the examples are on screen. Hovering a
+ * trade lights it up with a yellow arrow; clicking shows that example.
+ */
+function TradeMenu() {
+  const { t } = useLang();
+  const e = t.examples;
+  const sel = useTrade();
+  return (
+    <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-ink text-paper lg:block">
+      <p className="px-6 pb-3 pt-7 text-xs font-semibold tracking-[0.08em] text-paper/45">{e.menuTitle}</p>
+      <ul role="tablist" aria-orientation="vertical" className="border-t border-paper/10">
+        {e.items.map((it, i) => (
+          <li key={it.slug} className="border-b border-paper/10">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={i === sel}
+              onClick={() => setTrade(i)}
+              className={`group flex h-14 w-full cursor-pointer items-center justify-between gap-3 px-6 text-left font-cond text-lg font-semibold transition-colors ${
+                i === sel ? "bg-black text-paper" : "text-paper/75 hover:bg-paper/[0.07] hover:text-paper"
+              }`}
+            >
+              <span className="min-w-0">
+                {it.trade}
+                <span className={`block truncate font-sans text-xs font-normal ${i === sel ? "text-paper/60" : "text-paper/40"}`}>{it.name}</span>
+              </span>
+              <svg
+                aria-hidden
+                viewBox="0 0 10 14"
+                className={`h-3.5 w-2.5 shrink-0 fill-brand transition ${i === sel ? "opacity-100" : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"}`}
+              >
+                <path d="M0 0l10 7-10 7z" />
+              </svg>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 
@@ -93,9 +153,10 @@ export function ExamplePicker() {
  * One example at a time: the live site in a browser window with its text beside it. Trade tabs and
  * arrows move between them, and the hero's trade buttons pick one too. A site is only loaded the
  * first time it is shown, then stays mounted (stacked on top of the others), so switching back is
- * instant and the box never jumps in height.
+ * instant and the box never jumps in height. With `side`, the tabs give way to the left menu on a
+ * computer.
  */
-function ExampleCarousel() {
+function ExampleCarousel({ side = false }: { side?: boolean }) {
   const { t } = useLang();
   const e = t.examples;
   const n = e.items.length;
@@ -112,8 +173,8 @@ function ExampleCarousel() {
   const arrow = "grid size-12 place-items-center rounded-full border border-ink/20 bg-card transition hover:border-ink hover:bg-brand";
   return (
     <div>
-      <div className="flex items-center gap-3">
-        <div role="tablist" aria-label={e.pick} className="-mx-4 flex flex-1 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
+      <div className={`flex items-center gap-3 ${side ? "lg:justify-end" : ""}`}>
+        <div role="tablist" aria-label={e.pick} className={`${side ? "lg:hidden " : ""}-mx-4 flex flex-1 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0`}>
           {e.items.map((it, i) => (
             <button
               key={it.slug}

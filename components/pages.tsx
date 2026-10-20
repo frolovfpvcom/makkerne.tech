@@ -17,11 +17,11 @@ function Shell({ children, people = true }: { children: React.ReactNode; people?
   );
 }
 
-/** The menu's examples page: the trade tabs and the live site, as on the front page before the row. */
+/** The menu's examples page: the trades down the left edge and the live site beside them. */
 export function ExamplesPage() {
   return (
     <Shell>
-      <ExamplePicker />
+      <ExamplePicker side />
     </Shell>
   );
 }
