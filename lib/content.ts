@@ -232,7 +232,6 @@ const da = {
     features: {
       title: "Tilvalg",
       q: "Tilføj, hvis du vil",
-      included: "Altid med: ring nu-knap, formular til tilbud og dine anmeldelser fra Google.",
       freeLabel: "Gratis",
       options: [
         { label: "Før og efter-billeder", short: "Før og efter", note: "Kunden trækker i billedet og ser forskellen.", price: 300 },
@@ -532,7 +531,6 @@ const en: Dict = {
     features: {
       title: "Extras",
       q: "Add if you like",
-      included: "Always included: call button, quote form and your reviews from Google.",
       freeLabel: "Free",
       options: [
         { label: "Before and after photos", short: "Before and after", note: "Customers drag across the photo and see the difference.", price: 300 },

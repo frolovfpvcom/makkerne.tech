@@ -251,8 +251,8 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
 }
 
 /**
- * The price page's top: the same three-click card as on the front page, and beside it what is
- * always included and what happens after the button.
+ * The price page's top: the same three-click card as on the front page, and beside it what happens
+ * after the button.
  */
 export function PriceSection() {
   const { t } = useLang();
@@ -261,8 +261,7 @@ export function PriceSection() {
     <section id="pris" className="scroll-mt-18 mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:gap-12">
       <QuoteCard className="lg:col-span-7" />
       <div className="lg:col-span-5 lg:pt-2">
-        <p className="leading-relaxed text-ink/80">{c.features.included}</p>
-        <ol className="mt-6 space-y-3 border-t border-ink/15 pt-6">
+        <ol className="space-y-3">
           {c.how.map((s, i) => (
             <li key={s} className="grid grid-cols-[1.75rem_1fr] leading-snug text-ink/80">
               <span className="font-cond text-xl font-bold leading-none text-ink/35 tabular-nums">{i + 1}</span>
