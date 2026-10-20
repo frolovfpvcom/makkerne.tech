@@ -227,6 +227,7 @@ const da = {
         { label: "Én side", note: "Ydelser, billeder og kontakt samlet ét sted.", price: 2500 },
         { label: "3–5 sider", note: "En side til hver ydelse, så du bliver fundet på mere.", price: 3000 },
         { label: "6–10 sider", note: "Plads til flere ydelser, byer og et galleri med dine opgaver.", price: 5000 },
+        { label: "11–20 sider", note: "Til firmaer med mange ydelser, flere byer eller afdelinger.", price: 7000 },
       ],
     },
     features: {
@@ -307,7 +308,7 @@ const da = {
       {
         q: "Hvad koster det?",
         //   keeps a number and its "kr." on one line; \n\n starts a new paragraph.
-        a: "Siden koster 2.500 kr. for én side, 3.000 kr. for 3–5 sider eller 5.000 kr. for 6–10 sider, ekskl. moms. Derefter betaler du fra 249 kr. om måneden for drift. Udkastet er gratis, og du betaler kun, hvis du vil have siden, når du har set den.",
+        a: "Siden koster 2.500 kr. for én side, 3.000 kr. for 3–5 sider, 5.000 kr. for 6–10 sider eller 7.000 kr. for 11–20 sider, ekskl. moms. Derefter betaler du fra 249 kr. om måneden for drift. Udkastet er gratis, og du betaler kun, hvis du vil have siden, når du har set den.",
         link: { href: "/pris/", label: "Se hele din pris i prisberegneren" },
       },
       {
@@ -526,6 +527,7 @@ const en: Dict = {
         { label: "One page", note: "Services, photos and contact in one place.", price: 2500 },
         { label: "3–5 pages", note: "A page for each service, so you get found for more.", price: 3000 },
         { label: "6–10 pages", note: "Room for more services, towns and a gallery of your jobs.", price: 5000 },
+        { label: "11–20 pages", note: "For firms with many services, several towns or branches.", price: 7000 },
       ],
     },
     features: {
@@ -605,7 +607,7 @@ const en: Dict = {
     items: [
       {
         q: "What does it cost?",
-        a: "The site costs DKK 2,500 for one page, DKK 3,000 for 3–5 pages or DKK 5,000 for 6–10 pages, excl. VAT. After that you pay from DKK 249 a month for care. The draft is free, and you only pay if you want the site once you have seen it.",
+        a: "The site costs DKK 2,500 for one page, DKK 3,000 for 3–5 pages, DKK 5,000 for 6–10 pages or DKK 7,000 for 11–20 pages, excl. VAT. After that you pay from DKK 249 a month for care. The draft is free, and you only pay if you want the site once you have seen it.",
         link: { href: "/pris/", label: "See your full price in the calculator" },
       },
       {
