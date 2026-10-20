@@ -72,9 +72,9 @@ export function CinematicHero() {
       // screen and its contents come in. Scrolling, a click or a key skips straight to the end.
       const intro = gsap
         .timeline({ delay: 0.2, onComplete: done })
-        .to(".cine-line1", { duration: 1.2, autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "expo.out" })
-        .to(".cine-line2", { duration: 1.0, clipPath: "inset(0 0% 0 0)", ease: "power4.inOut" }, "-=0.7")
-        .to({}, { duration: 0.6 })
+        .to(".cine-line1", { duration: 0.9, autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "expo.out" })
+        .to(".cine-line2", { duration: 0.6, clipPath: "inset(0 0% 0 0)", ease: "power3.out" }, "-=0.6")
+        .to({}, { duration: 0.4 })
         .addLabel("card")
         .to([".cine-text", ".cine-grid"], { scale: 1.15, filter: "blur(20px)", opacity: 0.2, ease: "power2.inOut", duration: 1.1 }, "card")
         .to(".cine-card", { y: 0, ease: "power3.inOut", duration: 1.1 }, "card")
