@@ -213,8 +213,6 @@ const da = {
     back: "Tilbage",
     next: "Videre",
     edit: "Ret",
-    fromSite: "Siden fra",
-    fromCare: "drift fra",
     trade: {
       title: "Dit fag",
       q: "Hvad er dit fag?",
@@ -515,8 +513,6 @@ const en: Dict = {
     back: "Back",
     next: "Next",
     edit: "Change",
-    fromSite: "Site from",
-    fromCare: "care from",
     trade: {
       title: "Your trade",
       q: "What is your trade?",

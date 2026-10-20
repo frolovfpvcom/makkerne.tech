@@ -282,14 +282,6 @@ export function QuoteCard({ className = "", big = false }: { className?: string;
             )}
           </p>
         )}
-        {step === 0 && (
-          <p className={`mt-3.5 text-sm text-ink/60${L("lg:mt-5 lg:text-base")}`}>
-            {c.fromSite} <span className="font-semibold text-ink tabular-nums">{kr(c.size.options[0].price)}</span> · {c.fromCare}{" "}
-            <span className="font-semibold text-ink tabular-nums">
-              {kr(c.care.options[0].monthly)} {c.monthly}
-            </span>
-          </p>
-        )}
       </div>
     </div>
   );
