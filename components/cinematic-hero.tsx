@@ -162,14 +162,18 @@ export function CinematicHero() {
         <div ref={card} className="cine-card relative w-full overflow-hidden lg:pointer-events-auto lg:h-[85vh] lg:w-[85vw] lg:rounded-[40px]">
           <div className="relative mx-auto grid h-full max-w-7xl items-center gap-6 px-4 pb-8 pt-[5.5rem] sm:gap-12 sm:px-8 sm:pb-16 sm:pt-24 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.15fr)] lg:gap-10 lg:px-12 lg:pb-8 lg:pt-24">
             <div className="cine-left cine-in">
-              <h2 className="font-cond text-[1.75rem] font-bold leading-[1.05] tracking-tight sm:text-5xl">{h.cardTitle}</h2>
-              <p className="mt-2 max-w-md text-[15px] leading-relaxed text-blue-100/70 sm:mt-5 sm:text-lg">{h.cardLead}</p>
+              <h2 className="font-cond text-[1.75rem] font-bold leading-[1.05] tracking-tight sm:text-5xl lg:hidden">{h.cardTitle}</h2>
+              <p className="mt-2 max-w-md text-[15px] leading-relaxed text-blue-100/70 sm:mt-5 sm:text-lg lg:mt-0">{h.cardLead}</p>
               <Link href="/eksempelsider/" className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 sm:mt-8 sm:px-6 sm:py-3.5 sm:text-lg font-cond text-base font-semibold text-black transition hover:bg-brand hover:text-black">
                 {h.seeExamples} <span aria-hidden>→</span>
               </Link>
             </div>
 
             <div className="cine-phone cine-in relative order-last mx-auto lg:order-none" style={{ perspective: "1000px" }}>
+              {/* On a computer the heading sits over the phone. The zero-width box keeps it from widening the column. */}
+              <div className="mx-auto hidden w-0 lg:block">
+                <h2 className="mb-6 w-max -translate-x-1/2 whitespace-nowrap font-cond text-5xl font-bold leading-[1.05] tracking-tight">{h.cardTitle}</h2>
+              </div>
               <div ref={phone} style={{ transformStyle: "preserve-3d" }}>
                 <PhonePreview items={t.examples.items} title={h.phone} desktopTitle={h.desktop} labels={{ view: h.view, phone: h.viewPhone, desktop: h.viewDesktop }} quiet onDark phoneOnly />
               </div>
