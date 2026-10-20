@@ -566,7 +566,7 @@ export function Contact({ people = true }: { people?: boolean }) {
 export function Footer() {
   const { t } = useLang();
   return (
-    <footer className="border-t border-ink/10 bg-[#060912] text-ink">
+    <footer className="border-t border-ink/10 bg-[#060912] pb-[env(safe-area-inset-bottom)] text-ink">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8">
         <Logo />
         <nav className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-ink/70">
