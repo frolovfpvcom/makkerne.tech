@@ -382,7 +382,6 @@ const da = {
       { t: "Du taler med os.", d: "Der er ingen sælger imellem. Den, du skriver med, er den, der bygger siden." },
       { t: "Siden er din.", d: "Domænet står i dit navn, og stopper du, får du en kopi af siden med." },
     ],
-    honest: "Vi er nye. Firmaerne i vores eksempler er opdigtede og viser, hvad vi kan bygge. Du bliver en af vores første kunder.",
   },
   contact: {
     title: "Skriv til os",
@@ -731,7 +730,6 @@ const en: Dict = {
       { t: "You talk to us.", d: "There is no salesperson in between. The person you write to is the person who builds the site." },
       { t: "The site is yours.", d: "The domain is in your name, and if you stop, you get a copy of the site." },
     ],
-    honest: "We are new. The businesses in our examples are made up and show what we can build. You will be one of our first customers.",
   },
   contact: {
     title: "Write to us",

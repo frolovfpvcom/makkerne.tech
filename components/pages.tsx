@@ -121,7 +121,6 @@ export function AboutSection({ withTitle = false }: { withTitle?: boolean }) {
               </li>
             ))}
           </ol>
-          <p className="mt-8 max-w-xl border-l-4 border-brand pl-4 leading-relaxed text-ink/80">{a.honest}</p>
         </div>
       </section>
     </>
