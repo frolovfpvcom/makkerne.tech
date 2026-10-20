@@ -62,7 +62,7 @@ export function Header() {
   const here = (href: string) => pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 border-b border-ink/10 bg-paper transition-transform duration-500 ease-out ${shown ? "translate-y-0" : "-translate-y-full"}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 border-b border-ink/10 bg-paper transition-transform duration-300 ease-out ${shown ? "translate-y-0" : "-translate-y-full"}`}>
       <div className="mx-auto flex h-18 max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
         <Logo />
 

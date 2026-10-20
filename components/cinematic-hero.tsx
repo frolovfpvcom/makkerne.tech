@@ -79,6 +79,8 @@ export function CinematicHero() {
         .to([".cine-text", ".cine-grid"], { scale: 1.15, filter: "blur(20px)", opacity: 0.2, ease: "power2.inOut", duration: 1.1 }, "card")
         .to(".cine-card", { y: 0, ease: "power3.inOut", duration: 1.1 }, "card")
         .to(".cine-card", { width: "100vw", height: "100vh", borderRadius: 0, ease: "power3.inOut", duration: 0.8 })
+        // The menu comes in as soon as the card fills the screen, not after the phone and price card have landed.
+        .call(() => window.dispatchEvent(new Event(INTRO_DONE)))
         .fromTo(".cine-phone", { y: 300, z: -500, rotationX: 50, rotationY: -30, autoAlpha: 0, scale: 0.6 }, { y: 0, z: 0, rotationX: 0, rotationY: 0, autoAlpha: 1, scale: 1, ease: "expo.out", duration: 1.4 }, "-=0.4")
         .fromTo(".cine-badge", { y: 60, autoAlpha: 0, scale: 0.85 }, { y: 0, autoAlpha: 1, scale: 1, ease: "back.out(1.5)", duration: 0.8, stagger: 0.12 }, "-=1.0")
         .fromTo(".cine-left", { x: -40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power4.out", duration: 0.9 }, "-=1.0")
