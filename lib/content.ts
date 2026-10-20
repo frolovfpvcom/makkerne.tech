@@ -283,7 +283,7 @@ const da = {
       options: [
         { label: "Basis", note: "Et gennemprøvet layout i dine farver og med dit logo.", price: 0 },
         { label: "Tilpasset", note: "Layout, farver og skrift valgt til dit firma, bygget om dine egne fotos.", price: 500 },
-        { label: "Premium", note: "Helt eget design med tegnede illustrationer.", price: 3500 },
+        { label: "Premium", note: "Skræddersyet design med levende animationer og grafik.", price: 2000 },
       ],
     },
     features: {
@@ -661,7 +661,7 @@ const en: Dict = {
       options: [
         { label: "Basic", note: "A proven layout in your colours and with your logo.", price: 0 },
         { label: "Tailored", note: "Layout, colours and type chosen for your firm, built around your own photos.", price: 500 },
-        { label: "Premium", note: "A design all your own, with drawn illustrations.", price: 3500 },
+        { label: "Premium", note: "A tailor-made design with lively animation and graphics.", price: 2000 },
       ],
     },
     features: {
