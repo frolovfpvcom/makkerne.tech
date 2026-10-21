@@ -18,8 +18,11 @@ const line = "border-[#262626]";
 const mono = "font-mono uppercase tracking-[0.04em]";
 // The hairline grid: the 1px gap shows the grid's own background as knife-sharp lines between cells.
 const hairGrid = "grid gap-px border border-[#262626] bg-[#262626]";
-const cell =
-  "flex w-full cursor-pointer items-start gap-3 bg-[#0B0D12] px-5 py-[18px] text-left transition-colors hover:bg-[#141720] aria-pressed:bg-[#161922] aria-pressed:shadow-[inset_3px_0_0_#FACC15]";
+const cellBase =
+  "flex w-full cursor-pointer items-start gap-3 bg-[#0B0D12] text-left transition-colors hover:bg-[#141720] aria-pressed:bg-[#161922] aria-pressed:shadow-[inset_3px_0_0_#FACC15]";
+const cell = `${cellBase} px-5 py-[18px]`;
+// In the front-page hero the sheet sits beside the phone, so its answers are a little tighter.
+const cellTight = `${cellBase} px-5 py-[18px] lg:px-4 lg:py-3`;
 
 // The trades sit two by two. On a narrow phone the mark goes above the name, so long names like
 // "Anlægsgartner" keep to their cell; below 360 px they go one to a row. "Andet fag" takes the
@@ -84,56 +87,26 @@ function Progress({ step, reachable, onGo }: { step: number; reachable: (i: numb
   );
 }
 
-/**
- * The hero's start of the guide: the first question as the same hairline grid. Picking a trade
- * shows that trade's example in the phone and carries on in the full guide further down.
- */
-export function HeroTrades() {
-  const { t } = useLang();
-  const c = t.calc;
-  const draft = useDraft();
-  const other = c.trade.options.length - 1;
-  const pick = (i: number) => {
-    setDraft({ trade: i, step: i === other ? TRADE : SIZE });
-    reachStage(1);
-    if (i < other) showExample(i);
-    document.getElementById("beregner")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-  return (
-    <div className={`border ${line} bg-[#07090E] text-white`}>
-      <TopBar step={0} />
-      <Progress step={0} reachable={() => false} />
-      <div className="p-4 sm:p-5">
-        <p className="font-sheet text-xl font-semibold tracking-[-0.03em] sm:text-2xl">{c.trade.q}</p>
-        <div className={`mt-4 ${tradeGrid}`}>
-          {c.trade.options.map((o, i) => (
-            <button key={o} type="button" aria-pressed={draft.trade === i} onClick={() => pick(i)} className={`${cell} ${tradeCell}`}>
-              <Mark on={draft.trade === i} />
-              <span className="min-w-0 font-semibold leading-tight">{o}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /** One list of single answers in the hairline grid, each with its price in mono. */
 function Options({
   items,
   value,
   onPick,
   price,
+  cls = cell,
+  top = "mt-5",
 }: {
   items: readonly { label: string; note: string; price: number; tag?: string }[];
   value: number | null;
   onPick: (i: number) => void;
   price: (n: number) => string;
+  cls?: string;
+  top?: string;
 }) {
   return (
-    <div className={`mt-5 ${hairGrid}`}>
+    <div className={`${top} ${hairGrid}`}>
       {items.map((o, i) => (
-        <button key={o.label} type="button" aria-pressed={value === i} onClick={() => onPick(i)} className={cell}>
+        <button key={o.label} type="button" aria-pressed={value === i} onClick={() => onPick(i)} className={cls}>
           <Mark on={value === i} />
           <span className="min-w-0 flex-1">
             <span className="block font-semibold leading-snug">
@@ -151,6 +124,28 @@ function Options({
 
 /** The full guide with the live quote beside it, as its own section. */
 export function DraftSection({ head = true }: { head?: boolean }) {
+  const { t } = useLang();
+  const c = t.calc;
+  return (
+    <section id="beregner" className="scroll-mt-18 bg-[#07090E] text-white">
+      <div className="mx-auto max-w-[1120px] px-4 py-10 sm:px-8 sm:py-20 lg:px-0">
+        {head && (
+          <div className="mb-8 max-w-2xl">
+            <h2 className="font-sheet text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">{c.head}</h2>
+            <p className="mt-3 leading-relaxed text-white/65 sm:text-lg">{c.lead}</p>
+          </div>
+        )}
+        <DraftSheet />
+      </div>
+    </section>
+  );
+}
+
+/**
+ * The questions on the left and the quote that fills in on the right, in one frame. `tight` is the
+ * front-page hero's version: the same sheet, a little smaller, so it fits beside the phone.
+ */
+export function DraftSheet({ tight = false }: { tight?: boolean }) {
   const { t } = useLang();
   const c = t.calc;
   const kr = useKr();
@@ -245,33 +240,32 @@ export function DraftSection({ head = true }: { head?: boolean }) {
   const label = `${mono} block text-[11px] text-[#888]`;
   const next = `${mono} mt-5 inline-flex h-12 cursor-pointer items-center gap-2 border border-white/80 px-5 text-sm text-white transition hover:border-[#FACC15] hover:text-[#FACC15]`;
 
-  return (
-    <section id="beregner" className="scroll-mt-18 bg-[#07090E] text-white">
-      <div className="mx-auto max-w-[1120px] px-4 py-10 sm:px-8 sm:py-20 lg:px-0">
-        {head && (
-          <div className="mb-8 max-w-2xl">
-            <h2 className="font-sheet text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">{c.head}</h2>
-            <p className="mt-3 leading-relaxed text-white/65 sm:text-lg">{c.lead}</p>
-          </div>
-        )}
+  const opt = tight ? cellTight : cell;
+  // Tight: smaller padding and type on a computer; on a phone it is the same as the full sheet.
+  const pad = tight ? "p-4 sm:p-8 lg:p-5" : "p-4 sm:p-8";
+  const gap = tight ? "mt-5 lg:mt-3.5" : "mt-5";
+  // On a low laptop screen the hero has no height to spare, so the step's note and the line at the
+  // bottom step aside there.
+  const low = tight ? "[@media(min-width:1024px)_and_(max-height:820px)]:hidden" : "";
 
-        <div className={`grid border ${line} lg:grid-cols-[58fr_42fr]`}>
+  return (
+        <div className={`grid border ${line} bg-[#07090E] text-white ${tight ? "lg:grid-cols-[60fr_40fr] xl:grid-cols-[57fr_43fr]" : "lg:grid-cols-[58fr_42fr]"}`}>
           {/* The questions. */}
           <div className="min-w-0">
             <TopBar step={step} />
             <Progress step={step} reachable={reachable} onGo={go} />
-            <p className={`border-b ${line} border-l-[3px] border-l-[#FACC15] bg-[#111318] px-4 py-3 text-sm leading-snug text-white/75 sm:px-5`}>{c.notes[step]}</p>
+            <p className={`border-b ${line} border-l-[3px] border-l-[#FACC15] bg-[#111318] px-4 py-3 text-sm leading-snug text-white/75 sm:px-5 ${tight ? "lg:py-2.5 lg:text-[13px]" : ""} ${low}`}>{c.notes[step]}</p>
 
-            <div className="p-4 sm:p-8">
-              <p ref={headRef} tabIndex={-1} className="font-sheet text-2xl font-semibold leading-tight tracking-[-0.03em] outline-none sm:text-[1.75rem]">
+            <div className={pad}>
+              <p ref={headRef} tabIndex={-1} className={`font-sheet text-2xl font-semibold leading-tight tracking-[-0.03em] outline-none sm:text-[1.75rem] ${tight ? "lg:text-[1.375rem]" : ""}`}>
                 {questions[step]}
               </p>
 
               {step === TRADE && (
                 <>
-                  <div className={`mt-5 ${tradeGrid}`}>
+                  <div className={`${gap} ${tradeGrid}`}>
                     {c.trade.options.map((o, i) => (
-                      <button key={o} type="button" aria-pressed={trade === i} onClick={() => pickTrade(i)} className={`${cell} ${tradeCell}`}>
+                      <button key={o} type="button" aria-pressed={trade === i} onClick={() => pickTrade(i)} className={`${cell} ${tradeCell} ${tight ? "lg:max-xl:!gap-2 lg:max-xl:!px-3 lg:max-xl:text-sm" : ""}`}>
                         <Mark on={trade === i} />
                         <span className="min-w-0 font-semibold leading-tight">{o}</span>
                       </button>
@@ -307,12 +301,12 @@ export function DraftSection({ head = true }: { head?: boolean }) {
                 </>
               )}
 
-              {step === SIZE && <Options items={c.size.options} value={size} price={kr} onPick={(i) => (setSize(i), go(PRICES))} />}
-              {step === PRICES && <Options items={c.prices.options} value={prices} price={plus} onPick={(i) => (setPrices(i), go(EXTRAS))} />}
+              {step === SIZE && <Options cls={opt} top={gap} items={c.size.options} value={size} price={kr} onPick={(i) => (setSize(i), go(PRICES))} />}
+              {step === PRICES && <Options cls={opt} top={gap} items={c.prices.options} value={prices} price={plus} onPick={(i) => (setPrices(i), go(EXTRAS))} />}
 
               {step === EXTRAS && (
                 <>
-                  <div className={`mt-5 ${hairGrid}`}>
+                  <div className={`${gap} ${hairGrid}`}>
                     {c.extras.options.map((o, i) => {
                       const on = extras.includes(i);
                       return (
@@ -321,7 +315,7 @@ export function DraftSection({ head = true }: { head?: boolean }) {
                           type="button"
                           aria-pressed={on}
                           onClick={() => setExtras((x) => (on ? x.filter((j) => j !== i) : [...x, i]))}
-                          className={cell}
+                          className={opt}
                         >
                           <Mark on={on} />
                           <span className="min-w-0 flex-1">
@@ -342,10 +336,10 @@ export function DraftSection({ head = true }: { head?: boolean }) {
                 </>
               )}
 
-              {step === TEXTS && <Options items={c.texts.options} value={texts} price={() => c.texts.included} onPick={(i) => (setTexts(i), go(CARE))} />}
+              {step === TEXTS && <Options cls={opt} top={gap} items={c.texts.options} value={texts} price={() => c.texts.included} onPick={(i) => (setTexts(i), go(CARE))} />}
 
               {step === CARE && (
-                <div className={`mt-5 ${hairGrid}`}>
+                <div className={`${gap} ${hairGrid}`}>
                   {c.care.options.map((o, i) => (
                     <button
                       key={o.label}
@@ -356,7 +350,7 @@ export function DraftSection({ head = true }: { head?: boolean }) {
                         reachStage(2);
                         go(SEND);
                       }}
-                      className={cell}
+                      className={opt}
                     >
                       <Mark on={care === i} />
                       <span className="min-w-0 flex-1">
@@ -435,7 +429,7 @@ export function DraftSection({ head = true }: { head?: boolean }) {
             <p className={`${mono} border-b ${line} px-4 py-3 text-[11px] text-white sm:px-5 sm:text-xs`}>{c.sheet.title}</p>
             <ol className="flex-1">
               {rows.map((r, i) => (
-                <li key={r.label} className={`grid grid-cols-[2rem_1fr] border-b ${line} px-4 py-3.5 sm:px-5`}>
+                <li key={r.label} className={`grid grid-cols-[2rem_1fr] border-b ${line} px-4 py-3.5 sm:px-5 ${tight ? "lg:py-2 [@media(min-width:1024px)_and_(max-height:820px)]:py-1.5" : ""}`}>
                   <span className="font-mono text-xs text-white/35 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
                   <span className="min-w-0">
                     <span className={`${mono} block text-[11px] text-[#888]`}>{r.label}</span>
@@ -454,9 +448,9 @@ export function DraftSection({ head = true }: { head?: boolean }) {
                 </li>
               ))}
             </ol>
-            <div className={`border-t ${line} px-4 py-5 sm:px-5`}>
+            <div className={`border-t ${line} px-4 py-5 sm:px-5 ${tight ? "lg:py-3.5 [@media(min-width:1024px)_and_(max-height:820px)]:py-2.5" : ""}`}>
               <p className={`${mono} text-[11px] text-[#888]`}>{c.sheet.total}</p>
-              <p className="mt-1 font-mono text-4xl font-bold leading-none tracking-tight tabular-nums sm:text-[2.75rem]">{kr(total)}</p>
+              <p className={`mt-1 font-mono text-4xl font-bold leading-none tracking-tight tabular-nums sm:text-[2.75rem] ${tight ? "lg:text-[2rem]" : ""}`}>{kr(total)}</p>
               <p className={`mt-4 flex flex-wrap items-baseline justify-between gap-x-3 border-t ${line} pt-3`}>
                 <span className={`${mono} text-[11px] text-[#888]`}>{c.sheet.care}</span>
                 <span className="font-mono text-lg tabular-nums">
@@ -468,9 +462,7 @@ export function DraftSection({ head = true }: { head?: boolean }) {
             </div>
           </aside>
 
-          <p className={`border-t ${line} px-4 py-3 font-mono text-xs leading-relaxed text-white/60 sm:px-5 lg:col-span-2`}>{c.status}</p>
+          <p className={`border-t ${line} px-4 py-3 font-mono text-xs leading-relaxed text-white/60 sm:px-5 lg:col-span-2 ${tight ? "lg:py-2.5 lg:text-[11px]" : ""} ${low}`}>{c.status}</p>
         </div>
-      </div>
-    </section>
   );
 }

@@ -6,7 +6,7 @@ import { gsap } from "gsap";
 import { INTRO_DONE } from "./intro";
 import { useLang } from "./lang";
 import { PhonePreview } from "./phone-preview";
-import { HeroTrades } from "./draft-sheet";
+import { DraftSheet } from "./draft-sheet";
 
 
 // Film grain, the faint grid behind the title, and the deep blue card. On a computer the card and its
@@ -20,8 +20,6 @@ const STYLES = `
 .cine-title{color:#fff;text-shadow:0 10px 30px rgb(255 255 255/.18),0 2px 4px rgb(255 255 255/.1)}
 .cine-silver{background:linear-gradient(180deg,#fff 0%,rgb(255 255 255/.45) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;transform:translateZ(0)}
 .cine-card{background:linear-gradient(145deg,#162c6d 0%,#0a101d 100%)}
-.cine-badge{background:linear-gradient(135deg,rgb(255 255 255/.1) 0%,rgb(255 255 255/.02) 100%);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  box-shadow:0 0 0 1px rgb(255 255 255/.1),0 25px 50px -12px rgb(0 0 0/.8)}
 @media (min-width:1024px) and (prefers-reduced-motion:no-preference){
   .cine-card,.cine-in{visibility:hidden}
 }
@@ -41,15 +39,13 @@ const STYLES = `
 
 /**
  * Front page opening. A dark screen with the name and what we do; then, by itself, a deep blue card
- * rises over it and grows to fill the screen, and in it are one of our sites on a phone, the price in
- * the free-draft guide, and the way to the examples. On a computer it plays as the page opens; on a phone, or
+ * rises over it and grows to fill the screen, and in it are one of our sites on a phone, the whole
+ * free-draft guide with its quote, and the way to the examples. On a computer it plays as the page opens; on a phone, or
  * with reduced motion, the two simply follow each other.
  */
 export function CinematicHero() {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   const h = t.hero;
-  const c = t.calc;
-  const kr = (n: number) => (lang === "da" ? `${n.toLocaleString("da-DK")} kr.` : `DKK ${n.toLocaleString("en-GB")}`);
   const root = useRef<HTMLElement>(null);
   const card = useRef<HTMLDivElement>(null);
   const phone = useRef<HTMLDivElement>(null);
@@ -85,11 +81,10 @@ export function CinematicHero() {
         .addLabel("card")
         .to([".cine-text", ".cine-grid"], { scale: 1.15, filter: "blur(20px)", opacity: 0.2, ease: "power2.inOut", duration: 0.6 }, "card")
         .to(".cine-card", { y: 0, ease: "power3.inOut", duration: 0.6 }, "card")
-        .to(".cine-card", { width: "100vw", height: "100vh", borderRadius: 0, ease: "power3.inOut", duration: 0.4 }, "-=0.2")
+        .to(".cine-card", { width: "100vw", minHeight: "100vh", borderRadius: 0, ease: "power3.inOut", duration: 0.4 }, "-=0.2")
         // The menu comes in as soon as the card fills the screen, not after the phone and price card have landed.
         .call(() => window.dispatchEvent(new Event(INTRO_DONE)))
         .fromTo(".cine-phone", { y: 300, z: -500, rotationX: 50, rotationY: -30, autoAlpha: 0, scale: 0.6 }, { y: 0, z: 0, rotationX: 0, rotationY: 0, autoAlpha: 1, scale: 1, ease: "expo.out", duration: 0.7 }, "-=0.3")
-        .fromTo(".cine-badge", { y: 60, autoAlpha: 0, scale: 0.85 }, { y: 0, autoAlpha: 1, scale: 1, ease: "back.out(1.5)", duration: 0.5, stagger: 0.08 }, "-=0.5")
         .fromTo(".cine-left", { x: -40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power4.out", duration: 0.5 }, "-=0.5")
         .fromTo(".cine-right", { x: 40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "expo.out", duration: 0.5 }, "<");
       const skip = () => intro.progress(1);
@@ -144,7 +139,7 @@ export function CinematicHero() {
   }, []);
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-[#0a0a0b] text-white lg:h-dvh lg:[perspective:1500px]">
+    <section ref={root} className="relative overflow-hidden bg-[#0a0a0b] text-white lg:min-h-dvh lg:[perspective:1500px]">
       <style>{STYLES}</style>
       <div className="cine-grain" aria-hidden />
       <div className="cine-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden />
@@ -158,42 +153,29 @@ export function CinematicHero() {
       </div>
 
       {/* The blue card: phone, text and the price card. */}
-      <div className="relative z-20 lg:pointer-events-none lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center" style={{ perspective: "1500px" }}>
-        <div ref={card} className="cine-card relative w-full overflow-hidden lg:pointer-events-auto lg:h-[85vh] lg:w-[85vw] lg:rounded-[40px]">
-          <div className="relative mx-auto grid h-full max-w-7xl items-center gap-6 px-4 pb-8 pt-[5.5rem] sm:gap-12 sm:px-8 sm:pb-16 sm:pt-24 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.15fr)] lg:gap-10 lg:px-12 lg:pb-8 lg:pt-24">
-            <div className="cine-left cine-in">
-              <h2 className="font-cond text-[1.75rem] font-bold leading-[1.05] tracking-tight sm:text-5xl lg:hidden">{h.cardTitle}</h2>
-              <p className="mt-2 max-w-md text-[15px] leading-relaxed text-blue-100/70 sm:mt-5 sm:text-lg lg:mt-0">{h.cardLead}</p>
-              <Link href="/eksempelsider/" className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 sm:mt-8 sm:px-6 sm:py-3.5 sm:text-lg font-cond text-base font-semibold text-black transition hover:bg-brand hover:text-black">
+      {/* The card is at least a screen high, and grows when a step of the guide needs more room. */}
+      <div className="relative z-20 lg:pointer-events-none lg:flex lg:min-h-dvh lg:items-center lg:justify-center" style={{ perspective: "1500px" }}>
+        <div ref={card} className="cine-card relative w-full overflow-hidden lg:pointer-events-auto lg:flex lg:min-h-[85vh] lg:w-[85vw] lg:items-center lg:rounded-[40px]">
+          <div className="relative mx-auto grid h-full max-w-7xl content-center gap-6 px-4 pb-8 pt-[5.5rem] sm:gap-12 sm:px-8 sm:pb-16 sm:pt-24 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-x-8 xl:gap-x-12 lg:gap-y-6 lg:px-12 lg:pb-8 lg:pt-24 [@media(min-width:1024px)_and_(max-height:820px)]:gap-y-4 [@media(min-width:1024px)_and_(max-height:820px)]:pb-4 [@media(min-width:1024px)_and_(max-height:820px)]:pt-20">
+            {/* The heading, what we do and the way to the examples, in one line over the phone and the guide on a computer. */}
+            <div className="cine-left cine-in lg:col-span-2 lg:flex lg:items-center lg:gap-10">
+              <h2 className="font-cond text-[1.75rem] font-bold leading-[1.05] tracking-tight sm:text-5xl lg:shrink-0 lg:text-[2.5rem]">{h.cardTitle}</h2>
+              <p className="mt-2 max-w-md text-[15px] leading-relaxed text-blue-100/70 sm:mt-5 sm:text-lg lg:mt-0 lg:text-[15px] xl:max-w-lg">{h.cardLead}</p>
+              <Link href="/eksempelsider/" className="mt-4 inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-2.5 sm:mt-8 sm:px-6 sm:py-3.5 sm:text-lg font-cond text-base font-semibold text-black transition hover:bg-brand hover:text-black lg:ml-auto lg:mt-0 lg:px-5 lg:py-3 lg:text-base">
                 {h.seeExamples} <span aria-hidden>→</span>
               </Link>
             </div>
 
-            <div className="cine-phone cine-in relative order-last mx-auto lg:order-none" style={{ perspective: "1000px" }}>
-              {/* On a computer the heading sits over the phone. The zero-width box keeps it from widening the column. */}
-              <div className="mx-auto hidden w-0 lg:block">
-                <h2 className="mb-6 w-max -translate-x-1/2 whitespace-nowrap font-cond text-5xl font-bold leading-[1.05] tracking-tight">{h.cardTitle}</h2>
-              </div>
+            <div className="cine-phone cine-in relative order-last mx-auto lg:order-none lg:self-center" style={{ perspective: "1000px" }}>
               <div ref={phone} style={{ transformStyle: "preserve-3d" }}>
                 <PhonePreview items={t.examples.items} title={h.phone} desktopTitle={h.desktop} labels={{ view: h.view, phone: h.viewPhone, desktop: h.viewDesktop }} quiet onDark phoneOnly />
               </div>
-              <div className="cine-badge cine-in absolute -left-28 top-12 hidden whitespace-nowrap rounded-2xl px-4 py-3 xl:block lg:-left-60">
-                <p className="text-sm font-semibold">{h.badgeFree}</p>
-                <p className="text-xs text-blue-100/60">{h.badgeFreeNote}</p>
-              </div>
-              <div className="cine-badge cine-in absolute -left-28 bottom-28 hidden whitespace-nowrap rounded-2xl px-4 py-3 xl:block lg:-left-52">
-                <p className="text-sm font-semibold tabular-nums">
-                  {h.badgePrice} {kr(c.size.options[0].price)}
-                </p>
-                <p className="text-xs tabular-nums text-blue-100/60">
-                  {h.badgePriceNote} {kr(c.care.options[0].monthly)} {c.monthly}
-                </p>
-              </div>
             </div>
 
-            <div className="cine-right cine-in text-ink">
+            {/* The whole draft guide, with the quote filling in beside it. */}
+            <div id="beregner" className="cine-right cine-in min-w-0 scroll-mt-24 lg:self-center">
               <h2 className="mb-2.5 font-cond text-2xl font-bold tracking-tight sm:mb-4 sm:text-4xl lg:hidden">{h.quoteTitle}</h2>
-              <HeroTrades />
+              <DraftSheet tight />
             </div>
           </div>
         </div>
