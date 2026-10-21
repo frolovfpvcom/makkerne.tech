@@ -6,7 +6,7 @@ import { gsap } from "gsap";
 import { INTRO_DONE } from "./intro";
 import { useLang } from "./lang";
 import { PhonePreview } from "./phone-preview";
-import { QuoteCard } from "./quote-card";
+import { HeroTrades } from "./draft-sheet";
 
 
 // Film grain, the faint grid behind the title, and the deep blue card. On a computer the card and its
@@ -192,8 +192,8 @@ export function CinematicHero() {
             </div>
 
             <div className="cine-right cine-in text-ink">
-              <h2 className="mb-2.5 font-cond text-2xl font-bold tracking-tight sm:mb-4 sm:text-4xl">{h.quoteTitle}</h2>
-              <QuoteCard />
+              <h2 className="mb-2.5 font-cond text-2xl font-bold tracking-tight sm:mb-4 sm:text-4xl lg:hidden">{h.quoteTitle}</h2>
+              <HeroTrades />
             </div>
           </div>
         </div>

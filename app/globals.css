@@ -6,6 +6,9 @@
   --font-cond: var(--font-head), ui-sans-serif, system-ui, sans-serif;
   /* Display face of each example site, set per page with next/font. */
   --font-display: var(--font-example-display), ui-serif, Georgia, serif;
+  /* The draft guide reads like a spec sheet: a sharp sans for the questions, mono for figures and labels. */
+  --font-sheet: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
   /* Night blue, taken from the front page card: a deep navy-black page, lighter blue panels, near-white
      text, and the logo's yellow as the one accent. */
   --color-paper: #0a0f1d;

@@ -9,7 +9,7 @@ import { useLang } from "./lang";
 import { BrowserSite, usePreloadShots } from "./live-site";
 import { CurvedRow } from "./curved-row";
 import { Logo } from "./header";
-import { QuoteCard } from "./quote-card";
+import { DraftSection } from "./draft-sheet";
 import { setTrade, useTrade } from "./trade-store";
 import { useStage } from "./progress-store";
 
@@ -251,29 +251,9 @@ function ExampleCarousel({ side = false }: { side?: boolean }) {
   );
 }
 
-/**
- * The price page's top: the same three-click card as on the front page, and beside it what happens
- * after the button.
- */
+/** The price page's top: the same draft guide as on the front page, without its own heading. */
 export function PriceSection() {
-  const { t } = useLang();
-  const c = t.calc;
-  return (
-    <section id="pris" className="scroll-mt-18 mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:gap-12">
-      <QuoteCard className="lg:col-span-7" />
-      <div className="lg:col-span-5 lg:pt-2">
-        <ol className="space-y-3">
-          {c.how.map((s, i) => (
-            <li key={s} className="grid grid-cols-[1.75rem_1fr] leading-snug text-ink/80">
-              <span className="font-cond text-xl font-bold leading-none text-ink/35 tabular-nums">{i + 1}</span>
-              {s}
-            </li>
-          ))}
-        </ol>
-        <p className="mt-6 text-sm text-ink/55">{c.vat}</p>
-      </div>
-    </section>
-  );
+  return <DraftSection head={false} />;
 }
 
 function Tick() {
