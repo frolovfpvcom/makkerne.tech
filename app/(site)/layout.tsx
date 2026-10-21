@@ -1,5 +1,6 @@
 import { LangProvider } from "@/components/lang";
 import { Header } from "@/components/header";
+import { CookieBox } from "@/components/cookie-box";
 import type { Viewport } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 
@@ -19,6 +20,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
       <LangProvider>
         <Header />
         {children}
+        <CookieBox />
       </LangProvider>
     </div>
   );

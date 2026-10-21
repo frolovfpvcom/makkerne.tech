@@ -5,6 +5,15 @@ import { dict, type Dict, type Lang } from "@/lib/content";
 
 const STORAGE_KEY = "makkerne-lang";
 
+// Answering "only what is needed" in the cookie box: the language is no longer kept in the browser.
+let remember = true;
+export function forgetLang() {
+  remember = false;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {}
+}
+
 const LangContext = createContext<{ lang: Lang; t: Dict; setLang: (l: Lang) => void }>({
   lang: "da",
   t: dict.da,
@@ -28,6 +37,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
 
   const setLang = (l: Lang) => {
     setLangState(l);
+    if (!remember) return;
     try {
       localStorage.setItem(STORAGE_KEY, l);
     } catch {}

@@ -23,10 +23,10 @@ export default function Page() {
     <LegalPage
       title="Privatliv og cookies"
       lead="Hvilke oplysninger vi har om dig, hvorfor vi har dem, og hvornår vi sletter dem."
-      updated="18. oktober 2026"
+      updated="21. oktober 2026"
       sections={sections}
       brief={[
-        "Siden sætter ingen cookies og har ingen statistik, annoncer eller sporing. Derfor spørger vi heller ikke om lov.",
+        "Siden sætter ingen cookies og har ingen statistik, annoncer eller sporing. Vi spørger alligevel, hver gang du åbner siden, så du selv bestemmer.",
         "Skifter du sprog til engelsk, husker din browser valget. Det bliver hos dig.",
         "Vi kender kun det, du selv skriver til os på mail.",
         "Vi sælger og deler ikke dine oplysninger.",
@@ -56,8 +56,9 @@ export default function Page() {
         <p>
           Der er én ting, din browser gemmer: Trykker du på DA/EN øverst, husker den dit valg, så siden står på det rigtige sprog næste gang. Valget ligger kun i
           din egen browser (localStorage under navnet <code className="text-[15px]">makkerne-lang</code>), og vi kan ikke se det. Du sletter det ved at rydde
-          data for siden i din browser. Fordi det kun sker, når du selv beder om det, kræver det ikke samtykke.
+          data for siden i din browser. Vælger du "Kun det nødvendige" i boksen om cookies, sletter vi valget og gemmer det ikke igen, så længe siden er åben.
         </p>
+        <p>Boksen om cookies kommer frem, hver gang du åbner siden. Vi gemmer ikke dit svar, for så skulle vi gemme noget hos dig.</p>
         <p>
           Skrifttyper og billeder henter siden fra vores egen server. Din browser kontakter altså ikke Google Fonts, Unsplash eller andre, når du besøger os.
           Formularerne på eksempelsiderne er kun til at se på og sender ingenting.

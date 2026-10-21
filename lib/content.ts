@@ -415,6 +415,13 @@ const da = {
   footer: "© 2026 Makkerne",
   updated: "Priser opdateret oktober 2026",
   legal: { terms: "Vilkår", privacy: "Privatliv og cookies", danishOnly: "" },
+  cookies: {
+    label: "Cookies",
+    text: "Vi har ingen statistik, annoncer eller sporing. Det eneste, din browser kan gemme, er dit sprogvalg, hvis du skifter til engelsk.",
+    accept: "Accepter",
+    decline: "Kun det nødvendige",
+    more: "Læs mere",
+  },
 };
 
 export type Dict = typeof da;
@@ -782,6 +789,13 @@ const en: Dict = {
   footer: "© 2026 Makkerne",
   updated: "Prices updated October 2026",
   legal: { terms: "Terms", privacy: "Privacy and cookies", danishOnly: "This page is only in Danish. Write to us if you have questions in English." },
+  cookies: {
+    label: "Cookies",
+    text: "We have no statistics, ads or tracking. The only thing your browser may keep is your language, if you switch to English.",
+    accept: "Accept",
+    decline: "Only what is needed",
+    more: "Read more",
+  },
 };
 
 export const dict: Record<Lang, Dict> = { da, en };
