@@ -17,6 +17,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: sudo apt-get update -q && sudo apt-get install -yq ffmpeg
       - run: node scripts/brobech-photos.mjs
       - run: |
           git config user.name "github-actions[bot]"
