@@ -1,0 +1,26 @@
+# Stores Murerfirmaet Brøbech's own photos for the demo at /demo/brobech (see scripts/brobech-photos.mjs)
+# and commits them. Runs by hand, or on a push that touches the workflow or the script.
+name: Brøbech photos
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/brobech-photos.yml", "scripts/brobech-photos.mjs"]
+permissions:
+  contents: write
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: sudo apt-get update -q && sudo apt-get install -yq ffmpeg
+      - run: node scripts/brobech-photos.mjs
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add public/demo/brobech
+          git diff --cached --quiet || (git commit -m "Store Brøbech photos for the demo" && git push)
