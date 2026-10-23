@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Customer demos are plain HTML with vendored, minified libraries.
+    "public/demo/**",
   ]),
 ]);
 

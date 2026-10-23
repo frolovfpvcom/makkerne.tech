@@ -66,8 +66,6 @@ const FILES = {
 
 // Their videos, cut down to 720p H.264 with a poster frame each.
 const VIDEOS = {
-  "video-brobech": "2026/04/brobech-video.mp4",
-  "video-brobech-2": "2026/01/brobech-video1.mp4",
   "video-tag": "2026/01/IMG_5940tag.mp4",
   "video-skorsten": "2025/12/skorsten.mp4",
   "video-magnus-1": "2026/05/Magnus_s-Video-May-12-2026-1.mp4",
