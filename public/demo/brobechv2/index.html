@@ -1,0 +1,551 @@
+<!doctype html>
+<!--
+  Proposal for a new website for Murerfirmaet Brøbech, version 2: the calm one, no JavaScript and no motion.
+  Made by Makkerne. Photos, films and logo are the company's own, reused from /demo/brobech/.
+  Font: Public Sans (OFL), served from this folder.
+-->
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Murerfirmaet Brøbech · murer i Ry med speciale i facader</title>
+<meta name="description" content="Facaderenovering med netpuds, omfugning, skorsten, sokkel, trapper og tag i Ry, Aarhus og omegn. Ring til Anders på 23 20 35 88.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Murerfirmaet Brøbech · murer i Ry">
+<meta property="og:description" content="Facaderenovering, omfugning, skorsten, sokkel, trapper og tag i Ry, Aarhus og omegn. Ring 23 20 35 88.">
+<meta property="og:image" content="https://makkerne-tech.vercel.app/demo/brobech/hvidt-hus-faerdigt-1280.webp">
+<meta property="og:locale" content="da_DK">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/demo/brobech/logo-640.webp" type="image/webp">
+<link rel="preload" href="/demo/brobechv2/fonts/public-sans.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face {
+  font-family: "Public Sans";
+  src: url("/demo/brobechv2/fonts/public-sans.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --kalk: #ffffff;
+  --puds: #efede9;
+  --grafit: #23211f;
+  --sten: #5d5955;
+  --fuge: #d6d2cc;
+  --tegl: #b51c2b;
+  --tegl-mork: #8f1522;
+  --wrap: 1120px;
+  --gutter: 20px;
+  --bar: 0px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 16px; }
+body {
+  margin: 0;
+  background: var(--kalk);
+  color: var(--grafit);
+  font: 400 17px/1.6 "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  padding-bottom: var(--bar);
+}
+img, video { display: block; max-width: 100%; height: auto; }
+h1, h2, h3 { margin: 0; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem); }
+h3 { font-size: 1.125rem; }
+p { margin: 0; }
+a { color: var(--tegl); text-underline-offset: 3px; }
+a:hover { color: var(--tegl-mork); }
+:focus-visible { outline: 3px solid var(--grafit); outline-offset: 3px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+.lead { font-size: 1.1875rem; color: var(--grafit); max-width: 60ch; }
+.muted { color: var(--sten); }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 12px; top: 12px; z-index: 30; background: var(--kalk); padding: 8px 12px; color: var(--grafit); }
+
+/* Proposal note */
+.note { background: var(--grafit); color: #fff; font-size: 0.875rem; line-height: 1.45; }
+.note .wrap { padding-top: 8px; padding-bottom: 8px; }
+.note a { color: #fff; }
+
+/* Header */
+.top { border-bottom: 1px solid var(--fuge); background: var(--kalk); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; }
+.brand { display: flex; align-items: center; gap: 12px; color: var(--grafit); text-decoration: none; }
+.brand img { width: 52px; height: auto; }
+.brand span { font-weight: 700; font-size: 1.0625rem; line-height: 1.2; }
+.brand small { display: block; font-weight: 400; font-size: 0.875rem; color: var(--sten); }
+.nav { display: none; gap: 24px; }
+.nav a { color: var(--grafit); text-decoration: none; font-size: 0.9375rem; padding: 12px 0; }
+.nav a:hover { color: var(--tegl); text-decoration: underline; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 48px; padding: 12px 20px;
+  background: var(--tegl); color: #fff; border: 2px solid var(--tegl); border-radius: 2px;
+  font: inherit; font-weight: 700; text-decoration: none; white-space: nowrap;
+  transition: background-color .15s, border-color .15s;
+  touch-action: manipulation;
+}
+.btn:hover { background: var(--tegl-mork); border-color: var(--tegl-mork); color: #fff; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn--line { background: transparent; color: var(--grafit); border-color: var(--grafit); }
+.btn--line:hover { background: var(--grafit); color: #fff; border-color: var(--grafit); }
+.btn--small { min-height: 44px; padding: 8px 14px; font-size: 0.9375rem; }
+.top .btn--small { display: none; }
+.top .btn--small .long { display: none; }
+
+/* Hero */
+.hero { padding: 32px 0 40px; }
+.hero .wrap { display: grid; gap: 28px; }
+.hero h1 { max-width: 16ch; }
+.hero .lead { margin-top: 16px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-top: 24px; }
+.actions .mail { font-weight: 600; padding: 12px 0; }
+.hero figure { margin: 0; }
+.hero img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 2px; background: var(--puds); }
+
+/* Facts */
+.facts { background: var(--puds); border-top: 1px solid var(--fuge); border-bottom: 1px solid var(--fuge); }
+.facts dl { margin: 0; display: grid; grid-template-columns: 1fr; }
+.facts dl > div { padding: 18px 0; border-bottom: 1px solid var(--fuge); }
+.facts dl > div:last-child { border-bottom: 0; }
+.facts dt { font-size: 0.875rem; color: var(--sten); }
+.facts dd { margin: 2px 0 0; font-weight: 600; }
+
+/* Sections */
+.sec { padding: 56px 0; border-bottom: 1px solid var(--fuge); }
+.sec--puds { background: var(--puds); }
+.sec__head { max-width: 680px; margin-bottom: 28px; }
+.sec__head p { margin-top: 10px; color: var(--sten); }
+.sec__foot { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+
+/* Houses */
+.houses { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px 20px; grid-template-columns: 1fr; }
+.houses img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; background: var(--puds); }
+.houses p { margin-top: 10px; font-size: 0.9375rem; color: var(--sten); }
+.houses strong { display: block; color: var(--grafit); font-size: 1rem; }
+
+/* Before and after */
+.pairs { display: grid; gap: 40px; }
+.pair__imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pair figure { margin: 0; }
+.pair img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; background: var(--kalk); }
+.pair figcaption { font-size: 0.875rem; color: var(--sten); margin-top: 6px; }
+.pair h3 { margin-top: 14px; }
+.pair p { margin-top: 4px; color: var(--sten); font-size: 0.9375rem; }
+
+/* Services */
+.services { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--grafit); }
+.services li { display: grid; gap: 6px; padding: 22px 0; border-bottom: 1px solid var(--fuge); }
+.services h3 { font-size: 1.1875rem; }
+.services .tag { font-size: 0.8125rem; font-weight: 600; color: var(--tegl); }
+.services .how { max-width: 62ch; }
+.services .lasts { font-size: 0.9375rem; color: var(--sten); }
+.small { font-size: 0.875rem; color: var(--sten); margin-top: 16px; max-width: 62ch; }
+
+/* Facade steps */
+.steps { display: grid; gap: 32px; }
+.steps ol { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 0 14px; padding: 18px 0; border-top: 1px solid var(--fuge); }
+.steps li::before { content: counter(s); grid-row: span 2; width: 36px; height: 36px; border: 2px solid var(--grafit); border-radius: 2px; display: grid; place-items: center; font-weight: 700; }
+.steps li p { color: var(--sten); }
+.steps figure { margin: 0; }
+.steps img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 2px; }
+.steps figcaption { font-size: 0.875rem; color: var(--sten); margin-top: 6px; }
+
+/* Reviews */
+.score { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 24px; }
+.score b { font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem); line-height: 1; }
+.quotes { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; }
+.quotes li { border-left: 3px solid var(--tegl); padding: 4px 0 4px 18px; }
+.quotes blockquote { margin: 0; font-size: 1.125rem; }
+.quotes p.who { margin-top: 8px; font-size: 0.875rem; color: var(--sten); }
+
+/* Anders and films */
+.anders { display: grid; gap: 24px; align-items: start; }
+.anders img { width: 100%; max-width: 360px; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 2px; }
+.anders figcaption { font-size: 0.875rem; color: var(--sten); margin-top: 6px; }
+.films { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 28px 20px; grid-template-columns: 1fr; }
+.films video { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: var(--grafit); border-radius: 2px; }
+.films p { margin-top: 8px; font-size: 0.9375rem; color: var(--sten); }
+.films strong { color: var(--grafit); }
+
+/* FAQ */
+.faq { max-width: 760px; border-top: 2px solid var(--grafit); }
+.faq details { border-bottom: 1px solid var(--fuge); }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; padding: 18px 0; font-weight: 700; min-height: 48px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-weight: 400; font-size: 1.5rem; line-height: 1; color: var(--tegl); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { padding: 0 0 20px; max-width: 62ch; }
+
+/* Contact */
+.contact .wrap { display: grid; gap: 32px; }
+.contact .big { display: inline-block; margin-top: 18px; font-size: clamp(2rem, 1.5rem + 2.4vw, 3rem); font-weight: 700; color: var(--grafit); text-decoration: none; line-height: 1.1; }
+.contact .big:hover { color: var(--tegl); }
+.contact dl { margin: 0; border-top: 2px solid var(--grafit); }
+.contact dl div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--fuge); }
+.contact dt { color: var(--sten); }
+.contact dd { margin: 0; overflow-wrap: anywhere; }
+
+/* Footer */
+.foot { padding: 32px 0 40px; font-size: 0.875rem; color: var(--sten); }
+.foot .wrap { display: grid; gap: 8px; }
+.foot a { color: var(--sten); }
+
+/* Phone call bar */
+.callbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: grid; grid-template-columns: 1fr auto; gap: 8px;
+  padding: 8px var(--gutter) calc(8px + env(safe-area-inset-bottom));
+  background: var(--kalk); border-top: 1px solid var(--fuge);
+}
+.callbar .btn { width: 100%; }
+body { --bar: calc(64px + env(safe-area-inset-bottom)); }
+
+@media (min-width: 520px) {
+  .houses { grid-template-columns: 1fr 1fr; }
+  .top .btn--small { display: inline-flex; }
+  .top .btn--small .long { display: inline; }
+}
+@media (min-width: 720px) {
+  .facts dl { grid-template-columns: repeat(2, 1fr); column-gap: 32px; }
+  .facts dl > div:nth-last-child(2) { border-bottom: 0; }
+  .pairs { grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .films { grid-template-columns: 1fr 1fr; }
+  .quotes { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 900px) {
+  :root { --gutter: 32px; }
+  body { --bar: 0px; }
+  .callbar { display: none; }
+  .nav { display: flex; }
+  .hero { padding: 56px 0 64px; }
+  .hero .wrap { grid-template-columns: 1fr 1fr; align-items: center; gap: 48px; }
+  .facts dl { grid-template-columns: repeat(4, 1fr); }
+  .facts dl > div { border-bottom: 0; padding: 22px 0; }
+  .sec { padding: 80px 0; }
+  .houses { grid-template-columns: repeat(3, 1fr); }
+  .services li { grid-template-columns: 240px 1fr 220px; gap: 24px; align-items: baseline; }
+  .steps { grid-template-columns: 1fr 340px; gap: 56px; align-items: start; }
+  .anders { grid-template-columns: 300px 1fr; gap: 48px; }
+  .contact .wrap { grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+}
+@media (min-width: 900px) and (max-width: 1080px) {
+  .nav { gap: 16px; }
+  .top .btn--small .long { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#indhold">Gå til indhold</a>
+
+<div class="note">
+  <div class="wrap">Forslag til ny hjemmeside for Murerfirmaet Brøbech, lavet af <a href="https://makkerne-tech.vercel.app/">Makkerne</a>. Det er ikke firmaets officielle side.</div>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#indhold">
+      <img src="/demo/brobech/logo-640.webp" alt="" width="539" height="419">
+      <span>Murerfirmaet Brøbech<small>Murer i Ry</small></span>
+    </a>
+    <nav class="nav" aria-label="Sektioner">
+      <a href="#huse">Huse</a>
+      <a href="#ydelser">Ydelser</a>
+      <a href="#facade">Sådan gør vi</a>
+      <a href="#anders">Anders</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <a class="btn btn--small" href="tel:+4523203588"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg><span><span class="long">Ring </span>23 20 35 88</span></a>
+  </div>
+</header>
+
+<main id="indhold">
+
+<section class="hero" aria-labelledby="h1">
+  <div class="wrap">
+    <div>
+      <h1 id="h1">Murer i Ry med speciale i facader</h1>
+      <p class="lead">Vi pudser facader med net og armeringsmørtel, fuger om og reparerer skorstene, sokler, trapper og tage i Ry, Aarhus og omegn. Anders kommer selv ud og ser på huset.</p>
+      <div class="actions">
+        <a class="btn" href="tel:+4523203588">Ring til Anders: 23 20 35 88</a>
+        <a class="mail" href="mailto:murerfirmaetb@gmail.com">eller skriv en mail</a>
+      </div>
+    </div>
+    <figure>
+      <img src="/demo/brobech/hvidt-hus-faerdigt-1280.webp"
+           srcset="/demo/brobech/hvidt-hus-faerdigt-640.webp 640w, /demo/brobech/hvidt-hus-faerdigt-1280.webp 1280w"
+           sizes="(min-width: 900px) 528px, calc(100vw - 40px)"
+           alt="Hvidt, kantet hus, færdigt efter netpuds" width="1280" height="959"
+           loading="eager" fetchpriority="high" decoding="async">
+    </figure>
+  </div>
+</section>
+
+<section class="facts" aria-label="Kort fortalt">
+  <div class="wrap">
+    <dl>
+      <div><dt>Tilbud</dt><dd>Gratis og uforpligtende, til fast pris</dd></div>
+      <div><dt>Område</dt><dd>Ry, Aarhus, Skanderborg og omegn</dd></div>
+      <div><dt>Anmeld Håndværker</dt><dd><a href="https://www.anmeld-haandvaerker.dk/murer/murerfirmaet-brobech-aps">4,9 af 5, ud fra 31 anmeldelser</a></dd></div>
+      <div><dt>Værksted</dt><dd>Hårbyvej 33, 8680 Ry</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="sec" id="huse" aria-labelledby="huse-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="huse-t">Huse, vi har arbejdet på</h2>
+      <p>Fra Ry og Skanderborg til Aarhus. Alle fotos er vores egne, taget på pladsen.</p>
+    </div>
+    <ul class="houses">
+      <li>
+        <img src="/demo/brobech/etage-aarhus-1280.webp" srcset="/demo/brobech/etage-aarhus-640.webp 640w, /demo/brobech/etage-aarhus-1280.webp 1080w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Rød etageejendom med hvid underetage og nye fuger, Aarhus" width="1080" height="1089" loading="lazy" decoding="async">
+        <p><strong>Aarhus · Facaderenovering</strong>Rød etageejendom i byen, med hvid underetage og nye fuger.</p>
+      </li>
+      <li>
+        <img src="/demo/brobech/gavl-ry-1280.webp" srcset="/demo/brobech/gavl-ry-640.webp 640w, /demo/brobech/gavl-ry-1280.webp 1280w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Hvidpudset gavl og udhæng på et hus i Ry" width="1280" height="1707" loading="lazy" decoding="async">
+        <p><strong>Ry · Facaderenovering med netpuds</strong>Hvidpudset gavl og udhæng på et hus tæt på os i Ry.</p>
+      </li>
+      <li>
+        <img src="/demo/brobech/omfugning-skanderborg-gavl-1280.webp" srcset="/demo/brobech/omfugning-skanderborg-gavl-640.webp 640w, /demo/brobech/omfugning-skanderborg-gavl-1280.webp 990w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Rød gavl med fire hvide vinduer og nye fuger, Skanderborg" width="990" height="1320" loading="lazy" decoding="async">
+        <p><strong>Skanderborg · Omfugning</strong>Rød gavl med fire hvide vinduer. Fugerne er skåret ud og lagt om.</p>
+      </li>
+      <li>
+        <img src="/demo/brobech/sprosser-skaade-1280.webp" srcset="/demo/brobech/sprosser-skaade-640.webp 640w, /demo/brobech/sprosser-skaade-1280.webp 993w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Hvid bygning med sprossevinduer, pudset og malet, Skåde" width="993" height="1320" loading="lazy" decoding="async">
+        <p><strong>Skåde · Facaderenovering</strong>Hvid bygning med sprossevinduer, pudset og malet.</p>
+      </li>
+      <li>
+        <img src="/demo/brobech/landvilla-risskov-1280.webp" srcset="/demo/brobech/landvilla-risskov-640.webp 640w, /demo/brobech/landvilla-risskov-1280.webp 1077w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Hvid landvilla med sort tag, Risskov" width="1077" height="1351" loading="lazy" decoding="async">
+        <p><strong>Risskov · Murerarbejde</strong>Hvid landvilla med sort tag.</p>
+      </li>
+      <li>
+        <img src="/demo/brobech/trappe-brabrand-1280.webp" srcset="/demo/brobech/trappe-brabrand-640.webp 640w, /demo/brobech/trappe-brabrand-1280.webp 1080w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Nystøbt betontrappe foran en rød hoveddør, Brabrand" width="1080" height="810" loading="lazy" decoding="async">
+        <p><strong>Brabrand · Ny trappe</strong>Nystøbt betontrappe foran en rød hoveddør.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec sec--puds" id="foer-efter" aria-labelledby="fe-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="fe-t">Før og efter</h2>
+      <p>Fotograferet før vi gik i gang, og da vi var færdige.</p>
+    </div>
+    <div class="pairs">
+      <article class="pair">
+        <div class="pair__imgs">
+          <figure><img src="/demo/brobech/omfug-foer-640.webp" alt="Stillads ved rød murstensgavl før nye fuger" width="640" height="802" loading="lazy" decoding="async"><figcaption>Før</figcaption></figure>
+          <figure><img src="/demo/brobech/omfug-efter-640.webp" alt="Samme røde murstenshus med nye fuger og ny havedør" width="640" height="802" loading="lazy" decoding="async"><figcaption>Efter</figcaption></figure>
+        </div>
+        <h3>Omfugning</h3>
+        <p>Stillads ved en rød murstensgavl, og samme hus med nye fuger og ny havedør.</p>
+      </article>
+      <article class="pair">
+        <div class="pair__imgs">
+          <figure><img src="/demo/brobech/skorsten-risskov-foer-640.webp" alt="Gammel, slidt skorsten på mørkt tag" width="640" height="802" loading="lazy" decoding="async"><figcaption>Før</figcaption></figure>
+          <figure><img src="/demo/brobech/skorsten-risskov-efter-640.webp" alt="Nypudset grå skorsten på sort tag i Risskov" width="640" height="799" loading="lazy" decoding="async"><figcaption>Efter</figcaption></figure>
+        </div>
+        <h3>Skorsten i Risskov</h3>
+        <p>En gammel, slidt skorsten på et mørkt tag. Bagefter er den pudset op igen.</p>
+      </article>
+      <article class="pair">
+        <div class="pair__imgs">
+          <figure><img src="/demo/brobech/sokkel-foer-640.webp" alt="Afskallet og ødelagt sokkel" width="480" height="360" loading="lazy" decoding="async"><figcaption>Før</figcaption></figure>
+          <figure><img src="/demo/brobech/sokkel-efter-640.webp" alt="Repareret sokkel, malet mørkegrå" width="640" height="799" loading="lazy" decoding="async"><figcaption>Efter</figcaption></figure>
+        </div>
+        <h3>Sokkel</h3>
+        <p>Afskallet og ødelagt sokkel. Bagefter repareret og malet mørkegrå.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="ydelser" aria-labelledby="yd-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="yd-t">Det laver vi</h2>
+      <p>Facader og fuger er vores speciale. Resten tager vi også, alene eller sammen med facaden.</p>
+    </div>
+    <ul class="services">
+      <li>
+        <div><h3>Facaderenovering med netpuds</h3><span class="tag">Speciale</span></div>
+        <p class="how">Løs puds af, revner fræset op og fyldt, to lag armeringsmørtel med net og til sidst slutpuds i silikone, beton, silikat eller farvet armeringsmørtel.</p>
+        <p class="lasts">Skal holde i mindst 20 år.</p>
+      </li>
+      <li>
+        <div><h3>Omfugning</h3><span class="tag">Speciale</span></div>
+        <p class="how">Gamle fuger skæres ud med en vinkelsliber med støvsuger på. Muren renses, også for alger, og revner og sætningsskader repareres, før der fuges.</p>
+        <p class="lasts">Holder mindst 50 år, når den er lavet ordentligt.</p>
+      </li>
+      <li>
+        <div><h3>Skorsten</h3></div>
+        <p class="how">Reparation af revner, fuger og knækkede sten, forstærkning og maling. Vi river også gamle skorstene ned og bygger nye.</p>
+        <p class="lasts">Skal typisk fuges hvert 20.–25. år.</p>
+      </li>
+      <li>
+        <div><h3>Sokkel</h3></div>
+        <p class="how">Revner, afskalning, løs beton og frostskader. Vandtæt beton, armering hvor det trænger, puds og maling i den farve, du vælger.</p>
+      </li>
+      <li>
+        <div><h3>Trapper</h3></div>
+        <p class="how">Udendørs trapper i beton, klinker og fliser, bygget op med afvanding og frostsikring. Også som en del af en facaderenovering.</p>
+      </li>
+      <li>
+        <div><h3>Tag</h3></div>
+        <p class="how">Understrygning med ren kalkmørtel, overstrygning udefra, rygning og nye tagsten, hvor de gamle er knækket.</p>
+      </li>
+      <li>
+        <div><h3>Facademaling</h3></div>
+        <p class="how">Silikatmaling, der lader muren ånde og tåler sol. Vi bruger KEIM Soldalit og kan rense for alger først.</p>
+      </li>
+    </ul>
+    <p class="small">Holdbarheden er det, vi selv lover for netpuds og omfugning. Skorstenens interval er en tommelfingerregel.</p>
+    <div class="sec__foot">
+      <a class="btn" href="tel:+4523203588">Ring til Anders: 23 20 35 88</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--puds" id="facade" aria-labelledby="fa-t">
+  <div class="wrap steps">
+    <div>
+      <div class="sec__head">
+        <h2 id="fa-t">Sådan renoverer vi en facade</h2>
+        <p>Det meste af det, vi laver, er facader med netpuds. Sådan foregår det fra første besøg, til stilladset tages ned.</p>
+      </div>
+      <ol>
+        <li><h3>Besigtigelse</h3><p>Anders kommer ud, ser på facaden og anbefaler en løsning. Du får et gratis tilbud til fast pris.</p></li>
+        <li><h3>Afdækning og rens</h3><p>Vinduer og døre dækkes af. Løs puds bankes af, og muren renses og grundes, også for alger.</p></li>
+        <li><h3>Revner og armering</h3><p>Revner fræses op og fyldes med mørtel. Hvor det trænger, lægger vi stål i.</p></li>
+        <li><h3>Netpuds og slutpuds</h3><p>To lag armeringsmørtel med net og hjørnearmering, så slutpudsen. Til sidst rydder vi op.</p></li>
+      </ol>
+    </div>
+    <figure>
+      <img src="/demo/brobech/netpuds-stige-1280.webp" srcset="/demo/brobech/netpuds-stige-640.webp 640w, /demo/brobech/netpuds-stige-1280.webp 1280w" sizes="(min-width: 900px) 340px, 100vw" alt="Håndværker på stige lægger netpuds på et hvidt hus" width="1280" height="1707" loading="lazy" decoding="async">
+      <figcaption>Netpuds på et hvidt hus.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="sec" id="anmeldelser" aria-labelledby="an-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="an-t">Det skriver kunderne</h2>
+    </div>
+    <div class="score">
+      <b>4,9</b>
+      <span>af 5 på Anmeld Håndværker, ud fra 31 anmeldelser (23. oktober 2026).</span>
+    </div>
+    <ul class="quotes">
+      <li><blockquote><p>“Meget tilfredsstillende, afviklet til og på aftalt tid, flot resultat, flinke folk.”</p></blockquote><p class="who">Facaderenovering af villa, Højbjerg, august 2026</p></li>
+      <li><blockquote><p>“Jeg har aldrig oplevet så fokuserede og fagligt dygtige håndværkere.”</p></blockquote><p class="who">Pudset hus, Skanderborg, juli 2026</p></li>
+      <li><blockquote><p>“Fra starten af, har der været god dialog og en tryghed i kommunikationen med Anders.”</p></blockquote><p class="who">Renovering af facaden, Grenaa, august 2026</p></li>
+    </ul>
+    <div class="sec__foot">
+      <a href="https://www.anmeld-haandvaerker.dk/murer/murerfirmaet-brobech-aps">Læs alle anmeldelserne på Anmeld Håndværker</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--puds" id="anders" aria-labelledby="ad-t">
+  <div class="wrap">
+    <div class="anders">
+      <figure style="margin:0">
+        <img src="/demo/brobech/anders-640.webp" srcset="/demo/brobech/anders-640.webp 640w, /demo/brobech/anders-1280.webp 1280w" sizes="(min-width: 900px) 300px, 360px" alt="Anders Bo Brøbech Andersen, indehaver af Murerfirmaet Brøbech" width="640" height="960" loading="lazy" decoding="async">
+        <figcaption>Anders Bo Brøbech Andersen, indehaver</figcaption>
+      </figure>
+      <div>
+        <div class="sec__head">
+          <h2 id="ad-t">Anders og folkene</h2>
+        </div>
+        <p class="lead">Murerfirmaet Brøbech er Anders Brøbech og folkene fra Hårbyvej i Ry. Anders ejer firmaet og kommer selv ud til besigtigelsen.</p>
+        <p style="margin-top:16px; max-width:62ch">Vi går op i, at arbejdet bliver lavet ordentligt og som aftalt. Vi dækker vinduer og døre af, holder pladsen ryddelig og tager affaldet med, når vi kører. Resten af holdet ser du i firmaets egne film fra pladsen.</p>
+      </div>
+    </div>
+    <ul class="films">
+      <li>
+        <video src="/demo/brobech/video-magnus-2.mp4" poster="/demo/brobech/video-magnus-2-poster.webp" width="1280" height="720" controls playsinline preload="none" aria-label="Film: velkommen til Murerfirmaet Brøbech"></video>
+        <p><strong>Velkommen.</strong> Holdet fortæller, hvem vi er og hvor vi arbejder. 51 sek.</p>
+      </li>
+      <li>
+        <video src="/demo/brobech/video-magnus-1.mp4" poster="/demo/brobech/video-magnus-1-poster.webp" width="1280" height="720" controls playsinline preload="none" aria-label="Film: fra pladsen, med drone"></video>
+        <p><strong>Fra pladsen.</strong> Stillads, lift og tage set fra luften. 1 min. 39 sek.</p>
+      </li>
+      <li>
+        <video src="/demo/brobech/video-tag.mp4" poster="/demo/brobech/video-tag-poster.webp" width="1280" height="720" controls playsinline preload="none" aria-label="Film: tag set indefra"></video>
+        <p><strong>Tag.</strong> Tagstenene set indefra. 24 sek.</p>
+      </li>
+      <li>
+        <video src="/demo/brobech/video-skorsten.mp4" poster="/demo/brobech/video-skorsten-poster.webp" width="720" height="1280" controls playsinline preload="none" aria-label="Film: skorsten repareres fra lift"></video>
+        <p><strong>Skorsten.</strong> Fra lift, før og efter. 34 sek.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec" id="spoergsmaal" aria-labelledby="fq-t">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2 id="fq-t">Det bliver vi tit spurgt om</h2>
+      <p>De korte svar. Resten tager vi, når vi står foran dit hus.</p>
+    </div>
+    <div class="faq">
+      <details><summary>Hvad koster et tilbud?</summary><p>Ingenting. Anders kommer ud og ser på opgaven, og du får et uforpligtende tilbud til fast pris.</p></details>
+      <details><summary>Hvor kommer I ud?</summary><p>Vi holder til på Hårbyvej i Ry og arbejder i Ry, Aarhus og omegn. Vi har blandt andet haft opgaver i Skanderborg, Skåde, Højbjerg, Brabrand, Risskov, Egå og Hørning.</p></details>
+      <details><summary>Hvor længe holder en omfugning?</summary><p>En ordentlig omfugning holder mindst 50 år. Mørtlen skal være svagere end stenene, ellers kan stenene revne med tiden.</p></details>
+      <details><summary>Hvor tit skal skorstenen fuges?</summary><p>Typisk hvert 20.–25. år. Til skorstene bruger vi tit en lift. Er skorstenen ikke i brug og ved at gå i stykker, kan vi også rive den ned.</p></details>
+      <details><summary>Hvilken maling bruger I på facaden?</summary><p>Som regel silikatmaling, fordi den lader muren ånde og tåler sol. Vi bruger KEIM Soldalit og kan rense for alger først.</p></details>
+      <details><summary>Kan I tage trappen og soklen med, når I alligevel laver facaden?</summary><p>Ja. Trapper og sokler laver vi både som selvstændige opgaver og som en del af en facaderenovering.</p></details>
+      <details><summary>Rydder I op efter jer?</summary><p>Ja. Vi dækker vinduer og døre af, mens vi arbejder, og tager affaldet med, når vi er færdige.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--puds contact" id="kontakt" aria-labelledby="ko-t">
+  <div class="wrap">
+    <div>
+      <h2 id="ko-t">Skal Anders kigge på dit hus?</h2>
+      <p class="lead" style="margin-top:12px">Ring, så kommer han ud. Det koster ikke noget, og du får en fast pris. Send gerne billeder på mail, hvis det er lettere.</p>
+      <a class="big" href="tel:+4523203588">23 20 35 88</a>
+      <div class="actions">
+        <a class="btn" href="tel:+4523203588">Ring til Anders</a>
+        <a class="btn btn--line" href="mailto:murerfirmaetb@gmail.com">Send en mail</a>
+      </div>
+    </div>
+    <dl>
+      <div><dt>Firma</dt><dd>Murerfirmaet Brøbech</dd></div>
+      <div><dt>Adresse</dt><dd>Hårbyvej 33, 8680 Ry</dd></div>
+      <div><dt>Telefon</dt><dd><a href="tel:+4523203588">23 20 35 88</a></dd></div>
+      <div><dt>Mail</dt><dd><a href="mailto:murerfirmaetb@gmail.com">murerfirmaetb@gmail.com</a></dd></div>
+      <div><dt>CVR</dt><dd>45753220</dd></div>
+      <div><dt>Facebook</dt><dd><a href="https://www.facebook.com/people/Murerfirmaet-Br%c3%b8bech/61566608531793/">Murerfirmaet Brøbech</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Murerfirmaet Brøbech · Hårbyvej 33, 8680 Ry · CVR 45753220 · <a href="tel:+4523203588">23 20 35 88</a></p>
+    <p>Forslag til ny hjemmeside, lavet af <a href="https://makkerne-tech.vercel.app/">Makkerne</a> i oktober 2026. Fotos, film og logo er firmaets egne.</p>
+  </div>
+</footer>
+
+<div class="callbar">
+  <a class="btn" href="tel:+4523203588"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Ring til Anders</a>
+  <a class="btn btn--line" href="mailto:murerfirmaetb@gmail.com">Mail</a>
+</div>
+</body>
+</html>
