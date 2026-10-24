@@ -317,6 +317,42 @@ a:hover { color: var(--tegl-mork); }
 .js .pop { opacity: 0; transform: translateY(40px) scale(.97); }
 .js .pop.is-in { opacity: 1; transform: none; transition: opacity .5s ease-out, transform .7s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--i, 0) * 110ms); }
 
+/* Phones and tablets: like the pc, the film fills the first screen with the text and trophy on it. */
+@media (max-width: 999px) {
+  .hero { height: clamp(500px, calc(100svh - var(--head) - 84px), 900px); overflow: hidden; background: var(--grafit); }
+  .hero__media { position: absolute; inset: 0; aspect-ratio: auto; }
+  .hero__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18, 16, 14, .25) 0%, rgba(18, 16, 14, .3) 35%, rgba(18, 16, 14, .78) 100%); pointer-events: none; }
+  .pause { top: 12px; right: auto; left: 12px; bottom: auto; }
+  .trophy { top: 16px; right: var(--gutter); filter: drop-shadow(0 8px 22px rgba(0, 0, 0, .55)); }
+  .trophy img { height: clamp(150px, 28svh, 260px); }
+  .hero__panel { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; padding: 0 var(--gutter) 22px; color: #fff; }
+  .hero__panel > div:first-child { padding-right: 0; }
+  .hero__panel h1 { font-size: clamp(2.125rem, 1.2rem + 4.4vw, 3.5rem); line-height: 1.05; color: #fff; text-shadow: 0 2px 16px rgba(0, 0, 0, .5); }
+  .hero__panel .sub { margin-top: 8px; font-family: var(--display); font-weight: 600; font-size: 1.0625rem; line-height: 1.4; color: #fff; text-shadow: 0 1px 10px rgba(0, 0, 0, .55); }
+  .hero__panel .text-link { color: #fff; }
+  .hero__panel .actions { margin-top: 16px; gap: 2px 20px; }
+}
+/* Phones: tighter spacing so more fits on each screen. */
+@media (max-width: 719px) {
+  .sec { padding: 40px 0; }
+  .sec__head { margin-bottom: 18px; }
+  .intro { gap: 16px; }
+  .offers { gap: 18px 12px; }
+  .offers img { aspect-ratio: 4 / 5; }
+  .offers h3 { margin-top: 8px; }
+  .offers .more { margin-top: 2px; }
+  .score { margin-bottom: 20px; gap: 12px 16px; }
+  .score img { height: 100px; }
+  .quotes { gap: 14px; }
+  .quotes blockquote { font-size: 1.0625rem; }
+  .duo { gap: 28px; }
+  .duo img { margin-bottom: 12px; }
+  .anders { gap: 18px; }
+  .contact .wrap { gap: 24px; }
+  .contact dl div { padding: 10px 0; }
+  .next { padding: 20px; }
+}
+
 @media (min-width: 520px) {
   .top .call .long { display: inline; }
   .hero .actions .btn { width: auto; }
@@ -366,10 +402,10 @@ a:hover { color: var(--tegl-mork); }
   .hero__panel > div:first-child { padding-right: 0; }
   /* Like their own site: the film is dimmed, the text sits a quarter in from the left and the trophy a quarter in from the right, both popping up on arrival. */
   .hero__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18, 16, 14, .62), rgba(18, 16, 14, .38) 55%, rgba(18, 16, 14, .42)); pointer-events: none; }
-  .trophy { top: 50%; right: auto; left: 75%; transform: translate(-50%, -50%); filter: drop-shadow(0 10px 28px rgba(0, 0, 0, .55)); }
-  .trophy img { height: clamp(220px, 46vh, 400px); }
+  .trophy { top: auto; bottom: 7%; right: auto; left: 75%; transform: translateX(-50%); filter: drop-shadow(0 10px 28px rgba(0, 0, 0, .55)); }
+  .trophy img { height: min(clamp(220px, 46vh, 400px), calc(clamp(560px, 100svh - var(--head) - 30px, 56.25vw) * .7)); }
   .hero__panel {
-    position: absolute; z-index: 2; top: 50%; left: max(40px, calc(25% - min(250px, 18vw))); transform: translateY(-50%);
+    position: absolute; z-index: 2; top: auto; bottom: 10%; left: max(40px, calc(25% - min(250px, 18vw))); transform: none;
     display: block; width: min(580px, 42vw); padding: 0; background: none; color: #fff;
   }
   .hero__panel h1 { font-size: clamp(2.5rem, 1rem + 3.4vw, 4.5rem); line-height: 1.04; color: #fff; text-shadow: 0 2px 18px rgba(0, 0, 0, .45); }
