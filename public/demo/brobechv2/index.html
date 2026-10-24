@@ -1,24 +1,27 @@
 <!doctype html>
 <!--
-  Proposal for a new website for Murerfirmaet Brøbech, version 2: the calm one, no JavaScript and no motion.
-  Made by Makkerne. Photos, films and logo are the company's own, reused from /demo/brobech/.
+  Proposal for a new website for Murerfirmaet Brøbech, version 2: the calmer one.
+  The only motion is their drone film at the top and three houses that come up when scrolled to.
+  Made by Makkerne. Photos, films, award and logo are the company's own, reused from /demo/brobech/.
   Font: Public Sans (OFL), served from this folder.
 -->
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Murerfirmaet Brøbech · murer i Ry med speciale i facader</title>
 <meta name="description" content="Facaderenovering med netpuds, omfugning, skorsten, sokkel, trapper og tag i Ry, Aarhus og omegn. Ring til Anders på 23 20 35 88.">
 <meta name="robots" content="noindex, nofollow">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Murerfirmaet Brøbech · murer i Ry">
 <meta property="og:description" content="Facaderenovering, omfugning, skorsten, sokkel, trapper og tag i Ry, Aarhus og omegn. Ring 23 20 35 88.">
-<meta property="og:image" content="https://makkerne-tech.vercel.app/demo/brobech/hvidt-hus-faerdigt-1280.webp">
+<meta property="og:image" content="https://makkerne-tech.vercel.app/demo/brobechv2/drone-poster.webp">
 <meta property="og:locale" content="da_DK">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="/demo/brobech/logo-640.webp" type="image/webp">
 <link rel="preload" href="/demo/brobechv2/fonts/public-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/demo/brobechv2/drone-poster.webp" as="image" type="image/webp" fetchpriority="high">
+<script>document.documentElement.classList.add("js")</script>
 <style>
 @font-face {
   font-family: "Public Sans";
@@ -38,7 +41,6 @@
   --tegl-mork: #8f1522;
   --wrap: 1120px;
   --gutter: 20px;
-  --bar: 0px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -48,11 +50,11 @@ body {
   background: var(--kalk);
   color: var(--grafit);
   font: 400 17px/1.6 "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  padding-bottom: var(--bar);
+  padding-bottom: calc(68px + env(safe-area-inset-bottom));
 }
 img, video { display: block; max-width: 100%; height: auto; }
 h1, h2, h3 { margin: 0; line-height: 1.2; font-weight: 700; text-wrap: balance; }
-h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.875rem, 1.4rem + 2vw, 2.75rem); letter-spacing: -0.01em; }
 h2 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem); }
 h3 { font-size: 1.125rem; }
 p { margin: 0; }
@@ -60,61 +62,74 @@ a { color: var(--tegl); text-underline-offset: 3px; }
 a:hover { color: var(--tegl-mork); }
 :focus-visible { outline: 3px solid var(--grafit); outline-offset: 3px; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
-.lead { font-size: 1.1875rem; color: var(--grafit); max-width: 60ch; }
-.muted { color: var(--sten); }
+.lead { font-size: 1.1875rem; max-width: 60ch; }
 .skip { position: absolute; left: -9999px; }
-.skip:focus { left: 12px; top: 12px; z-index: 30; background: var(--kalk); padding: 8px 12px; color: var(--grafit); }
+.skip:focus { left: 12px; top: 12px; z-index: 40; background: var(--kalk); padding: 8px 12px; color: var(--grafit); }
 
 /* Proposal note */
-.note { background: var(--grafit); color: #fff; font-size: 0.875rem; line-height: 1.45; }
-.note .wrap { padding-top: 8px; padding-bottom: 8px; }
+.note { background: var(--grafit); color: #fff; font-size: 0.8125rem; line-height: 1.4; }
+.note .wrap { padding-top: 7px; padding-bottom: 7px; }
 .note a { color: #fff; }
 
 /* Header */
-.top { border-bottom: 1px solid var(--fuge); background: var(--kalk); }
-.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; }
-.brand { display: flex; align-items: center; gap: 12px; color: var(--grafit); text-decoration: none; }
-.brand img { width: 52px; height: auto; }
-.brand span { font-weight: 700; font-size: 1.0625rem; line-height: 1.2; }
-.brand small { display: block; font-weight: 400; font-size: 0.875rem; color: var(--sten); }
+.top { border-bottom: 1px solid var(--fuge); background: var(--kalk); z-index: 30; }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--grafit); text-decoration: none; }
+.brand img { width: 44px; height: auto; }
+.brand span { font-weight: 700; font-size: 1rem; line-height: 1.2; }
+.brand small { display: block; font-weight: 400; font-size: 0.8125rem; color: var(--sten); }
 .nav { display: none; gap: 24px; }
 .nav a { color: var(--grafit); text-decoration: none; font-size: 0.9375rem; padding: 12px 0; }
 .nav a:hover { color: var(--tegl); text-decoration: underline; }
+.top .btn--small { display: none; }
 
 /* Buttons */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  min-height: 48px; padding: 12px 20px;
+  min-height: 52px; padding: 12px 22px;
   background: var(--tegl); color: #fff; border: 2px solid var(--tegl); border-radius: 2px;
   font: inherit; font-weight: 700; text-decoration: none; white-space: nowrap;
   transition: background-color .15s, border-color .15s;
-  touch-action: manipulation;
+  touch-action: manipulation; cursor: pointer;
 }
 .btn:hover { background: var(--tegl-mork); border-color: var(--tegl-mork); color: #fff; }
-.btn svg { width: 18px; height: 18px; flex: none; }
+.btn svg { width: 20px; height: 20px; flex: none; }
 .btn--line { background: transparent; color: var(--grafit); border-color: var(--grafit); }
 .btn--line:hover { background: var(--grafit); color: #fff; border-color: var(--grafit); }
-.btn--small { min-height: 44px; padding: 8px 14px; font-size: 0.9375rem; }
-.top .btn--small { display: none; }
-.top .btn--small .long { display: none; }
+.btn--small { min-height: 44px; padding: 8px 16px; font-size: 0.9375rem; }
+.btn--big { min-height: 60px; font-size: 1.125rem; padding: 14px 26px; }
+.btn .num { font-variant-numeric: tabular-nums; }
 
-/* Hero */
-.hero { padding: 32px 0 40px; }
-.hero .wrap { display: grid; gap: 28px; }
-.hero h1 { max-width: 16ch; }
-.hero .lead { margin-top: 16px; }
-.actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-top: 24px; }
+/* Hero: drone film. On a phone the film keeps its 16:9 frame and the text sits under it. */
+.hero__media { position: relative; background: var(--grafit); aspect-ratio: 16 / 9; }
+.hero__media video { width: 100%; height: 100%; object-fit: cover; }
+.pause {
+  position: absolute; right: 10px; top: 10px; width: 44px; height: 44px;
+  display: grid; place-items: center; border: 0; border-radius: 50%;
+  background: rgba(35, 33, 31, .72); color: #fff; cursor: pointer;
+}
+.pause svg { width: 18px; height: 18px; }
+.pause .i-play { display: none; }
+.pause[aria-pressed="true"] .i-play { display: block; }
+.pause[aria-pressed="true"] .i-pause { display: none; }
+
+.award {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px var(--gutter); background: var(--puds); border-bottom: 1px solid var(--fuge);
+  color: var(--grafit); text-decoration: none;
+}
+.award img { width: auto; height: 84px; flex: none; }
+.award b { display: block; font-size: 1rem; line-height: 1.3; }
+.award span { display: block; font-size: 0.875rem; color: var(--sten); line-height: 1.4; margin-top: 2px; }
+.award u { color: var(--tegl); text-underline-offset: 3px; }
+.award:hover u { color: var(--tegl-mork); }
+
+.hero__panel { padding: 24px var(--gutter) 32px; }
+.hero__panel .lead { margin-top: 12px; font-size: 1.0625rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-top: 22px; }
 .actions .mail { font-weight: 600; padding: 12px 0; }
-.hero figure { margin: 0; }
-.hero img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 2px; background: var(--puds); }
-
-/* Facts */
-.facts { background: var(--puds); border-top: 1px solid var(--fuge); border-bottom: 1px solid var(--fuge); }
-.facts dl { margin: 0; display: grid; grid-template-columns: 1fr; }
-.facts dl > div { padding: 18px 0; border-bottom: 1px solid var(--fuge); }
-.facts dl > div:last-child { border-bottom: 0; }
-.facts dt { font-size: 0.875rem; color: var(--sten); }
-.facts dd { margin: 2px 0 0; font-weight: 600; }
+.hero .actions .btn { width: 100%; }
+.hero .actions .mail { margin: 0 auto; }
 
 /* Sections */
 .sec { padding: 56px 0; border-bottom: 1px solid var(--fuge); }
@@ -123,11 +138,25 @@ a:hover { color: var(--tegl-mork); }
 .sec__head p { margin-top: 10px; color: var(--sten); }
 .sec__foot { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
 
-/* Houses */
-.houses { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px 20px; grid-template-columns: 1fr; }
-.houses img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; background: var(--puds); }
-.houses p { margin-top: 10px; font-size: 0.9375rem; color: var(--sten); }
-.houses strong { display: block; color: var(--grafit); font-size: 1rem; }
+/* Three houses that come up when scrolled to */
+.picks { list-style: none; margin: 0; padding: 0; display: grid; gap: 32px; }
+.picks figure { margin: 0; }
+.picks img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; background: var(--puds); }
+.picks figcaption { margin-top: 12px; color: var(--sten); font-size: 0.9375rem; }
+.picks figcaption strong { display: block; color: var(--grafit); font-size: 1.0625rem; }
+.js .pop { opacity: 0; transform: translateY(48px) scale(.96); }
+.js .pop.is-in {
+  opacity: 1; transform: none;
+  transition: opacity .5s ease-out, transform .7s cubic-bezier(.2, .8, .2, 1);
+  transition-delay: calc(var(--i) * 140ms);
+}
+.next {
+  margin-top: 40px; padding: 24px; background: var(--grafit); color: #fff;
+  display: grid; gap: 16px; align-items: center; border-radius: 2px;
+}
+.next p { font-size: 1.25rem; font-weight: 700; line-height: 1.3; }
+.next p span { display: block; font-weight: 400; font-size: 1rem; color: #d9d5cf; margin-top: 4px; }
+.next .btn { width: 100%; }
 
 /* Before and after */
 .pairs { display: grid; gap: 40px; }
@@ -158,8 +187,10 @@ a:hover { color: var(--tegl-mork); }
 .steps figcaption { font-size: 0.875rem; color: var(--sten); margin-top: 6px; }
 
 /* Reviews */
-.score { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 24px; }
-.score b { font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem); line-height: 1; }
+.score { display: grid; grid-template-columns: auto 1fr; gap: 16px 20px; align-items: center; margin-bottom: 28px; max-width: 640px; }
+.score img { height: 120px; width: auto; }
+.score b { display: block; font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem); line-height: 1; }
+.score span { display: block; margin-top: 6px; }
 .quotes { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; }
 .quotes li { border-left: 3px solid var(--tegl); padding: 4px 0 4px 18px; }
 .quotes blockquote { margin: 0; font-size: 1.125rem; }
@@ -167,6 +198,7 @@ a:hover { color: var(--tegl-mork); }
 
 /* Anders and films */
 .anders { display: grid; gap: 24px; align-items: start; }
+.anders figure { margin: 0; }
 .anders img { width: 100%; max-width: 360px; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 2px; }
 .anders figcaption { font-size: 0.875rem; color: var(--sten); margin-top: 6px; }
 .films { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 28px 20px; grid-template-columns: 1fr; }
@@ -185,7 +217,7 @@ a:hover { color: var(--tegl-mork); }
 
 /* Contact */
 .contact .wrap { display: grid; gap: 32px; }
-.contact .big { display: inline-block; margin-top: 18px; font-size: clamp(2rem, 1.5rem + 2.4vw, 3rem); font-weight: 700; color: var(--grafit); text-decoration: none; line-height: 1.1; }
+.contact .big { display: inline-block; margin-top: 18px; font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.25rem); font-weight: 700; color: var(--grafit); text-decoration: none; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .contact .big:hover { color: var(--tegl); }
 .contact dl { margin: 0; border-top: 2px solid var(--grafit); }
 .contact dl div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--fuge); }
@@ -199,37 +231,64 @@ a:hover { color: var(--tegl-mork); }
 
 /* Phone call bar */
 .callbar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
   display: grid; grid-template-columns: 1fr auto; gap: 8px;
   padding: 8px var(--gutter) calc(8px + env(safe-area-inset-bottom));
   background: var(--kalk); border-top: 1px solid var(--fuge);
 }
-.callbar .btn { width: 100%; }
-body { --bar: calc(64px + env(safe-area-inset-bottom)); }
+.callbar .btn { min-height: 52px; }
+.callbar { transition: transform .25s ease-out; }
+.callbar.is-away { transform: translateY(110%); }
+@media (max-width: 359px) {
+  .callbar .btn { padding: 10px 14px; }
+  .callbar .btn svg { display: none; }
+}
 
 @media (min-width: 520px) {
-  .houses { grid-template-columns: 1fr 1fr; }
-  .top .btn--small { display: inline-flex; }
-  .top .btn--small .long { display: inline; }
+  .hero .actions .btn { width: auto; }
+  .hero .actions .mail { margin: 0; }
+  .next .btn { width: auto; justify-self: start; }
 }
 @media (min-width: 720px) {
-  .facts dl { grid-template-columns: repeat(2, 1fr); column-gap: 32px; }
-  .facts dl > div:nth-last-child(2) { border-bottom: 0; }
+  .picks { grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .pairs { grid-template-columns: repeat(3, 1fr); gap: 28px; }
   .films { grid-template-columns: 1fr 1fr; }
   .quotes { grid-template-columns: repeat(3, 1fr); }
+  .next { grid-template-columns: 1fr auto; padding: 28px 32px; }
 }
 @media (min-width: 900px) {
   :root { --gutter: 32px; }
-  body { --bar: 0px; }
+  body { padding-bottom: 0; }
   .callbar { display: none; }
+  html { scroll-padding-top: 96px; }
+  .top { position: sticky; top: 0; }
+  .top .wrap { min-height: 76px; }
+  .brand img { width: 52px; }
+  .brand span { font-size: 1.0625rem; }
   .nav { display: flex; }
-  .hero { padding: 56px 0 64px; }
-  .hero .wrap { grid-template-columns: 1fr 1fr; align-items: center; gap: 48px; }
-  .facts dl { grid-template-columns: repeat(4, 1fr); }
-  .facts dl > div { border-bottom: 0; padding: 22px 0; }
+  .top .btn--small { display: inline-flex; }
+
+  /* On a computer the film fills the first screen; the text box and the award sit in its lower corners. */
+  .hero { position: relative; height: clamp(540px, calc(100svh - 110px), 56.25vw); overflow: hidden; background: var(--grafit); }
+  .hero__media { position: absolute; inset: 0; aspect-ratio: auto; }
+  .pause { top: 20px; right: 20px; }
+  .hero__panel {
+    position: absolute; z-index: 2; bottom: 32px;
+    left: max(32px, calc((100vw - var(--wrap)) / 2 + 32px));
+    width: min(480px, 44vw); padding: 24px 28px 26px; background: var(--kalk); border-radius: 2px;
+  }
+  .hero__panel h1 { font-size: clamp(1.75rem, 1rem + 1.4vw, 2.375rem); }
+  .hero__panel .lead { font-size: 1rem; margin-top: 10px; }
+  .hero__panel .actions { margin-top: 18px; gap: 8px 18px; }
+  .award {
+    position: absolute; z-index: 2; bottom: 32px;
+    right: max(32px, calc((100vw - var(--wrap)) / 2 + 32px));
+    width: 360px; padding: 14px 18px; gap: 16px; background: var(--kalk); border: 0; border-radius: 2px;
+  }
+  .award img { height: 112px; }
+  .award b { font-size: 1.0625rem; }
+
   .sec { padding: 80px 0; }
-  .houses { grid-template-columns: repeat(3, 1fr); }
   .services li { grid-template-columns: 240px 1fr 220px; gap: 24px; align-items: baseline; }
   .steps { grid-template-columns: 1fr 340px; gap: 56px; align-items: start; }
   .anders { grid-template-columns: 300px 1fr; gap: 48px; }
@@ -238,9 +297,15 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
 @media (min-width: 900px) and (max-width: 1080px) {
   .nav { gap: 16px; }
   .top .btn--small .long { display: none; }
+  .award { width: 300px; }
+  .award img { height: 92px; }
+}
+@media (min-width: 900px) and (max-height: 700px) {
+  .hero__panel .lead { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
+  .js .pop { opacity: 1; transform: none; }
 }
 </style>
 </head>
@@ -248,7 +313,7 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
 <a class="skip" href="#indhold">Gå til indhold</a>
 
 <div class="note">
-  <div class="wrap">Forslag til ny hjemmeside for Murerfirmaet Brøbech, lavet af <a href="https://makkerne-tech.vercel.app/">Makkerne</a>. Det er ikke firmaets officielle side.</div>
+  <div class="wrap">Forslag fra <a href="https://makkerne-tech.vercel.app/">Makkerne</a>. Ikke firmaets officielle side.</div>
 </div>
 
 <header class="top">
@@ -264,40 +329,36 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
       <a href="#anders">Anders</a>
       <a href="#kontakt">Kontakt</a>
     </nav>
-    <a class="btn btn--small" href="tel:+4523203588"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg><span><span class="long">Ring </span>23 20 35 88</span></a>
+    <a class="btn btn--small" href="tel:+4523203588"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg><span><span class="long">Ring </span><span class="num">23 20 35 88</span></span></a>
   </div>
 </header>
 
 <main id="indhold">
 
 <section class="hero" aria-labelledby="h1">
-  <div class="wrap">
-    <div>
-      <h1 id="h1">Murer i Ry med speciale i facader</h1>
-      <p class="lead">Vi pudser facader med net og armeringsmørtel, fuger om og reparerer skorstene, sokler, trapper og tage i Ry, Aarhus og omegn. Anders kommer selv ud og ser på huset.</p>
-      <div class="actions">
-        <a class="btn" href="tel:+4523203588">Ring til Anders: 23 20 35 88</a>
-        <a class="mail" href="mailto:murerfirmaetb@gmail.com">eller skriv en mail</a>
-      </div>
-    </div>
-    <figure>
-      <img src="/demo/brobech/hvidt-hus-faerdigt-1280.webp"
-           srcset="/demo/brobech/hvidt-hus-faerdigt-640.webp 640w, /demo/brobech/hvidt-hus-faerdigt-1280.webp 1280w"
-           sizes="(min-width: 900px) 528px, calc(100vw - 40px)"
-           alt="Hvidt, kantet hus, færdigt efter netpuds" width="1280" height="959"
-           loading="eager" fetchpriority="high" decoding="async">
-    </figure>
+  <div class="hero__media">
+    <video id="drone" autoplay muted loop playsinline preload="auto" poster="/demo/brobechv2/drone-poster.webp" width="1280" height="720" aria-label="Dronefilm uden lyd: firmabilen, marker ved Ry og huse med stillads">
+      <source src="/demo/brobechv2/drone-360.mp4" type="video/mp4" media="(max-width: 700px)">
+      <source src="/demo/brobechv2/drone-720.mp4" type="video/mp4">
+    </video>
+    <button class="pause" type="button" aria-pressed="false" aria-label="Sæt filmen på pause">
+      <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>
+    </button>
   </div>
-</section>
 
-<section class="facts" aria-label="Kort fortalt">
-  <div class="wrap">
-    <dl>
-      <div><dt>Tilbud</dt><dd>Gratis og uforpligtende, til fast pris</dd></div>
-      <div><dt>Område</dt><dd>Ry, Aarhus, Skanderborg og omegn</dd></div>
-      <div><dt>Anmeld Håndværker</dt><dd><a href="https://www.anmeld-haandvaerker.dk/murer/murerfirmaet-brobech-aps">4,9 af 5, ud fra 31 anmeldelser</a></dd></div>
-      <div><dt>Værksted</dt><dd>Hårbyvej 33, 8680 Ry</dd></div>
-    </dl>
+  <a class="award" href="https://www.anmeld-haandvaerker.dk/murer/murerfirmaet-brobech-aps">
+    <img src="/demo/brobech/badge-anbefalet-480.png" alt="Bronzestatuette fra Anmeld Håndværker: Anbefalet, finalist Årets Murer 2026" width="184" height="300" loading="eager" decoding="async">
+    <span><b>Anbefalet på Anmeld Håndværker</b>Finalist, Årets Murer 2026. 4,9 af 5 ud fra 31 anmeldelser. <u>Læs dem</u></span>
+  </a>
+
+  <div class="hero__panel">
+    <h1 id="h1">Murer i Ry med speciale i facader</h1>
+    <p class="lead">Facader, fuger, skorstene, sokler, trapper og tag i Ry, Aarhus og omegn. Anders kommer selv ud og giver et gratis tilbud til fast pris.</p>
+    <div class="actions">
+      <a class="btn btn--big" href="tel:+4523203588"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg><span>Ring til Anders: <span class="num">23 20 35 88</span></span></a>
+      <a class="mail" href="mailto:murerfirmaetb@gmail.com?subject=Tilbud%20p%C3%A5%20murerarbejde">eller skriv en mail</a>
+    </div>
   </div>
 </section>
 
@@ -307,32 +368,30 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
       <h2 id="huse-t">Huse, vi har arbejdet på</h2>
       <p>Fra Ry og Skanderborg til Aarhus. Alle fotos er vores egne, taget på pladsen.</p>
     </div>
-    <ul class="houses">
-      <li>
-        <img src="/demo/brobech/etage-aarhus-1280.webp" srcset="/demo/brobech/etage-aarhus-640.webp 640w, /demo/brobech/etage-aarhus-1280.webp 1080w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Rød etageejendom med hvid underetage og nye fuger, Aarhus" width="1080" height="1089" loading="lazy" decoding="async">
-        <p><strong>Aarhus · Facaderenovering</strong>Rød etageejendom i byen, med hvid underetage og nye fuger.</p>
+    <ul class="picks">
+      <li class="pop" style="--i: 0">
+        <figure>
+          <img src="/demo/brobech/etage-aarhus-1280.webp" srcset="/demo/brobech/etage-aarhus-640.webp 640w, /demo/brobech/etage-aarhus-1280.webp 1080w" sizes="(min-width: 1120px) 352px, (min-width: 720px) 31vw, 100vw" alt="Rød etageejendom med hvid underetage og nye fuger, Aarhus" width="1080" height="1089" loading="lazy" decoding="async">
+          <figcaption><strong>Aarhus · Facaderenovering</strong>Rød etageejendom i byen, med hvid underetage og nye fuger.</figcaption>
+        </figure>
       </li>
-      <li>
-        <img src="/demo/brobech/gavl-ry-1280.webp" srcset="/demo/brobech/gavl-ry-640.webp 640w, /demo/brobech/gavl-ry-1280.webp 1280w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Hvidpudset gavl og udhæng på et hus i Ry" width="1280" height="1707" loading="lazy" decoding="async">
-        <p><strong>Ry · Facaderenovering med netpuds</strong>Hvidpudset gavl og udhæng på et hus tæt på os i Ry.</p>
+      <li class="pop" style="--i: 1">
+        <figure>
+          <img src="/demo/brobech/omfugning-skanderborg-gavl-1280.webp" srcset="/demo/brobech/omfugning-skanderborg-gavl-640.webp 640w, /demo/brobech/omfugning-skanderborg-gavl-1280.webp 990w" sizes="(min-width: 1120px) 352px, (min-width: 720px) 31vw, 100vw" alt="Rød gavl med fire hvide vinduer og nye fuger, Skanderborg" width="990" height="1320" loading="lazy" decoding="async">
+          <figcaption><strong>Skanderborg · Omfugning</strong>Rød gavl med fire hvide vinduer. Fugerne er skåret ud og lagt om.</figcaption>
+        </figure>
       </li>
-      <li>
-        <img src="/demo/brobech/omfugning-skanderborg-gavl-1280.webp" srcset="/demo/brobech/omfugning-skanderborg-gavl-640.webp 640w, /demo/brobech/omfugning-skanderborg-gavl-1280.webp 990w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Rød gavl med fire hvide vinduer og nye fuger, Skanderborg" width="990" height="1320" loading="lazy" decoding="async">
-        <p><strong>Skanderborg · Omfugning</strong>Rød gavl med fire hvide vinduer. Fugerne er skåret ud og lagt om.</p>
-      </li>
-      <li>
-        <img src="/demo/brobech/sprosser-skaade-1280.webp" srcset="/demo/brobech/sprosser-skaade-640.webp 640w, /demo/brobech/sprosser-skaade-1280.webp 993w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Hvid bygning med sprossevinduer, pudset og malet, Skåde" width="993" height="1320" loading="lazy" decoding="async">
-        <p><strong>Skåde · Facaderenovering</strong>Hvid bygning med sprossevinduer, pudset og malet.</p>
-      </li>
-      <li>
-        <img src="/demo/brobech/landvilla-risskov-1280.webp" srcset="/demo/brobech/landvilla-risskov-640.webp 640w, /demo/brobech/landvilla-risskov-1280.webp 1077w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Hvid landvilla med sort tag, Risskov" width="1077" height="1351" loading="lazy" decoding="async">
-        <p><strong>Risskov · Murerarbejde</strong>Hvid landvilla med sort tag.</p>
-      </li>
-      <li>
-        <img src="/demo/brobech/trappe-brabrand-1280.webp" srcset="/demo/brobech/trappe-brabrand-640.webp 640w, /demo/brobech/trappe-brabrand-1280.webp 1080w" sizes="(min-width: 900px) 340px, (min-width: 520px) 46vw, 100vw" alt="Nystøbt betontrappe foran en rød hoveddør, Brabrand" width="1080" height="810" loading="lazy" decoding="async">
-        <p><strong>Brabrand · Ny trappe</strong>Nystøbt betontrappe foran en rød hoveddør.</p>
+      <li class="pop" style="--i: 2">
+        <figure>
+          <img src="/demo/brobech/landvilla-risskov-1280.webp" srcset="/demo/brobech/landvilla-risskov-640.webp 640w, /demo/brobech/landvilla-risskov-1280.webp 1077w" sizes="(min-width: 1120px) 352px, (min-width: 720px) 31vw, 100vw" alt="Hvid landvilla med sort tag, Risskov" width="1077" height="1351" loading="lazy" decoding="async">
+          <figcaption><strong>Risskov · Murerarbejde</strong>Hvid landvilla med sort tag.</figcaption>
+        </figure>
       </li>
     </ul>
+    <div class="next">
+      <p>Skal dit hus være det næste?<span>Ring til Anders. Han kommer ud og giver en fast pris.</span></p>
+      <a class="btn" href="tel:+4523203588"><span>Ring <span class="num">23 20 35 88</span></span></a>
+    </div>
   </div>
 </section>
 
@@ -412,7 +471,7 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
     </ul>
     <p class="small">Holdbarheden er det, vi selv lover for netpuds og omfugning. Skorstenens interval er en tommelfingerregel.</p>
     <div class="sec__foot">
-      <a class="btn" href="tel:+4523203588">Ring til Anders: 23 20 35 88</a>
+      <a class="btn" href="tel:+4523203588"><span>Ring til Anders: <span class="num">23 20 35 88</span></span></a>
     </div>
   </div>
 </section>
@@ -432,7 +491,7 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
       </ol>
     </div>
     <figure>
-      <img src="/demo/brobech/netpuds-stige-1280.webp" srcset="/demo/brobech/netpuds-stige-640.webp 640w, /demo/brobech/netpuds-stige-1280.webp 1280w" sizes="(min-width: 900px) 340px, 100vw" alt="Håndværker på stige lægger netpuds på et hvidt hus" width="1280" height="1707" loading="lazy" decoding="async">
+      <img src="/demo/brobech/netpuds-stige-1280.webp" srcset="/demo/brobech/netpuds-stige-640.webp 640w, /demo/brobech/netpuds-stige-1280.webp 1280w" sizes="(min-width: 900px) 340px, 100vw" alt="Hvidt hus med stige og stillads, mens netpudsen lægges på" width="1280" height="1707" loading="lazy" decoding="async">
       <figcaption>Netpuds på et hvidt hus.</figcaption>
     </figure>
   </div>
@@ -444,8 +503,8 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
       <h2 id="an-t">Det skriver kunderne</h2>
     </div>
     <div class="score">
-      <b>4,9</b>
-      <span>af 5 på Anmeld Håndværker, ud fra 31 anmeldelser (23. oktober 2026).</span>
+      <img src="/demo/brobech/badge-anbefalet-480.png" alt="Bronzestatuette fra Anmeld Håndværker: Anbefalet, finalist Årets Murer 2026" width="184" height="300" loading="lazy" decoding="async">
+      <div><b>4,9</b><span>af 5 på Anmeld Håndværker, ud fra 31 anmeldelser (23. oktober 2026). Anbefalet og finalist til Årets Murer 2026.</span></div>
     </div>
     <ul class="quotes">
       <li><blockquote><p>“Meget tilfredsstillende, afviklet til og på aftalt tid, flot resultat, flinke folk.”</p></blockquote><p class="who">Facaderenovering af villa, Højbjerg, august 2026</p></li>
@@ -461,7 +520,7 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
 <section class="sec sec--puds" id="anders" aria-labelledby="ad-t">
   <div class="wrap">
     <div class="anders">
-      <figure style="margin:0">
+      <figure>
         <img src="/demo/brobech/anders-640.webp" srcset="/demo/brobech/anders-640.webp 640w, /demo/brobech/anders-1280.webp 1280w" sizes="(min-width: 900px) 300px, 360px" alt="Anders Bo Brøbech Andersen, indehaver af Murerfirmaet Brøbech" width="640" height="960" loading="lazy" decoding="async">
         <figcaption>Anders Bo Brøbech Andersen, indehaver</figcaption>
       </figure>
@@ -479,8 +538,8 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
         <p><strong>Velkommen.</strong> Holdet fortæller, hvem vi er og hvor vi arbejder. 51 sek.</p>
       </li>
       <li>
-        <video src="/demo/brobech/video-magnus-1.mp4" poster="/demo/brobech/video-magnus-1-poster.webp" width="1280" height="720" controls playsinline preload="none" aria-label="Film: fra pladsen, med drone"></video>
-        <p><strong>Fra pladsen.</strong> Stillads, lift og tage set fra luften. 1 min. 39 sek.</p>
+        <video src="/demo/brobech/video-magnus-1.mp4" poster="/demo/brobech/video-magnus-1-poster.webp" width="1280" height="720" controls playsinline preload="none" aria-label="Film: fra pladsen, med drone og lyd"></video>
+        <p><strong>Fra pladsen.</strong> Hele dronefilmen med lyd: stillads, lift og tage set fra luften. 1 min. 39 sek.</p>
       </li>
       <li>
         <video src="/demo/brobech/video-tag.mp4" poster="/demo/brobech/video-tag-poster.webp" width="1280" height="720" controls playsinline preload="none" aria-label="Film: tag set indefra"></video>
@@ -520,7 +579,7 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
       <a class="big" href="tel:+4523203588">23 20 35 88</a>
       <div class="actions">
         <a class="btn" href="tel:+4523203588">Ring til Anders</a>
-        <a class="btn btn--line" href="mailto:murerfirmaetb@gmail.com">Send en mail</a>
+        <a class="btn btn--line" href="mailto:murerfirmaetb@gmail.com?subject=Tilbud%20p%C3%A5%20murerarbejde">Send en mail</a>
       </div>
     </div>
     <dl>
@@ -539,13 +598,54 @@ body { --bar: calc(64px + env(safe-area-inset-bottom)); }
 <footer class="foot">
   <div class="wrap">
     <p>Murerfirmaet Brøbech · Hårbyvej 33, 8680 Ry · CVR 45753220 · <a href="tel:+4523203588">23 20 35 88</a></p>
-    <p>Forslag til ny hjemmeside, lavet af <a href="https://makkerne-tech.vercel.app/">Makkerne</a> i oktober 2026. Fotos, film og logo er firmaets egne.</p>
+    <p>Forslag til ny hjemmeside, lavet af <a href="https://makkerne-tech.vercel.app/">Makkerne</a> i oktober 2026. Fotos, film, statuette og logo er firmaets egne.</p>
   </div>
 </footer>
 
 <div class="callbar">
-  <a class="btn" href="tel:+4523203588"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Ring til Anders</a>
-  <a class="btn btn--line" href="mailto:murerfirmaetb@gmail.com">Mail</a>
+  <a class="btn" href="tel:+4523203588"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg><span>Ring <span class="num">23 20 35 88</span></span></a>
+  <a class="btn btn--line" href="mailto:murerfirmaetb@gmail.com?subject=Tilbud%20p%C3%A5%20murerarbejde">Mail</a>
 </div>
+
+<script>
+(function () {
+  var film = document.getElementById("drone");
+  var btn = document.querySelector(".pause");
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function set(paused) {
+    btn.setAttribute("aria-pressed", String(paused));
+    btn.setAttribute("aria-label", paused ? "Afspil filmen" : "Sæt filmen på pause");
+  }
+  if (still.matches) { film.removeAttribute("autoplay"); film.pause(); set(true); }
+  btn.addEventListener("click", function () {
+    if (film.paused) { film.play(); set(false); } else { film.pause(); set(true); }
+  });
+
+  // The three houses come up once, when the list scrolls into view.
+  var picks = document.querySelectorAll(".pop");
+  if (!("IntersectionObserver" in window) || still.matches) {
+    picks.forEach(function (el) { el.classList.add("is-in"); });
+  } else {
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("is-in");
+        seen.unobserve(e.target);
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    picks.forEach(function (el) { seen.observe(el); });
+  }
+})();
+
+// On a phone the call bar waits until the big call button in the top has scrolled away, so the two never show at once.
+(function () {
+  var bar = document.querySelector(".callbar");
+  var heroCall = document.querySelector(".hero .btn");
+  if (!("IntersectionObserver" in window)) return;
+  new IntersectionObserver(function (entries) {
+    bar.classList.toggle("is-away", entries[0].isIntersecting);
+  }).observe(heroCall);
+})();
+</script>
 </body>
 </html>
