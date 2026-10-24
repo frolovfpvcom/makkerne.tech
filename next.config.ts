@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+// Proposals with their own free address: the host's front page is the proposal itself.
+const OWN = [
+  { host: "brobech-forslag.vercel.app", name: "brobechv2" },
+  { host: "bronkebyg.vercel.app", name: "bronkebyg" },
+];
+
 const nextConfig: NextConfig = {
   trailingSlash: true,
   // The examples' stock photos are fetched by our own server, never by the visitor's browser.
@@ -12,7 +18,7 @@ const nextConfig: NextConfig = {
   // A proposal can also get its own free address (a *.vercel.app domain on this project), whose
   // front page is the proposal itself. Links inside it keep their /demo/<name>/ paths.
   async rewrites() {
-    const own = [{ host: "brobech-forslag.vercel.app", name: "brobechv2" }];
+    const own = OWN;
     return {
       beforeFiles: own.map(({ host, name }) => ({
         source: "/",
@@ -42,7 +48,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/udkast/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       { source: "/demo/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
-      { source: "/:path*", has: [{ type: "host", value: "brobech-forslag.vercel.app" }], headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      ...OWN.map(({ host }) => ({ source: "/:path*", has: [{ type: "host" as const, value: host }], headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] })),
     ];
   },
 };
