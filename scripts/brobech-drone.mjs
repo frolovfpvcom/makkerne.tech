@@ -17,7 +17,7 @@ await writeFile(raw, Buffer.from(await res.arrayBuffer()));
 console.log(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration,bit_rate:stream=codec_name,width,height,r_frame_rate,bit_rate", "-of", "compact", raw]).toString());
 
 // No sound, H.264 high profile, faststart; CRF 20/21 keeps the fields and roof tiles sharp.
-for (const [h, crf] of [[1080, "20"], [720, "21"]]) {
+for (const [h, crf] of [[1080, "20"], [720, "21"]]  // then squeezed by hand to CRF 23, max 5M (1080) and 2.8M (720) to keep the page light) {
   execFileSync("ffmpeg", ["-y", "-v", "error", "-ss", START, "-t", LENGTH, "-i", raw, "-an",
     "-vf", `scale=-2:'min(${h},ih)':flags=lanczos`, "-c:v", "libx264", "-crf", crf, "-preset", "slower",
     "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", `${OUT}/drone-${h}.mp4`]);
