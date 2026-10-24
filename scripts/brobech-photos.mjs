@@ -103,3 +103,21 @@ for (const [name, path] of Object.entries(VIDEOS)) {
   await sharp(`/tmp/${name}.png`).resize({ width: 1280, withoutEnlargement: true }).webp({ quality: 72 }).toFile(`${OUT}/${name}-poster.webp`);
   await unlink(raw);
 }
+
+// Their award from Anmeld Håndværker (a bronze statuette, "Anbefalet"), found by its alt text on the
+// front page, since the file name isn't known. Kept with transparency for the demo at /demo/brobechv2.
+if (!existsSync(`${OUT}/badge-anbefalet-480.png`)) {
+  const html = await (await fetch("https://murerfirma-brobech.dk/", { headers: { "user-agent": "Mozilla/5.0" } })).text();
+  const tags = html.match(/<img[^>]*>/gi) ?? [];
+  const tag = tags.find((t) => /bronzestatuette|anbefalet/i.test(t));
+  console.log("badge tag", tag);
+  const url = tag?.match(/(?:data-src|data-lazy-src|src)="(https?:[^"]+)"/i)?.[1]
+    ?? tag?.match(/srcset="(https?:[^"\s]+)/i)?.[1];
+  if (url) {
+    const source = Buffer.from(await (await fetch(url, { headers: { "user-agent": "Mozilla/5.0" } })).arrayBuffer());
+    console.log("badge", url, (await sharp(source).metadata()).width);
+    await sharp(source).trim().resize({ width: 480, withoutEnlargement: true }).png().toFile(`${OUT}/badge-anbefalet-480.png`);
+  } else {
+    console.warn("badge not found");
+  }
+}
