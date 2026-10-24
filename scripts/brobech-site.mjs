@@ -29,8 +29,9 @@ for (const path of PAGES) {
   const slug = path === "/" ? "forside" : path.replace(/^\/|\/$/g, "").replace(/\//g, "__");
   await writeFile(`${SRC}/${slug}.html`, html);
   console.log("page", path, res.status, html.length);
-  for (const m of html.matchAll(/https?:\/\/murerfirma-brobech\.dk\/wp-content\/uploads\/[^"'\s)<>,]+?\.(?:jpe?g|png|webp|mp4)/gi)) {
-    media.add(m[0].replace(/-\d+x\d+(\.\w+)$/, "$1"));
+  // Their images are served lazily through a CDN whose URLs contain the original path, so match the path anywhere.
+  for (const m of html.matchAll(/murerfirma-brobech\.dk\/wp-content\/uploads\/[^"'\s)<>,]+?\.(?:jpe?g|png|webp|mp4)/gi)) {
+    media.add("https://" + m[0].replace(/-\d+x\d+(\.\w+)$/, "$1"));
   }
 }
 
