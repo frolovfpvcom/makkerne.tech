@@ -1,0 +1,27 @@
+# Cuts the drone clip for /demo/brobechv2 from the original film in high quality
+# (see scripts/brobech-drone.mjs) and commits it. Runs by hand, or on a push that touches the workflow or the script.
+name: Brøbech drone
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/workflows/brobech-drone.yml", "scripts/brobech-drone.mjs"]
+permissions:
+  contents: write
+jobs:
+  drone:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: sudo apt-get update -q && sudo apt-get install -yq ffmpeg
+      - run: node scripts/brobech-drone.mjs
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add public/demo/brobechv2
+          git diff --cached --quiet || (git commit -m "Brøbech v2: sharper drone clip from the original film" && git push)
