@@ -16,10 +16,10 @@ if (!res.ok) throw new Error(`download failed: ${res.status}`);
 await writeFile(raw, Buffer.from(await res.arrayBuffer()));
 console.log(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration,bit_rate:stream=codec_name,width,height,r_frame_rate,bit_rate", "-of", "compact", raw]).toString());
 
-// No sound, H.264 high profile, faststart; CRF 20/21 keeps the fields and roof tiles sharp.
-for (const [h, crf] of [[1080, "20"], [720, "21"]]  // then squeezed by hand to CRF 23, max 5M (1080) and 2.8M (720) to keep the page light) {
+// No sound, H.264 high profile, faststart. CRF 23 with a bitrate cap keeps it sharp but light enough to autoplay.
+for (const [h, max] of [[1080, "5M"], [720, "2.8M"]]) {
   execFileSync("ffmpeg", ["-y", "-v", "error", "-ss", START, "-t", LENGTH, "-i", raw, "-an",
-    "-vf", `scale=-2:'min(${h},ih)':flags=lanczos`, "-c:v", "libx264", "-crf", crf, "-preset", "slower",
+    "-vf", `scale=-2:'min(${h},ih)':flags=lanczos`, "-c:v", "libx264", "-crf", "23", "-maxrate", max, "-bufsize", `${parseFloat(max) * 2}M`, "-preset", "slower", "-tune", "film",
     "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", `${OUT}/drone-${h}.mp4`]);
   console.log(`drone-${h}.mp4`, execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=size,bit_rate:stream=width,height", "-of", "compact", `${OUT}/drone-${h}.mp4`]).toString());
 }
