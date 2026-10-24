@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/udkast/:name/", destination: "/udkast/:name/index.html" },
       { source: "/demo/:name/", destination: "/demo/:name/index.html" },
+      { source: "/demo/:name/:page/", destination: "/demo/:name/:page/index.html" },
+      { source: "/demo/:name/:page/:sub/", destination: "/demo/:name/:page/:sub/index.html" },
     ];
   },
   // The menu's examples page is /eksempelsider/. /eksempler once redirected permanently to the
