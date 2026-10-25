@@ -4,6 +4,7 @@ import type { NextConfig } from "next";
 const OWN = [
   { host: "brobech-forslag.vercel.app", name: "brobechv2" },
   { host: "bronkebyg.vercel.app", name: "bronkebyg" },
+  { host: "nilskolind.vercel.app", name: "nilskolind" },
 ];
 
 const nextConfig: NextConfig = {
