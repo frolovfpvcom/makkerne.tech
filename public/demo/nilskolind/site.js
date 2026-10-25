@@ -80,14 +80,57 @@
   idxLinks.forEach((a, n) => a.addEventListener('mouseenter', () => setCur(n)));
 
   const drifts = [...document.querySelectorAll('[data-drift] img')];
+
+  // Tag-vinduet: huset vokser fra logoets tagform til hele skærmen
+  const rv = document.querySelector('[data-reveal]');
+  const rvPic = rv && rv.querySelector('[data-reveal-pic]');
+  const rvRoof = rv && rv.querySelector('[data-reveal-roof]');
+  const rvText = rv && rv.querySelector('[data-reveal-text]');
+  const rvHint = rv && rv.querySelector('[data-reveal-hint]');
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const rvImg = rv && rvPic.querySelector('img');
+  const openHouse = () => {
+    if (!rv || calm) return;
+    const W = rv.clientWidth, H = innerHeight;
+    const span = rv.offsetHeight - H;
+    const raw = Math.min(Math.max(-rv.getBoundingClientRect().top / span, 0), 1);
+    // På en høj skærm åbner huset i første halvdel, og i anden halvdel glider
+    // billedet fra venstre mod højre, så hele facaden kommer med.
+    const tall = W < H * 0.9;
+    const openEnd = tall ? 0.5 : 0.8;
+    const t = ease(Math.min(raw / openEnd, 1));
+    const pan = tall ? Math.min(Math.max((raw - openEnd) / (0.96 - openEnd), 0), 1) : 0;
+    if (rvImg) rvImg.style.objectPosition = tall ? `${pan > 0 ? lerp(100, 8, pan) : lerp(42, 100, t)}% 42%` : '';
+    const hw = Math.min(W * 0.66, H * 0.5); // husets bredde ved start
+    const cx = W / 2, bot0 = H * (tall ? 0.64 : 0.78), wall = hw * 0.58, roofH = hw * 0.4;
+    const x0 = lerp(cx - hw / 2, -2, t), x1 = lerp(cx + hw / 2, W + 2, t);
+    const yb = lerp(bot0, H + 2, t), ye = lerp(bot0 - wall, -2, t), yp = lerp(bot0 - wall - roofH, -2, t);
+    rvPic.style.clipPath = `polygon(${x0}px ${yb}px, ${x0}px ${ye}px, ${cx}px ${yp}px, ${x1}px ${ye}px, ${x1}px ${yb}px)`;
+    const pc = (x, y) => `${(x / W) * 100},${(y / H) * 100}`;
+    rvRoof.setAttribute('points', `${pc(x0 - 6, ye + 4)} ${pc(cx, yp - 6)} ${pc(x1 + 6, ye + 4)}`);
+    rvRoof.style.opacity = Math.max(1 - t * 1.6, 0);
+    rvHint.style.opacity = raw < 0.04 ? 1 : 0;
+    rvPic.style.setProperty('--scrim', t > 0.9 ? 1 : 0);
+    rvText.classList.toggle('is-on', tall ? raw > 0.9 : raw > 0.82);
+  };
+
+  // Swipe-rækken: tæller
+  const reel = document.querySelector('[data-reel] .reel-track');
+  const reelN = document.querySelector('[data-reel-n]');
+  if (reel && reelN) reel.addEventListener('scroll', () => {
+    const cards = reel.children; const w = cards[0].getBoundingClientRect().width + 12;
+    reelN.textContent = Math.min(Math.round(reel.scrollLeft / w) + 1, cards.length);
+  }, { passive: true });
   const callbar = document.querySelector('[data-callbar]');
   const top = document.querySelector('.hero, .phero, .plain-head');
-  const hideAt = [...document.querySelectorAll('#tilbud, .mailsec, .foot')];
+  const hideAt = [...document.querySelectorAll('.reveal, #tilbud, .mailsec, .foot')];
 
   let ticking = false;
   const frame = () => {
     ticking = false;
     onBar();
+    openHouse();
     const vh = innerHeight;
     if (idxLinks.length) {
       let best = 0, bd = Infinity;

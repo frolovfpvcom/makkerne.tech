@@ -502,3 +502,88 @@ body.menu-open .burger { color: var(--white); }
   .js .rise { opacity: 1; transform: none; }
   [data-drift] img { transform: none; }
 }
+
+/* ---------- Wow 1: bogstaverne rejses ét for ét ---------- */
+.mono .ch { display: inline-block; animation: raise .75s var(--ease) both; animation-delay: calc(var(--i) * 55ms + 120ms); transform-origin: 50% 100%; }
+@keyframes raise { from { opacity: 0; transform: translateY(.45em) scaleY(.4); } 60% { opacity: 1; } to { opacity: 1; transform: none; } }
+.mono-roof polyline { animation-delay: .75s; }
+
+/* ---------- Wow 2: det færdige hus åbner sig gennem tagformen ---------- */
+.reveal { position: relative; height: 240svh; }
+.reveal-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--ground); }
+.reveal-pic { position: absolute; inset: 0; will-change: clip-path; }
+.reveal-pic picture, .reveal-pic img { width: 100%; height: 100%; }
+.reveal-pic img { object-fit: cover; }
+.reveal-pic::after { content: ""; position: absolute; inset: 0; opacity: var(--scrim, 0); transition: opacity .4s; pointer-events: none; background: linear-gradient(to top, rgba(10, 13, 16, .75), rgba(10, 13, 16, 0) 55%); } /* taste-skill-ignore: scrim under text on photo */
+.reveal-roof { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.reveal-roof polyline { fill: none; stroke: var(--red); stroke-width: 6; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
+.reveal-hint { position: absolute; left: 0; right: 0; bottom: 6svh; margin: 0; text-align: center; font-weight: 700; font-size: 1rem; color: var(--soft); transition: opacity .3s; }
+.reveal-hint::after { content: ""; display: block; width: 2px; height: 34px; margin: 10px auto 0; background: var(--red); animation: hint 1.6s ease-in-out infinite; transform-origin: top; }
+@keyframes hint { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+.reveal-text { position: absolute; left: var(--m); right: var(--m); bottom: clamp(28px, 6vh, 64px); color: var(--white); opacity: 0; transform: translateY(24px); transition: opacity .5s var(--ease), transform .6s var(--ease); }
+.reveal-text.is-on { opacity: 1; transform: none; }
+.reveal-text h2 { font-size: clamp(3rem, 1rem + 8vw, 10rem); line-height: .85; margin-bottom: 16px; }
+.reveal-text p { max-width: 44ch; font-size: var(--step-lead); line-height: 1.4; font-weight: 600; }
+.js .reveal-pic { clip-path: polygon(40% 80%, 40% 58%, 50% 42%, 60% 58%, 60% 80%); }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { height: auto; }
+  .reveal-stage { position: relative; height: 80svh; }
+  .js .reveal-pic { clip-path: none !important; }
+  .reveal-roof, .reveal-hint { display: none; }
+  .reveal-text { opacity: 1; transform: none; }
+  .reveal-pic { --scrim: 1; }
+  .mono .ch { animation: none; }
+}
+
+/* ---------- Referencer som swipe-række (kun telefon) ---------- */
+.reel { display: none; }
+
+/* ---------- Telefon: billeder i deres eget format, intet beskæres hårdt ---------- */
+@media (max-width: 720px) {
+  .trust img { margin: 0 0 2px; width: 120px; }
+  .hero-photo { aspect-ratio: 4 / 3; }
+
+  .phero-photo { aspect-ratio: auto; height: auto; }
+  .phero-photo picture, .phero-photo img { height: auto; }
+  .side-fig, .side-fig picture, .side-fig img { aspect-ratio: auto; height: auto; }
+  .pair { grid-template-columns: 1fr; gap: 14px; }
+  .pair figure:first-child, .pair figure:last-child { aspect-ratio: auto; }
+  .pair picture, .pair img { height: auto; }
+
+  .band { display: flex; flex-direction: column; gap: 14px; height: auto; max-height: none; padding: 0 var(--m); }
+  .band .panel { flex: none; }
+  .band .panel picture, .band .panel img { height: auto; }
+  .panel-t { font-size: 1.75rem; left: 16px; top: 14px; }
+  .panel-t::after { display: inline-block; }
+
+  .index-frame, .index-list { display: none; }
+  .index-stage { padding-bottom: 0; }
+  .index-h { text-align: left; padding: 0 var(--m); font-size: clamp(2.5rem, 12vw, 3.5rem); color: var(--ink); margin-bottom: 20px; }
+  .reel { display: block; }
+  .reel-track { display: flex; align-items: flex-start; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--m) 6px; scroll-padding-inline: var(--m); scrollbar-width: none; }
+  .reel-track::-webkit-scrollbar { display: none; }
+  .reel-card { flex: 0 0 84vw; margin: 0; scroll-snap-align: start; }
+  .reel-card img { width: 100%; height: auto; }
+  .reel-card figcaption { margin-top: 10px; font-size: .9375rem; color: var(--soft); }
+  .reel-card figcaption strong { display: block; font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 1.75rem; line-height: 1; color: var(--ink); }
+  .reel-count { padding: 12px var(--m) 0; font-size: var(--step-small); font-weight: 700; color: var(--soft); }
+  .index-more { text-align: left; margin-top: 18px; }
+
+  .about-cap { float: none; display: block; width: 100%; height: auto; margin: 0 0 20px; }
+  .about-cap picture, .about-cap img { height: auto; }
+
+  .rent-pics, .contact-pics { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(var(--m) * -1); padding: 0 var(--m) 6px; scrollbar-width: none; }
+  .rent-pics::-webkit-scrollbar, .contact-pics::-webkit-scrollbar { display: none; }
+  .rent-pics figure, .contact-pics figure, .rent-pics figure + figure, .contact-pics figure + figure { flex: none; height: 62vw; aspect-ratio: auto; scroll-snap-align: start; }
+  .contact-pics figure:first-child { grid-column: auto; }
+  .rent-pics picture, .contact-pics picture { height: 100%; }
+  .rent-pics img, .contact-pics img { height: 100%; width: auto; max-width: none; object-fit: contain; transform: none !important; }
+
+  .rent-t tr { grid-template-columns: 1fr; gap: 2px; }
+  .rent-t td:nth-child(2), .rent-t td:last-child { text-align: left; }
+  .rent-t td:last-child { font-size: 1.0625rem; color: var(--white); font-weight: 600; }
+
+  .reveal-text h2 { font-size: clamp(3rem, 15vw, 4.5rem); }
+}
+
+@media (max-width: 720px) { .reveal { height: 320svh; } .reveal-text p { font-size: 1.0625rem; } }
