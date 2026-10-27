@@ -201,6 +201,12 @@ a.strip:hover .tab::after { content: " →"; }
 .facts dt a { text-decoration: none; color: inherit; }
 .facts dt a:hover { color: var(--orange); }
 .facts dd { margin: 8px 0 0; font-size: var(--step-small); color: var(--soft); max-width: 24ch; }
+/* Kun pc: faktaene lægges under teksten ved siden af billedet, så der ikke opstår et stort tomt felt */
+@media (min-width: 901px) {
+  .facts { grid-column: 1 / 8; grid-row: 2; grid-template-columns: 1fr 1fr; gap: 40px 32px; margin-top: clamp(48px, 5vw, 80px); align-self: start; }
+  .intro-fig { grid-column: 8 / 13; justify-self: end; }
+  .intro-fig img { max-height: min(78svh, 760px); width: auto; }
+}
 @media (max-width: 900px) {
   .intro { display: block; }
   .intro-fig { margin: 40px var(--m) 0; }
