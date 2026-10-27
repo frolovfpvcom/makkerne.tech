@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { EMAIL } from "@/lib/content";
 import { useLang } from "./lang";
 import { setTrade as showExample } from "./trade-store";
@@ -8,28 +8,14 @@ import { reachStage } from "./progress-store";
 import { setDraft, useDraft } from "./draft-store";
 
 /*
- * The draft guide as a spec sheet: one wide frame, the questions on the left and on the right a quote
- * that fills in line by line as you pick. Square corners and hairlines throughout, figures in mono.
+ * The price card: four short rows, already set to what most pick, so the price is there from the
+ * first second. Change a row and the total follows. Prices sit in the total, not on every button.
+ * The contact fields only fold out when the visitor asks for the draft.
  */
 
-const TRADE = 0, SIZE = 1, PRICES = 2, EXTRAS = 3, TEXTS = 4, CARE = 5, SEND = 6;
-
-const line = "border-[#262626]";
-const mono = "font-mono uppercase tracking-[0.04em]";
-// The hairline grid: the 1px gap shows the grid's own background as knife-sharp lines between cells.
-const hairGrid = "grid gap-px border border-[#262626] bg-[#262626]";
-const cellBase =
-  "flex w-full cursor-pointer items-start gap-3 bg-[#0B0D12] text-left transition-colors hover:bg-[#141720] aria-pressed:bg-[#161922] aria-pressed:shadow-[inset_3px_0_0_#FACC15]";
-const cell = `${cellBase} px-5 py-[18px]`;
-// In the front-page hero the sheet sits beside the phone, so its answers are a little tighter.
-const cellTight = `${cellBase} px-5 py-[18px] lg:px-4 lg:py-3`;
-
-// The trades sit two by two. On a narrow phone the mark goes above the name, so long names like
-// "Anlægsgartner" keep to their cell; below 360 px they go one to a row. "Andet fag" takes the
-// whole last row, so no empty cell is left over.
-const tradeGrid = `grid-cols-1 min-[360px]:grid-cols-2 ${hairGrid}`;
-const tradeCell =
-  "items-center !px-3.5 !py-3 text-sm max-[399px]:flex-col max-[399px]:items-start max-[399px]:!gap-1 sm:!px-4 sm:text-[15px] last:min-[360px]:col-span-2";
+const rule = "border-white/[0.08]";
+const on = "bg-white text-black";
+const off = "text-white/75 hover:bg-white/[0.06] hover:text-white";
 
 function useKr() {
   const { lang } = useLang();
@@ -37,101 +23,45 @@ function useKr() {
   return (n: number) => (lang === "da" ? `${num(n)} kr.` : `DKK ${num(n)}`);
 }
 
-/** "[×]" when picked, "[ ]" when not: a square mark in mono, never a round tick. */
-function Mark({ on }: { on: boolean }) {
+/** One question: its name on the left, the answer beside it. */
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <span aria-hidden className={`mt-0.5 shrink-0 font-mono text-sm ${on ? "text-[#FACC15]" : "text-white/30"}`}>
-      {on ? "[×]" : "[ ]"}
-    </span>
-  );
-}
-
-/** The bar over the questions: which step, and that the draft is free. */
-function TopBar({ step }: { step: number }) {
-  const { t } = useLang();
-  const c = t.calc;
-  return (
-    <div className={`flex items-center justify-between gap-3 border-b ${line} px-4 py-3 sm:px-5`}>
-      <p className={`${mono} text-[11px] text-white/70 sm:text-xs`}>
-        {c.stepWord} {String(step + 1).padStart(2, "0")} / {String(c.steps.length).padStart(2, "0")} — {c.steps[step]}
-      </p>
-      <p className={`${mono} flex items-center gap-2 whitespace-nowrap text-[11px] text-white sm:text-xs`}>
-        <span aria-hidden className="size-1.5 bg-[#FACC15]" />
-        <span>[ {c.free} ]</span>
-      </p>
+    <div className={`grid grid-cols-[4.75rem_minmax(0,1fr)] items-center gap-3 border-t ${rule} py-3 sm:grid-cols-[6rem_minmax(0,1fr)]`}>
+      <p className="text-[13px] font-semibold text-white/50">{label}</p>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }
 
-/** Seven sharp segments from edge to edge: done in yellow, this one white, the rest dark. */
-function Progress({ step, reachable, onGo }: { step: number; reachable: (i: number) => boolean; onGo?: (i: number) => void }) {
-  const { t } = useLang();
-  const c = t.calc;
+/** One answer out of a few, as a single bar split into parts. */
+function Segments({ items, value, onPick }: { items: string[]; value: number; onPick: (i: number) => void }) {
   return (
-    <ol className="flex gap-[2px]">
-      {c.steps.map((s, i) => (
-        <li key={s} className="flex-1">
-          <button
-            type="button"
-            disabled={!onGo || !reachable(i)}
-            onClick={() => onGo?.(i)}
-            aria-current={step === i ? "step" : undefined}
-            aria-label={`${c.stepWord} ${i + 1}: ${s}`}
-            className="block h-[3px] w-full enabled:cursor-pointer"
-          >
-            <span className={`block h-full ${i < step ? "bg-[#FACC15]" : i === step ? "bg-white" : "bg-[#262626]"}`} aria-hidden />
-          </button>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-/** One list of single answers in the hairline grid, each with its price in mono. */
-function Options({
-  items,
-  value,
-  onPick,
-  price,
-  cls = cell,
-  top = "mt-5",
-}: {
-  items: readonly { label: string; note: string; price: number; tag?: string }[];
-  value: number | null;
-  onPick: (i: number) => void;
-  price: (n: number) => string;
-  cls?: string;
-  top?: string;
-}) {
-  return (
-    <div className={`${top} ${hairGrid}`}>
-      {items.map((o, i) => (
-        <button key={o.label} type="button" aria-pressed={value === i} onClick={() => onPick(i)} className={cls}>
-          <Mark on={value === i} />
-          <span className="min-w-0 flex-1">
-            <span className="block font-semibold leading-snug">
-              {o.label}
-              {o.tag && <span className={`${mono} ml-2 whitespace-nowrap text-[10px] text-[#FACC15]`}>[ {o.tag} ]</span>}
-            </span>
-            <span className="mt-0.5 block text-sm leading-snug text-white/55">{o.note}</span>
-          </span>
-          <span className="shrink-0 font-mono text-sm tabular-nums text-white/85">{price(o.price)}</span>
+    <div className="flex overflow-hidden rounded-[5px] border border-white/20">
+      {items.map((label, i) => (
+        <button
+          key={label}
+          type="button"
+          aria-pressed={value === i}
+          onClick={() => onPick(i)}
+          className={`min-w-0 flex-1 cursor-pointer px-1.5 py-2 text-[13px] font-semibold leading-tight transition-colors sm:text-sm ${i ? "border-l border-white/20" : ""} ${value === i ? on : off}`}
+        >
+          {label}
         </button>
       ))}
     </div>
   );
 }
 
-/** The full guide with the live quote beside it, as its own section. */
+/** The card on its own, with a heading over it. Used on the "Udkast" page. */
 export function DraftSection({ head = true }: { head?: boolean }) {
   const { t } = useLang();
   const c = t.calc;
   return (
     <section id="beregner" className="scroll-mt-18 bg-[#07090E] text-white">
-      <div className="mx-auto max-w-[1120px] px-4 py-10 sm:px-8 sm:py-20 lg:px-0">
+      <div className="mx-auto max-w-[640px] px-4 py-10 sm:px-8 sm:py-20 lg:px-0">
         {head && (
-          <div className="mb-8 max-w-2xl">
-            <h2 className="font-sheet text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">{c.head}</h2>
+          <div className="mb-8">
+            <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-5xl">{c.head}</h2>
             <p className="mt-3 leading-relaxed text-white/65 sm:text-lg">{c.lead}</p>
           </div>
         )}
@@ -141,328 +71,217 @@ export function DraftSection({ head = true }: { head?: boolean }) {
   );
 }
 
-/**
- * The questions on the left and the quote that fills in on the right, in one frame. `tight` is the
- * front-page hero's version: the same sheet, a little smaller, so it fits beside the phone.
- */
+/** `tight` is the front-page version beside the phone; the card is the same, only the hero sizes it. */
 export function DraftSheet({ tight = false }: { tight?: boolean }) {
   const { t } = useLang();
   const c = t.calc;
+  const q = c.quick;
   const kr = useKr();
-  const plus = (n: number) => (n ? `+${kr(n)}` : kr(0));
-  const { step, trade } = useDraft();
+  const { trade } = useDraft();
   const other = c.trade.options.length - 1;
+
+  // The extras in one list: the two price options first (only one of them at a time), then the rest.
+  const extraPrices = [c.prices.options[1].price, c.prices.options[2].price, ...c.extras.options.map((o) => o.price)];
+  const extraNames = [c.prices.options[1].label, c.prices.options[2].label, ...c.extras.options.map((o) => o.label)];
+
+  // Set to what most people pick, so the total is real from the start.
   const [otherTrade, setOtherTrade] = useState("");
-  const [hint, setHint] = useState(0);
-  const [size, setSize] = useState<number | null>(null);
-  const [prices, setPrices] = useState<number | null>(null);
+  const [size, setSize] = useState(1);
   const [extras, setExtras] = useState<number[]>([]);
-  const [extrasDone, setExtrasDone] = useState(false);
-  const [texts, setTexts] = useState<number | null>(null);
-  const [care, setCare] = useState<number | null>(null);
-  const [form, setForm] = useState({ first: "", last: "", company: "", contact: "", comment: "" });
-  const headRef = useRef<HTMLParagraphElement>(null);
-  const otherRef = useRef<HTMLInputElement>(null);
-  const moved = useRef(false);
+  const [more, setMore] = useState(false);
+  const [care, setCare] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", company: "", contact: "" });
+  const nameRef = useRef<HTMLInputElement>(null);
 
-  const tradeName = trade === null ? null : trade === other ? otherTrade.trim() || null : c.trade.options[trade];
-
-  // While the field is empty, its placeholder runs through a few trades that are not on the list.
-  useEffect(() => {
-    if (trade !== other || otherTrade) return;
-    const id = setInterval(() => setHint((h) => (h + 1) % c.trade.hints.length), 1800);
-    return () => clearInterval(id);
-  }, [trade, other, otherTrade, c.trade.hints.length]);
-
-  // After a step changes, the new question gets focus, so keyboard and screen reader users follow along.
-  useEffect(() => {
-    if (moved.current) headRef.current?.focus({ preventScroll: true });
-    moved.current = true;
-  }, [step]);
-
-  const go = (s: number) => setDraft({ step: s });
-  const answered = [tradeName !== null, size !== null, prices !== null, extrasDone, texts !== null, care !== null];
-  const reachable = (i: number) => answered.slice(0, i).every(Boolean);
-
+  const touched = () => reachStage(1);
   const picked = [...extras].sort((a, b) => a - b);
-  const total =
-    (size === null ? 0 : c.size.options[size].price) +
-    (prices === null ? 0 : c.prices.options[prices].price) +
-    picked.reduce((sum, i) => sum + c.extras.options[i].price, 0);
-  const plan = c.care.options[care ?? 0];
+  const total = c.size.options[size].price + picked.reduce((s, i) => s + extraPrices[i], 0);
+  const plan = c.care.options[care];
+  const tradeName = trade === null ? "" : trade === other ? otherTrade.trim() : c.trade.options[trade];
 
   const pickTrade = (i: number) => {
+    touched();
     setDraft({ trade: i });
-    reachStage(1);
-    if (i < other) {
-      showExample(i);
-      go(SIZE);
-    } else {
-      requestAnimationFrame(() => otherRef.current?.focus());
-    }
+    if (i < other) showExample(i);
   };
 
-  const rows: { label: string; value: string | null; lines?: [string, string][] }[] = [
-    { label: c.sheet.rows[0], value: tradeName },
-    { label: c.sheet.rows[1], value: size === null ? null : `${c.size.options[size].label} · ${kr(c.size.options[size].price)}` },
-    { label: c.sheet.rows[2], value: prices === null ? null : `${c.prices.options[prices].label} · ${plus(c.prices.options[prices].price)}` },
-    {
-      label: c.sheet.rows[3],
-      value: !extrasDone && !picked.length ? null : picked.length ? "" : c.extras.none,
-      lines: picked.map((i) => [c.extras.options[i].label, plus(c.extras.options[i].price)]),
-    },
-    { label: c.sheet.rows[4], value: texts === null ? null : `${c.texts.options[texts].label} · ${c.texts.included}` },
-    { label: c.sheet.rows[5], value: care === null ? null : `${plan.label} · ${kr(plan.monthly)} ${c.perMonth}` },
-  ];
+  const toggleExtra = (i: number) => {
+    touched();
+    setExtras((x) => {
+      if (x.includes(i)) return x.filter((j) => j !== i);
+      // A price list and a price calculator do the same job, so picking one drops the other.
+      const rest = i < 2 ? x.filter((j) => j > 1) : x;
+      return [...rest, i];
+    });
+  };
 
   const mailto = () => {
-    const f = c.form;
-    const body = [
-      ...rows.map((r) => `${r.label}: ${r.value ?? ""}${r.lines?.length ? r.lines.map(([l, p]) => `${l} (${p})`).join(", ") : ""}`),
-      `${c.sheet.total}: ${kr(total)}`,
-      `${c.sheet.care}: ${kr(plan.monthly)} ${c.perMonth}`,
+    const lines = [
+      `${q.rows.trade}: ${tradeName || "-"}`,
+      `${q.rows.size}: ${c.size.options[size].label} (${kr(c.size.options[size].price)})`,
+      `${q.rows.extras}: ${picked.length ? picked.map((i) => `${extraNames[i]} (+${kr(extraPrices[i])})`).join(", ") : c.extras.none}`,
+      `${q.rows.texts}: ${c.texts.options[0].label}`,
+      `${q.rows.care}: ${plan.label} (${kr(plan.monthly)} ${c.perMonth})`,
       "",
-      `${f.first}: ${form.first}`,
-      `${f.last}: ${form.last}`,
-      `${f.company}: ${form.company}`,
-      `${f.contact}: ${form.contact}`,
+      `${q.oneTime}: ${kr(total)}`,
       "",
-      form.comment,
+      `${q.name}: ${form.name}`,
+      `${q.company}: ${form.company}`,
+      `${q.contact}: ${form.contact}`,
       "",
       c.mailEnd,
-    ].join("\n");
-    return `mailto:${EMAIL}?subject=${encodeURIComponent(c.mailSubject)}&body=${encodeURIComponent(body)}`;
+    ];
+    return `mailto:${EMAIL}?subject=${encodeURIComponent(c.mailSubject)}&body=${encodeURIComponent(lines.join("\n"))}`;
   };
 
-  const questions = [c.trade.q, c.size.q, c.prices.q, c.extras.q, c.texts.q, c.care.q, c.form.q];
-  const input =
-    "mt-1 w-full rounded-none border-0 border-b border-[#333] bg-transparent px-0 py-3 text-white placeholder:text-white/30 focus:border-[#FACC15] focus:outline-none";
-  const label = `${mono} block text-[11px] text-[#888]`;
-  const next = `${mono} mt-5 inline-flex h-12 cursor-pointer items-center gap-2 border border-white/80 px-5 text-sm text-white transition hover:border-[#FACC15] hover:text-[#FACC15]`;
-
-  const opt = tight ? cellTight : cell;
-  // Tight: smaller padding and type on a computer; on a phone it is the same as the full sheet.
-  const pad = tight ? "p-4 sm:p-8 lg:p-5" : "p-4 sm:p-8";
-  const gap = tight ? "mt-5 lg:mt-3.5" : "mt-5";
-  // On a low laptop screen the hero has no height to spare, so the step's note and the line at the
-  // bottom step aside there.
-  const low = tight ? "[@media(min-width:1024px)_and_(max-height:820px)]:hidden" : "";
+  const field =
+    "mt-1 w-full rounded-[5px] border border-white/20 bg-transparent px-3 py-2.5 text-[15px] text-white focus:border-white focus:outline-none";
+  const visible = more ? extraNames.length : 4;
 
   return (
-        <div className={`grid border ${line} bg-[#07090E] text-white ${tight ? "lg:grid-cols-[60fr_40fr] xl:grid-cols-[57fr_43fr]" : "lg:grid-cols-[58fr_42fr]"}`}>
-          {/* The questions. */}
-          <div className="min-w-0">
-            <TopBar step={step} />
-            <Progress step={step} reachable={reachable} onGo={go} />
-            <p className={`border-b ${line} border-l-[3px] border-l-[#FACC15] bg-[#111318] px-4 py-3 text-sm leading-snug text-white/75 sm:px-5 ${tight ? "lg:py-2.5 lg:text-[13px]" : ""} ${low}`}>{c.notes[step]}</p>
+    <div className={`overflow-hidden rounded-lg border border-white/15 bg-[#0B0D12] text-white ${tight ? "lg:max-w-[560px]" : ""}`}>
+      <div className="px-4 pb-1 pt-4 sm:px-6 sm:pt-5">
+        <p className="mb-3 font-cond text-xl font-bold tracking-tight sm:text-2xl">{q.title}</p>
 
-            <div className={pad}>
-              <p ref={headRef} tabIndex={-1} className={`font-sheet text-2xl font-semibold leading-tight tracking-[-0.03em] outline-none sm:text-[1.75rem] ${tight ? "lg:text-[1.375rem]" : ""}`}>
-                {questions[step]}
-              </p>
-
-              {step === TRADE && (
-                <>
-                  <div className={`${gap} ${tradeGrid}`}>
-                    {c.trade.options.map((o, i) => (
-                      <button key={o} type="button" aria-pressed={trade === i} onClick={() => pickTrade(i)} className={`${cell} ${tradeCell} ${tight ? "lg:max-xl:!gap-2 lg:max-xl:!px-3 lg:max-xl:text-sm" : ""}`}>
-                        <Mark on={trade === i} />
-                        <span className="min-w-0 font-semibold leading-tight">{o}</span>
-                      </button>
-                    ))}
-                  </div>
-                  {trade === other && (
-                    <form
-                      className="mt-5 flex flex-wrap items-end gap-x-4"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (otherTrade.trim()) go(SIZE);
-                      }}
-                    >
-                      <label className="min-w-0 flex-1 basis-56">
-                        <span className={label}>{c.trade.write}</span>
-                        <input
-                          ref={otherRef}
-                          type="text"
-                          value={otherTrade}
-                          onChange={(e) => setOtherTrade(e.target.value)}
-                          maxLength={40}
-                          placeholder={c.trade.hints[hint]}
-                          autoComplete="off"
-                          enterKeyHint="next"
-                          className={input}
-                        />
-                      </label>
-                      <button type="submit" disabled={!otherTrade.trim()} className={`${next} disabled:cursor-default disabled:opacity-40`}>
-                        {c.next} →
-                      </button>
-                    </form>
-                  )}
-                </>
-              )}
-
-              {step === SIZE && <Options cls={opt} top={gap} items={c.size.options} value={size} price={kr} onPick={(i) => (setSize(i), go(PRICES))} />}
-              {step === PRICES && <Options cls={opt} top={gap} items={c.prices.options} value={prices} price={plus} onPick={(i) => (setPrices(i), go(EXTRAS))} />}
-
-              {step === EXTRAS && (
-                <>
-                  <div className={`${gap} ${hairGrid}`}>
-                    {c.extras.options.map((o, i) => {
-                      const on = extras.includes(i);
-                      return (
-                        <button
-                          key={o.label}
-                          type="button"
-                          aria-pressed={on}
-                          onClick={() => setExtras((x) => (on ? x.filter((j) => j !== i) : [...x, i]))}
-                          className={opt}
-                        >
-                          <Mark on={on} />
-                          <span className="min-w-0 flex-1">
-                            <span className="block font-semibold leading-snug">
-                              {o.label}
-                              {o.tag && <span className={`${mono} ml-2 whitespace-nowrap text-[10px] text-[#FACC15]`}>[ {o.tag} ]</span>}
-                            </span>
-                            <span className="mt-0.5 block text-sm leading-snug text-white/55">{o.note}</span>
-                          </span>
-                          <span className="shrink-0 font-mono text-sm tabular-nums text-white/85">{plus(o.price)}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <button type="button" onClick={() => (setExtrasDone(true), go(TEXTS))} className={next}>
-                    {extras.length ? c.next : c.skip} →
-                  </button>
-                </>
-              )}
-
-              {step === TEXTS && <Options cls={opt} top={gap} items={c.texts.options} value={texts} price={() => c.texts.included} onPick={(i) => (setTexts(i), go(CARE))} />}
-
-              {step === CARE && (
-                <div className={`${gap} ${hairGrid}`}>
-                  {c.care.options.map((o, i) => (
-                    <button
-                      key={o.label}
-                      type="button"
-                      aria-pressed={care === i}
-                      onClick={() => {
-                        setCare(i);
-                        reachStage(2);
-                        go(SEND);
-                      }}
-                      className={opt}
-                    >
-                      <Mark on={care === i} />
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-semibold leading-snug">
-                          {o.label}
-                          {i === c.care.best && <span className={`${mono} ml-2 whitespace-nowrap text-[10px] text-[#FACC15]`}>[ {c.care.pick} ]</span>}
-                        </span>
-                        <span className="mt-0.5 block text-sm leading-snug text-white/55">{o.short}</span>
-                      </span>
-                      <span className="shrink-0 text-right font-mono text-sm tabular-nums text-white/85">
-                        {kr(o.monthly)}
-                        <span className="block text-[11px] text-white/45">{c.perMonth}</span>
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {step === SEND && (
-                <form
-                  className="mt-6 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    reachStage(3);
-                    window.location.href = mailto();
-                  }}
-                >
-                  {(
-                    [
-                      ["first", "given-name", true, false],
-                      ["last", "family-name", false, false],
-                      ["company", "organization", false, true],
-                      ["contact", "email", true, true],
-                    ] as const
-                  ).map(([key, auto, required, wide]) => (
-                    <label key={key} className={`min-w-0 ${wide ? "sm:col-span-2" : ""}`}>
-                      <span className={label}>
-                        {c.form[key]}
-                        {required && <span aria-hidden> *</span>}
-                      </span>
-                      <input
-                        type="text"
-                        required={required}
-                        autoComplete={auto}
-                        value={form[key]}
-                        onChange={(e) => setForm((x) => ({ ...x, [key]: e.target.value }))}
-                        placeholder={key === "company" ? c.form.companyPh : key === "contact" ? c.form.contactPh : undefined}
-                        className={input}
-                      />
-                    </label>
-                  ))}
-                  <label className="min-w-0 sm:col-span-2">
-                    <span className={label}>{c.form.comment}</span>
-                    <textarea rows={2} value={form.comment} onChange={(e) => setForm((x) => ({ ...x, comment: e.target.value }))} placeholder={c.form.commentPh} className={`${input} resize-y`} />
-                  </label>
-                  <button
-                    type="submit"
-                    className={`${mono} flex h-14 w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap bg-[#FACC15] px-4 text-[15px] font-bold text-black transition hover:bg-white sm:col-span-2 sm:text-base`}
-                  >
-                    {c.form.cta} <span aria-hidden>→</span>
-                  </button>
-                  <p className="text-sm leading-snug text-white/55 sm:col-span-2">{c.form.sendNote}</p>
-                </form>
-              )}
-
-              {step > TRADE && (
-                <button type="button" onClick={() => go(step - 1)} className={`${mono} mt-6 block cursor-pointer py-1 text-xs text-white/55 hover:text-white`}>
-                  ← {c.back}
-                </button>
-              )}
-            </div>
+        <Row label={q.rows.trade}>
+          <div className="flex flex-wrap gap-2">
+            <span className="relative min-w-0 flex-1 basis-40">
+              <select
+                value={trade ?? ""}
+                onChange={(e) => pickTrade(Number(e.target.value))}
+                aria-label={q.rows.trade}
+                className={`w-full cursor-pointer appearance-none rounded-[5px] border border-white/20 bg-[#0B0D12] py-2 pl-3 pr-9 text-sm font-semibold focus:border-white focus:outline-none ${trade === null ? "text-white/50" : "text-white"}`}
+              >
+                <option value="" disabled>
+                  {q.tradePick}
+                </option>
+                {c.trade.options.map((o, i) => (
+                  <option key={o} value={i}>
+                    {o}
+                  </option>
+                ))}
+              </select>
+              <svg aria-hidden viewBox="0 0 12 8" className="pointer-events-none absolute right-3 top-1/2 h-2 w-3 -translate-y-1/2 fill-none stroke-white/60" strokeWidth="1.6">
+                <path d="M1 1.5l5 5 5-5" />
+              </svg>
+            </span>
+            {trade === other && (
+              <input
+                type="text"
+                value={otherTrade}
+                onChange={(e) => setOtherTrade(e.target.value)}
+                maxLength={40}
+                placeholder={c.trade.write}
+                aria-label={c.trade.write}
+                autoFocus
+                className="min-w-0 flex-1 basis-32 rounded-[5px] border border-white/20 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-white focus:outline-none"
+              />
+            )}
           </div>
+        </Row>
 
-          {/* The quote that fills in as you go. */}
-          <aside aria-live="polite" className={`flex min-w-0 flex-col border-t ${line} lg:border-l lg:border-t-0`}>
-            <p className={`${mono} border-b ${line} px-4 py-3 text-[11px] text-white sm:px-5 sm:text-xs`}>{c.sheet.title}</p>
-            <ol className="flex-1">
-              {rows.map((r, i) => (
-                <li key={r.label} className={`grid grid-cols-[2rem_1fr] border-b ${line} px-4 py-3.5 sm:px-5 ${tight ? "lg:py-2 [@media(min-width:1024px)_and_(max-height:820px)]:py-1.5" : ""}`}>
-                  <span className="font-mono text-xs text-white/35 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="min-w-0">
-                    <span className={`${mono} block text-[11px] text-[#888]`}>{r.label}</span>
-                    {r.value === null ? (
-                      <span className="mt-0.5 block text-sm text-white/30">{c.sheet.empty}</span>
-                    ) : (
-                      r.value && <span className="mt-0.5 block text-sm font-medium leading-snug text-white">{r.value}</span>
-                    )}
-                    {r.lines?.map(([l, p]) => (
-                      <span key={l} className="mt-1 flex justify-between gap-3 text-sm leading-snug text-white">
-                        <span className="min-w-0">{l}</span>
-                        <span className="shrink-0 font-mono tabular-nums text-white/85">{p}</span>
-                      </span>
-                    ))}
-                  </span>
-                </li>
-              ))}
-            </ol>
-            <div className={`border-t ${line} px-4 py-5 sm:px-5 ${tight ? "lg:py-3.5 [@media(min-width:1024px)_and_(max-height:820px)]:py-2.5" : ""}`}>
-              <p className={`${mono} text-[11px] text-[#888]`}>{c.sheet.total}</p>
-              <p className={`mt-1 font-mono text-4xl font-bold leading-none tracking-tight tabular-nums sm:text-[2.75rem] ${tight ? "lg:text-[2rem]" : ""}`}>{kr(total)}</p>
-              <p className={`mt-4 flex flex-wrap items-baseline justify-between gap-x-3 border-t ${line} pt-3`}>
-                <span className={`${mono} text-[11px] text-[#888]`}>{c.sheet.care}</span>
-                <span className="font-mono text-lg tabular-nums">
-                  {kr(plan.monthly)} {c.perMonth}
-                </span>
-              </p>
-              <p className="mt-1 text-xs text-white/45">{c.sheet.careNote}</p>
-              <p className="mt-3 text-xs leading-snug text-white/55">{c.sheet.note}</p>
-            </div>
-          </aside>
+        <Row label={q.rows.size}>
+          <Segments items={c.size.options.map((o) => o.label.replace(/ sider?$| pages?$/i, "").replace(/^(Én|One)$/i, "1"))} value={size} onPick={(i) => (touched(), setSize(i))} />
+        </Row>
 
-          <p className={`border-t ${line} px-4 py-3 font-mono text-xs leading-relaxed text-white/60 sm:px-5 lg:col-span-2 ${tight ? "lg:py-2.5 lg:text-[11px]" : ""} ${low}`}>{c.status}</p>
+        <Row label={q.rows.extras}>
+          <div className="flex flex-wrap gap-1.5">
+            {q.extrasShort.slice(0, visible).map((label, i) => {
+              const sel = extras.includes(i);
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  aria-pressed={sel}
+                  onClick={() => toggleExtra(i)}
+                  title={`${extraNames[i]} · +${kr(extraPrices[i])}`}
+                  className={`cursor-pointer rounded-[5px] border px-2.5 py-1.5 text-[13px] font-semibold transition-colors ${sel ? `border-white ${on}` : `border-white/20 ${off}`}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+            {!more && (
+              <button type="button" onClick={() => setMore(true)} className="cursor-pointer px-1.5 py-1.5 text-[13px] font-semibold text-white/50 underline-offset-4 hover:text-white hover:underline">
+                + {q.more}
+              </button>
+            )}
+          </div>
+        </Row>
+
+        <Row label={q.rows.care}>
+          <Segments items={q.careShort} value={care} onPick={(i) => (touched(), setCare(i))} />
+        </Row>
+      </div>
+
+      {/* The total, and the way to the draft. */}
+      <div className="mt-2 border-t-2 border-[#FACC15] px-4 py-4 sm:px-6 sm:py-5">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+          <p aria-live="polite" className="leading-none">
+            <span className="font-cond text-[2.6rem] font-extrabold tracking-tight tabular-nums sm:text-5xl">{kr(total)}</span>
+            <span className="mt-2 block text-sm text-white/60">
+              + <span className="tabular-nums text-white">{kr(plan.monthly)}</span> {c.perMonth}
+            </span>
+          </p>
+          {!open && (
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(true);
+                reachStage(2);
+                requestAnimationFrame(() => nameRef.current?.focus());
+              }}
+              className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-[#FACC15] px-6 font-cond text-lg font-semibold text-black transition hover:bg-white"
+            >
+              {q.cta} <span aria-hidden>→</span>
+            </button>
+          )}
         </div>
+
+        {open && (
+          <form
+            className="mt-4 grid gap-3 sm:grid-cols-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              reachStage(3);
+              window.location.href = mailto();
+            }}
+          >
+            {(
+              [
+                ["name", "name", true],
+                ["company", "organization", false],
+                ["contact", "email", true],
+              ] as const
+            ).map(([key, auto, required]) => (
+              <label key={key} className="min-w-0">
+                <span className="text-xs text-white/55">
+                  {q[key]}
+                  {required && " *"}
+                </span>
+                <input
+                  ref={key === "name" ? nameRef : undefined}
+                  type="text"
+                  required={required}
+                  autoComplete={auto}
+                  value={form[key]}
+                  onChange={(e) => setForm((x) => ({ ...x, [key]: e.target.value }))}
+                  className={field}
+                />
+              </label>
+            ))}
+            <button
+              type="submit"
+              className="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#FACC15] px-6 font-cond text-lg font-semibold text-black transition hover:bg-white sm:col-span-3 sm:justify-self-start"
+            >
+              {q.send} <span aria-hidden>→</span>
+            </button>
+          </form>
+        )}
+
+        <p className="mt-3 text-xs text-white/40">{q.fine}</p>
+      </div>
+    </div>
   );
 }
