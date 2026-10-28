@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "./lang";
+import { DESKTOP_WIDTH, PHONE_WIDTH, ShotThenLive, autoScroll, useScaledFrame } from "./live-site";
 
 /*
  * The middle of the front page, built from things a tradesperson knows: a strip of warning tape with the
@@ -58,7 +59,8 @@ export function TradeBand() {
 export function OldVsNew() {
   const { lang } = useLang();
   const da = lang === "da";
-  const [pos, setPos] = useState(58);
+  const [pos, setPos] = useState(55);
+  const { boxRef, size } = useScaledFrame();
   return (
     <section className="bg-paper py-14 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
@@ -74,17 +76,29 @@ export function OldVsNew() {
           </p>
         </div>
 
-        <div className="relative mt-8 aspect-[4/5] select-none overflow-hidden rounded-xl border border-ink/15 bg-white shadow-[0_24px_60px_-24px_rgb(28_27_24/0.45)] sm:aspect-[16/10]">
-          {/* Ours: the carpenter example, a real screenshot of the page. */}
-          <picture>
-            <source media="(min-width: 640px)" srcSet="/examples/shots/desktop/tomrer.webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element -- static screenshot */}
-            <img src="/examples/shots/phone/tomrer.webp" alt={da ? "Vores tømrerside" : "Our carpenter site"} className="absolute inset-0 size-full object-cover object-top" loading="lazy" />
-          </picture>
+        <div ref={boxRef} className="relative mx-auto mt-8 aspect-[9/16] max-h-[80svh] max-w-[440px] select-none overflow-hidden rounded-[28px] border-[6px] border-ink bg-white shadow-[0_24px_60px_-24px_rgb(28_27_24/0.45)] sm:aspect-[16/10] sm:max-h-none sm:max-w-none sm:rounded-xl sm:border sm:border-ink/15">
+          {/* Ours: the carpenter example itself, live and sharp, at phone or computer width. */}
+          {size.ready && (
+            <ShotThenLive
+              key={size.w}
+              src="/examples/tomrer/"
+              shot={`/examples/shots/${size.w === DESKTOP_WIDTH ? "desktop" : "mobile"}/tomrer.webp`}
+              title={da ? "Vores tømrerside" : "Our carpenter site"}
+              width={size.w}
+              height={size.h}
+              scale={size.scale}
+              onLive={size.w === PHONE_WIDTH ? autoScroll : undefined}
+            />
+          )}
           <span className="absolute right-3 top-3 rounded bg-brand px-2.5 py-1 font-cond text-base font-bold uppercase text-ink">{da ? "Vores" : "Ours"}</span>
 
           {/* The old one, drawn in plain HTML so it looks exactly as tired as they do. */}
           <div className="absolute inset-0 overflow-hidden bg-[#e9e9e9] font-serif text-[#222]" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }} aria-hidden>
+            {/* On a phone the old site is shown the way old sites look there: a computer page shrunk to fit. */}
+            <div
+              className="origin-top-left"
+              style={size.ready && size.w === PHONE_WIDTH ? { width: 640, transform: `scale(${(size.w * size.scale) / 640})` } : undefined}
+            >
             <div className="bg-[linear-gradient(#3a6ea5,#204a7a)] px-4 py-3 text-center text-white">
               <p className="text-2xl font-bold italic sm:text-4xl" style={{ fontFamily: "Times New Roman, serif", textShadow: "2px 2px 0 #000" }}>Hansen &amp; Søn Byg</p>
               <p className="text-xs sm:text-sm">Tømrer · Snedker · Alt i byggeri</p>
@@ -100,6 +114,20 @@ export function OldVsNew() {
                 <p className="mt-2">Vi er et firma der laver alt indenfor tømrerarbejde. Vi har mange års erfaring og leverer altid kvalitet til konkurrencedygtige priser. Kontakt os endelig for et uforpligtende tilbud. Siden er under opbygning.</p>
                 <div className="mt-3 grid h-24 place-items-center border-2 border-dashed border-[#999] bg-[#f4f4f4] text-[#999] sm:h-40">[ billede mangler ]</div>
                 <p className="mt-3 text-[#00c] underline">Klik her for at se vores priser (PDF)</p>
+                <p className="mt-4 text-base font-bold underline">Vores ydelser:</p>
+                <ul className="mt-1 list-disc pl-5">
+                  {["Tagarbejde", "Vinduer og døre", "Tilbygninger", "Gulve", "Køkkener", "Div. reparationer", "Forsikringsskader"].map((y) => (
+                    <li key={y}>{y}</li>
+                  ))}
+                </ul>
+                <table className="mt-4 w-full border-collapse border border-[#999] text-[11px]">
+                  <tbody>
+                    {[["Timepris", "Ring for pris"], ["Kørsel", "Efter aftale"], ["Tilbud", "Ring venligst"]].map(([k, v]) => (
+                      <tr key={k}><td className="border border-[#999] bg-[#ddd] px-2 py-1">{k}</td><td className="border border-[#999] px-2 py-1">{v}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="mt-5 border-t border-[#999] pt-2 text-center text-[10px] text-[#666]">© 2011 Hansen &amp; Søn Byg · Bedst set i Internet Explorer 800x600</p>
               </div>
               <div className="hidden border border-[#999] bg-white p-2 text-center sm:block">
                 <p className="font-bold">Besøgende:</p>
@@ -107,6 +135,7 @@ export function OldVsNew() {
                 <p className="mt-3 text-[11px]">Opdateret: 14-03-2011</p>
                 <p className="mt-3 text-[11px]">Tlf: 12 34 56 78 (kun hverdage 8-15)</p>
               </div>
+            </div>
             </div>
           </div>
           <span className="absolute left-3 top-3 rounded bg-ink/80 px-2.5 py-1 font-cond text-base font-bold uppercase text-white" style={{ opacity: pos > 18 ? 1 : 0 }}>{da ? "Typisk i dag" : "Typical today"}</span>

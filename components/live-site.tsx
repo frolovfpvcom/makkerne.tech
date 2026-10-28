@@ -99,13 +99,47 @@ export function usePreloadShots(slugs: string[], wide: string, narrow = wide) {
   }, [key, wide, narrow]);
 }
 
-const DESKTOP_WIDTH = 1280;
-const PHONE_WIDTH = 390;
+export const DESKTOP_WIDTH = 1280;
+export const PHONE_WIDTH = 390;
+
+/**
+ * Scrolls a preview slowly from top to bottom and back, so a phone visitor sees the whole example and
+ * not only its top. Stops by itself when the frame is gone.
+ */
+export function autoScroll(win: Window | null) {
+  if (!win || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let y = 0;
+  let last = performance.now();
+  let wait = 1500;
+  const tick = (now: number) => {
+    let max = 0;
+    try {
+      if (win.closed) return;
+      max = win.document.documentElement.scrollHeight - win.innerHeight;
+    } catch {
+      return;
+    }
+    const dt = now - last;
+    last = now;
+    if (wait > 0) wait -= dt;
+    else if (y >= max) {
+      y = 0;
+      win.scrollTo({ top: 0, behavior: "smooth" });
+      wait = 2200;
+    } else {
+      y = Math.min(max, y + dt * 0.07);
+      win.scrollTo(0, y);
+      if (y >= max) wait = 1400;
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
 
 /**
  * Renders a page at desktop (or phone) width and scales it down to fit its box.
  */
-function useScaledFrame() {
+export function useScaledFrame() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: DESKTOP_WIDTH, h: 800, scale: 0.5, ready: false });
   useEffect(() => {
@@ -161,7 +195,7 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
           </svg>
         </span>
       </div>
-      <div ref={boxRef} className="relative aspect-[6/7] overflow-hidden bg-paper sm:aspect-[16/10]">
+      <div ref={boxRef} className="relative aspect-[9/16] max-h-[78svh] overflow-hidden bg-paper sm:aspect-[16/10] sm:max-h-none">
         {size.ready && (
           <ShotThenLive
             key={size.w}
@@ -172,6 +206,7 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
             height={size.h}
             scale={size.scale}
             priority
+            onLive={size.w === PHONE_WIDTH ? autoScroll : undefined}
           />
         )}
         {/* Clicking anywhere on the picture opens the real site, just like the address bar. */}
