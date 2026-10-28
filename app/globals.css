@@ -9,17 +9,17 @@
   /* The draft guide reads like a spec sheet: a sharp sans for the questions, mono for figures and labels. */
   --font-sheet: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
-  /* Night blue, taken from the front page card: a deep navy-black page, lighter blue panels, near-white
-     text, and the logo's yellow as the one accent. */
-  --color-paper: #0a0f1d;
-  --color-paper-2: #0f1830;
-  --color-card: #131d3a;
-  --color-ink: #eef1f8;
+  /* The workshop: sawdust-pale paper, a warm darker board, white cards, charcoal text, and the yellow of
+     a tape measure as the one accent. */
+  --color-paper: #f4f0e8;
+  --color-paper-2: #e9e3d6;
+  --color-card: #ffffff;
+  --color-ink: #1c1b18;
   --color-brand: #f5c518;
   --color-brand-dark: #e2b207;
   --color-moss: #2f3a2c;
-  /* The deep blue of the front page card, carried into the band with the examples. */
-  --color-navy: #0f1a3a;
+  /* Charcoal for the few dark bands (footer, video overlay). */
+  --color-navy: #24221d;
 }
 
 html {

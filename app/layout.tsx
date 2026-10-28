@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
+import { Barlow_Condensed, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const hanken = Hanken_Grotesk({ variable: "--font-body", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
-const bricolage = Bricolage_Grotesque({ variable: "--font-head", subsets: ["latin"], weight: ["500", "600", "700", "800"] });
+const bricolage = Barlow_Condensed({ variable: "--font-head", subsets: ["latin"], weight: ["500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://makkerne.tech"),

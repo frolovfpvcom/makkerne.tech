@@ -41,7 +41,7 @@ export function Examples() {
     return () => cancelAnimationFrame(id);
   }, []);
   return (
-    <section id="eksempler" className="overflow-hidden bg-navy py-10 text-ink sm:py-24">
+    <section id="eksempler" className="overflow-hidden bg-paper-2 py-12 text-ink sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
         <SectionHead title={e.title} lead={e.rowLead} />
       </div>
@@ -117,7 +117,7 @@ function TradeMenu() {
   const e = t.examples;
   const sel = useTrade();
   return (
-    <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-[#060912] text-ink lg:block">
+    <nav aria-label={e.pick} className="sticky top-18 hidden h-[calc(100dvh-4.5rem)] self-start overflow-y-auto bg-paper-2 text-ink lg:block">
       <ul role="tablist" aria-orientation="vertical" className="pt-20">
         {e.items.map((it, i) => (
           <li key={it.slug}>
@@ -127,7 +127,7 @@ function TradeMenu() {
               aria-selected={i === sel}
               onClick={() => setTrade(i)}
               className={`group flex h-11 w-full cursor-pointer items-center justify-between gap-3 border-l-2 pl-7 pr-6 text-left text-[15px] transition-colors ${
-                i === sel ? "border-brand bg-white/[0.08] text-white" : "border-transparent text-white hover:bg-white/[0.05]"
+                i === sel ? "border-brand bg-ink/[0.06] text-ink" : "border-transparent text-ink hover:bg-ink/[0.04]"
               }`}
             >
               {it.trade}
@@ -332,7 +332,7 @@ export function Comparison() {
             <tr className="border-b-2 border-ink">
               <td className="w-[18%]" />
               {c.cols.map((col, i) => (
-                <th key={col} scope="col" className={`px-3 py-3 align-bottom font-cond text-lg font-bold leading-tight ${i === 0 ? "bg-[#1b2c5c] text-brand" : ""}`}>
+                <th key={col} scope="col" className={`px-3 py-3 align-bottom font-cond text-lg font-bold leading-tight ${i === 0 ? "bg-brand/30 text-brand" : ""}`}>
                   {col}
                 </th>
               ))}
@@ -345,7 +345,7 @@ export function Comparison() {
                   {label}
                 </th>
                 {cells.map((cell, i) => (
-                  <td key={i} className={`px-3 py-4 leading-snug ${i === 0 ? "bg-[#1b2c5c] font-semibold" : "text-ink/75"}`}>
+                  <td key={i} className={`px-3 py-4 leading-snug ${i === 0 ? "bg-brand/30 font-semibold" : "text-ink/75"}`}>
                     {cell}
                   </td>
                 ))}
@@ -357,7 +357,7 @@ export function Comparison() {
           {c.rows.map(([label, ours, ...theirs]) => (
             <div key={label} className="rounded-xl border border-ink/15 bg-card p-4">
               <h3 className="font-semibold">{label}</h3>
-              <p className="mt-3 rounded-lg bg-[#1b2c5c] px-3 py-2.5">
+              <p className="mt-3 rounded-lg bg-brand/30 px-3 py-2.5">
                 <span className="block text-xs font-bold uppercase tracking-wide text-brand">{c.cols[0]}</span>
                 <span className="font-semibold">{ours}</span>
               </p>
@@ -550,7 +550,7 @@ export function Contact({ people = true }: { people?: boolean }) {
   // The main address first, then Peter's underneath.
   const mails = [EMAIL, ...TEAM.map((p) => p.email).filter((m) => m !== EMAIL)];
   return (
-    <section id="kontakt" className="bg-[#060912] text-ink">
+    <section id="kontakt" className="bg-brand text-ink">
       {/* The text keeps to the page's column; the photos run all the way to the right edge. */}
       <div className={`grid gap-10 px-4 py-12 sm:gap-14 sm:px-8 sm:py-28 lg:pl-[max(2rem,calc((100vw-72rem)/2+2rem))] ${people ? "lg:grid-cols-[minmax(0,28rem)_1fr]" : "lg:pr-[max(2rem,calc((100vw-72rem)/2+2rem))]"}`}>
         {/* Without the photos the band is short: heading and text on the left, the button and addresses on the right. */}
@@ -559,7 +559,7 @@ export function Contact({ people = true }: { people?: boolean }) {
           <p className="mt-5 max-w-md text-lg text-ink/70">{c.lead}</p>
           <a
             href={`mailto:${EMAIL}?subject=${encodeURIComponent(c.subject)}&body=${encodeURIComponent(c.body)}`}
-            className={`mt-8 inline-flex rounded-full bg-brand px-7 py-4 font-cond text-lg font-semibold text-black transition hover:bg-brand hover:text-black-dark ${people ? "" : "lg:mt-0"}`}
+            className={`mt-8 inline-flex rounded-md bg-ink px-7 py-4 font-cond text-xl font-bold uppercase tracking-wide text-[#f7f3ea] transition hover:bg-black ${people ? "" : "lg:mt-0"}`}
           >
             {c.write}
           </a>
@@ -567,7 +567,7 @@ export function Contact({ people = true }: { people?: boolean }) {
           <ul className="mt-5 grid w-fit max-w-full grid-cols-[minmax(0,auto)_auto] items-center gap-x-1 text-ink/70">
             {mails.map((mail) => (
               <li key={mail} className="col-span-2 grid grid-cols-subgrid items-center">
-                <a href={`mailto:${mail}`} className="min-w-0 break-all underline-offset-4 transition hover:text-brand hover:underline">
+                <a href={`mailto:${mail}`} className="min-w-0 break-all underline-offset-4 transition hover:text-ink/70 hover:underline">
                   {mail}
                 </a>
                 <button
@@ -575,10 +575,10 @@ export function Contact({ people = true }: { people?: boolean }) {
                   onClick={() => copy(mail)}
                   aria-label={copied === mail ? c.copied : `${c.copy} ${mail}`}
                   title={copied === mail ? c.copied : c.copy}
-                  className="grid size-10 shrink-0 place-items-center transition hover:text-brand"
+                  className="grid size-10 shrink-0 place-items-center transition hover:text-ink/70"
                 >
                   {copied === mail ? (
-                    <svg viewBox="0 0 24 24" className="size-5 text-brand" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" className="size-5 text-ink" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M5 12.5l4.5 4.5L19 7.5" />
                     </svg>
                   ) : (
@@ -601,7 +601,7 @@ export function Contact({ people = true }: { people?: boolean }) {
                 <img src={p.photo} alt={p.name} loading="lazy" decoding="async" className="aspect-[4/5] w-full flex-1 rounded-2xl bg-ink/5 object-cover object-top" />
                 <figcaption className="mt-3">
                   <span className="block font-cond text-xl font-semibold">{p.name}</span>
-                  <a href={`mailto:${p.email}`} className="break-words text-sm text-ink/70 underline-offset-4 transition hover:text-brand hover:underline">
+                  <a href={`mailto:${p.email}`} className="break-words text-sm text-ink/70 underline-offset-4 transition hover:text-ink/70 hover:underline">
                     {/* On narrow phones the address breaks after the @, not mid-word. */}
                     {p.email.split("@")[0]}@<wbr />{p.email.split("@")[1]}
                   </a>
@@ -618,7 +618,7 @@ export function Contact({ people = true }: { people?: boolean }) {
 export function Footer() {
   const { t } = useLang();
   return (
-    <footer className="border-t border-ink/10 bg-[#060912] pb-[env(safe-area-inset-bottom)] text-ink">
+    <footer className="border-t border-ink/10 bg-paper-2 pb-[env(safe-area-inset-bottom)] text-ink">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-8">
         <Logo />
         <nav className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-ink/70">

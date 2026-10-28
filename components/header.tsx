@@ -10,13 +10,11 @@ export function Logo() {
   const { t } = useLang();
   return (
     <Link href="/" className="group flex shrink-0 items-center gap-2.5" aria-label="Makkerne – forside">
-      {/* Peter's mark, traced from public/brand/makkerne-logo.png: a yellow M cut by a thin diagonal line. */}
-      <svg viewBox="112 112 800 800" aria-hidden className="size-10 shrink-0">
-        <rect x="112" y="112" width="800" height="800" rx="180" className="fill-black" />
-        <path className="fill-brand" d="M778 125 482 499 308 283v453l79-98V511l52 60 349-438zM715 282 233 882l9 8 225-282 45 53 124-152v228h79V282z" />
-      </svg>
+      {/* The Makkerne mark from Canva: a yellow M folded like a carpenter's ruler. */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- small static brand image */}
+      <img src="/brand/makkerne-mark.png" alt="" width={349} height={189} className="h-7 w-auto shrink-0 sm:h-8" />
       <span className="flex flex-col leading-none">
-        <span className="font-cond text-[1.4rem] font-bold tracking-tight">Makkerne</span>
+        <span className="font-cond text-[1.55rem] font-extrabold uppercase tracking-wide">Makkerne</span>
         <span className="mt-0.5 whitespace-nowrap text-[11px] text-ink/55">{t.nav.tagline}</span>
       </span>
     </Link>

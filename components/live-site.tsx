@@ -30,6 +30,7 @@ export function ShotThenLive({
   scale,
   priority = false,
   onLive,
+  interactive = false,
 }: {
   src: string;
   shot: string;
@@ -39,6 +40,8 @@ export function ShotThenLive({
   scale: number;
   priority?: boolean;
   onLive?: (win: Window | null) => void;
+  /** On a phone the visitor scrolls inside the example with a finger. */
+  interactive?: boolean;
 }) {
   const [mount, setMount] = useState(false);
   const [live, setLive] = useState(false);
@@ -69,14 +72,14 @@ export function ShotThenLive({
           src={src}
           title={title}
           loading="lazy"
-          tabIndex={-1}
-          aria-hidden
+          tabIndex={interactive ? 0 : -1}
+          aria-hidden={interactive ? undefined : true}
           onLoad={(e) => {
             hideScrollbar(e);
             setLive(true);
             onLive?.(e.currentTarget.contentWindow);
           }}
-          className={`pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-paper transition-opacity duration-300 ${live ? "opacity-100" : "opacity-0"}`}
+          className={`${interactive ? "" : "pointer-events-none "}absolute left-0 top-0 origin-top-left border-0 bg-paper transition-opacity duration-300 ${live ? "opacity-100" : "opacity-0"}`}
           style={{ width, height, transform: `scale(${scale})` }}
         />
       )}
@@ -99,13 +102,22 @@ export function usePreloadShots(slugs: string[], wide: string, narrow = wide) {
   }, [key, wide, narrow]);
 }
 
-const DESKTOP_WIDTH = 1280;
-const PHONE_WIDTH = 390;
+export const DESKTOP_WIDTH = 1280;
 
-/**
- * Renders a page at desktop (or phone) width and scales it down to fit its box.
- */
-function useScaledFrame() {
+/** A small chip on a phone preview: a finger moving up and down, so it is clear the page inside scrolls. */
+export function ScrollHint({ label }: { label: string }) {
+  return (
+    <span className="pointer-events-none absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-ink/85 px-3.5 py-2 text-[13px] font-semibold text-[#f7f3ea] shadow-lg [animation:hint-out_.6s_ease_5s_forwards]">
+      <style>{`@keyframes hint-move{0%,100%{transform:translateY(5px)}50%{transform:translateY(-5px)}}@keyframes hint-out{to{opacity:0;visibility:hidden}}@media (prefers-reduced-motion:reduce){.hint-f{animation:none!important}}`}</style>
+      <svg viewBox="0 0 24 24" className="hint-f size-5 [animation:hint-move_1.2s_ease-in-out_infinite]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M12 3v6M9 6l3-3 3 3M9 18l3 3 3-3M12 15v6" />
+      </svg>
+      {label}
+    </span>
+  );
+}
+
+export function useScaledFrame() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: DESKTOP_WIDTH, h: 800, scale: 0.5, ready: false });
   useEffect(() => {
@@ -114,9 +126,13 @@ function useScaledFrame() {
     const measure = () => {
       if (!box.clientWidth) return;
       // A wide box shows the site as on a computer, a tall one (on phones) as on a phone.
-      const w = box.clientWidth > box.clientHeight ? DESKTOP_WIDTH : PHONE_WIDTH;
-      const scale = box.clientWidth / w;
-      setSize({ w, h: Math.ceil(box.clientHeight / scale), scale, ready: true });
+      if (box.clientWidth > box.clientHeight) {
+        const scale = box.clientWidth / DESKTOP_WIDTH;
+        setSize({ w: DESKTOP_WIDTH, h: Math.ceil(box.clientHeight / scale), scale, ready: true });
+      } else {
+        // A phone: the example is shown at the box's own width, unscaled, so it fills the box exactly.
+        setSize({ w: box.clientWidth, h: box.clientHeight, scale: 1, ready: true });
+      }
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -161,7 +177,7 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
           </svg>
         </span>
       </div>
-      <div ref={boxRef} className="relative aspect-[6/7] overflow-hidden bg-paper sm:aspect-[16/10]">
+      <div ref={boxRef} className="relative aspect-[9/16] max-h-[78svh] w-full overflow-hidden bg-paper sm:aspect-[16/10] sm:max-h-none">
         {size.ready && (
           <ShotThenLive
             key={size.w}
@@ -172,17 +188,23 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
             height={size.h}
             scale={size.scale}
             priority
+            interactive={size.w !== DESKTOP_WIDTH}
           />
         )}
+        {size.ready && size.w !== DESKTOP_WIDTH && <ScrollHint label="Stryg for at scrolle i siden" />}
         {/* Clicking anywhere on the picture opens the real site, just like the address bar. */}
-        <a href={src} target="_blank" rel="noopener" className="absolute inset-0 flex items-end justify-center pb-6">
+        <a href={src} target="_blank" rel="noopener" className="absolute inset-0 hidden items-end justify-center pb-6 sm:flex">
           {/* On a phone the label would cover the example's own call bar; the address bar and the button below say it instead. */}
           <span className="hidden rounded-xl bg-black/45 px-6 py-3 text-base font-semibold text-white/85 opacity-0 backdrop-blur-sm transition group-hover:opacity-100 sm:inline">
             {tryLabel} ↗
           </span>
         </a>
       </div>
-      <div className="h-1.5" style={{ background: accent }} aria-hidden />
+      {/* On a phone the frame is for scrolling, so opening the real site has its own button. */}
+      <a href={src} target="_blank" rel="noopener" className="flex items-center justify-center gap-2 py-3 text-[15px] font-semibold text-white sm:hidden" style={{ background: accent }}>
+        {tryLabel} ↗
+      </a>
+      <div className="hidden h-1.5 sm:block" style={{ background: accent }} aria-hidden />
     </div>
   );
 }
