@@ -436,7 +436,7 @@ const da = {
   legal: { terms: "Vilkår", privacy: "Privatliv og cookies", danishOnly: "" },
   cookies: {
     label: "Cookies",
-    text: "Vi har ingen statistik, annoncer eller sporing. Det eneste, din browser kan gemme, er dit sprogvalg, hvis du skifter til engelsk.",
+    text: "Vi har ingen statistik, annoncer eller sporing. Din browser gemmer kun dit svar her, så vi ikke spørger igen, og dit sprogvalg, hvis du skifter til engelsk.",
     accept: "Accepter",
     decline: "Kun det nødvendige",
     more: "Læs mere",
@@ -829,7 +829,7 @@ const en: Dict = {
   legal: { terms: "Terms", privacy: "Privacy and cookies", danishOnly: "This page is only in Danish. Write to us if you have questions in English." },
   cookies: {
     label: "Cookies",
-    text: "We have no statistics, ads or tracking. The only thing your browser may keep is your language, if you switch to English.",
+    text: "We have no statistics, ads or tracking. Your browser only keeps your answer here, so we do not ask again, and your language, if you switch to English.",
     accept: "Accept",
     decline: "Only what is needed",
     more: "Read more",

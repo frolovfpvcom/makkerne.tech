@@ -6,8 +6,28 @@ import { useEffect, useState } from "react";
 import { INTRO_DONE } from "./intro";
 import { forgetLang, useLang } from "./lang";
 
+// The answer is kept in this browser for a year, so the visitor is only asked once. Keeping the answer
+// is itself strictly necessary, so it needs no consent.
+const CONSENT_KEY = "makkerne-cookie-svar";
+const YEAR = 365 * 24 * 60 * 60 * 1000;
+
+function savedAnswer() {
+  try {
+    const v = JSON.parse(localStorage.getItem(CONSENT_KEY) || "null");
+    return v && Date.now() - v.at < YEAR ? v.choice : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveAnswer(choice: "alle" | "noedvendige") {
+  try {
+    localStorage.setItem(CONSENT_KEY, JSON.stringify({ choice, at: Date.now() }));
+  } catch {}
+}
+
 /**
- * Asks about cookies on every fresh load of the site; the answer is not kept, so the next load asks again.
+ * Asks about cookies the first time; after an answer it stays away for a year.
  * On the front page it waits until the opening has played. INTRO_DONE can come twice on a computer (when the
  * card fills the screen, and when the phone has landed), so it waits for the last one before it comes in.
  */
@@ -20,6 +40,7 @@ export function CookieBox() {
   const [answered, setAnswered] = useState(false);
 
   useEffect(() => {
+    if (savedAnswer()) return;
     let id = setTimeout(() => setShown(true), front ? 6000 : 400);
     if (!front) return () => clearTimeout(id);
     // A computer with reduced motion has no opening and sends nothing.
@@ -64,13 +85,14 @@ export function CookieBox() {
           type="button"
           onClick={() => {
             forgetLang();
+            saveAnswer("noedvendige");
             setAnswered(true);
           }}
           className="min-h-12 whitespace-nowrap rounded-md border border-ink/20 px-2 text-[14px] font-semibold text-ink hover:bg-ink/5"
         >
           {c.decline}
         </button>
-        <button type="button" onClick={() => setAnswered(true)} className="min-h-12 rounded-md bg-ink px-3 text-[15px] font-bold text-[#f7f3ea] hover:bg-black">
+        <button type="button" onClick={() => (saveAnswer("alle"), setAnswered(true))} className="min-h-12 rounded-md bg-ink px-3 text-[15px] font-bold text-[#f7f3ea] hover:bg-black">
           {c.accept}
         </button>
       </div>
