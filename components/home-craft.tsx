@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "./lang";
-import { DESKTOP_WIDTH, PHONE_WIDTH, ShotThenLive, autoScroll, useScaledFrame } from "./live-site";
+import { DESKTOP_WIDTH, ScrollHint, ShotThenLive, useScaledFrame } from "./live-site";
 
 /*
  * The middle of the front page, built from things a tradesperson knows: a strip of warning tape with the
@@ -61,6 +61,28 @@ export function OldVsNew() {
   const da = lang === "da";
   const [pos, setPos] = useState(55);
   const { boxRef, size } = useScaledFrame();
+  const phone = size.ready && size.w !== DESKTOP_WIDTH;
+  // Dragging the handle moves the split. Only the handle takes the finger, so the rest of the frame scrolls.
+  const drag = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const box = boxRef.current;
+    if (!box) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const move = (x: number) => {
+      const r = box.getBoundingClientRect();
+      setPos(Math.max(4, Math.min(96, ((x - r.left) / r.width) * 100)));
+    };
+    move(e.clientX);
+    const el = e.currentTarget;
+    const onMove = (ev: PointerEvent) => move(ev.clientX);
+    const stop = () => {
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", stop);
+      el.removeEventListener("pointercancel", stop);
+    };
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", stop);
+    el.addEventListener("pointercancel", stop);
+  };
   return (
     <section className="bg-paper py-14 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-8">
@@ -87,17 +109,18 @@ export function OldVsNew() {
               width={size.w}
               height={size.h}
               scale={size.scale}
-              onLive={size.w === PHONE_WIDTH ? autoScroll : undefined}
+              interactive={phone}
             />
           )}
+          {phone && <ScrollHint label={da ? "Stryg for at scrolle i vores side" : "Swipe to scroll our site"} />}
           <span className="absolute right-3 top-3 rounded bg-brand px-2.5 py-1 font-cond text-base font-bold uppercase text-ink">{da ? "Vores" : "Ours"}</span>
 
           {/* The old one, drawn in plain HTML so it looks exactly as tired as they do. */}
-          <div className="absolute inset-0 overflow-hidden bg-[#e9e9e9] font-serif text-[#222]" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }} aria-hidden>
+          <div className="pointer-events-none absolute inset-0 overflow-hidden bg-[#e9e9e9] font-serif text-[#222]" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }} aria-hidden>
             {/* On a phone the old site is shown the way old sites look there: a computer page shrunk to fit. */}
             <div
               className="origin-top-left"
-              style={size.ready && size.w === PHONE_WIDTH ? { width: 640, transform: `scale(${(size.w * size.scale) / 640})` } : undefined}
+              style={phone ? { width: 640, transform: `scale(${size.w / 640})` } : undefined}
             >
             <div className="bg-[linear-gradient(#3a6ea5,#204a7a)] px-4 py-3 text-center text-white">
               <p className="text-2xl font-bold italic sm:text-4xl" style={{ fontFamily: "Times New Roman, serif", textShadow: "2px 2px 0 #000" }}>Hansen &amp; Søn Byg</p>
@@ -140,20 +163,26 @@ export function OldVsNew() {
           </div>
           <span className="absolute left-3 top-3 rounded bg-ink/80 px-2.5 py-1 font-cond text-base font-bold uppercase text-white" style={{ opacity: pos > 18 ? 1 : 0 }}>{da ? "Typisk i dag" : "Typical today"}</span>
 
-          {/* The handle. A range input underneath makes it work with touch, mouse and keyboard. */}
-          <div className="pointer-events-none absolute inset-y-0 w-1 -translate-x-1/2 bg-brand" style={{ left: `${pos}%` }} aria-hidden>
-            <span className="absolute left-1/2 top-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-brand text-ink shadow-lg">
-              <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" /></svg>
-            </span>
-          </div>
+          {/* The split line, and a handle that is the only part that takes the finger. Arrow keys work through the range input. */}
+          <div className="pointer-events-none absolute inset-y-0 w-1 -translate-x-1/2 bg-brand" style={{ left: `${pos}%` }} aria-hidden />
+          <button
+            type="button"
+            onPointerDown={drag}
+            tabIndex={-1}
+            aria-hidden
+            className="absolute top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize touch-none place-items-center rounded-full bg-brand text-ink shadow-[0_6px_20px_rgb(0_0_0/0.35)] ring-4 ring-white/70"
+            style={{ left: `${pos}%` }}
+          >
+            <svg viewBox="0 0 24 24" className="size-7" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" /></svg>
+          </button>
           <input
             type="range"
-            min={0}
-            max={100}
+            min={4}
+            max={96}
             value={pos}
             onChange={(e) => setPos(Number(e.target.value))}
-            aria-label={da ? "Træk for at sammenligne den gamle side med vores" : "Drag to compare the old site with ours"}
-            className="absolute inset-0 size-full cursor-ew-resize opacity-0"
+            aria-label={da ? "Flyt skillelinjen mellem den gamle side og vores" : "Move the line between the old site and ours"}
+            className="sr-only"
           />
         </div>
         <p className="mt-3 text-sm text-ink/55">{da ? "Den gamle side er lavet til lejligheden og findes ikke. Vores er tømrereksemplet." : "The old site is made up for this. Ours is the carpenter example."}</p>
