@@ -177,7 +177,7 @@ export function BrowserSite({ src, slug, title, tryLabel, accent }: { src: strin
           </svg>
         </span>
       </div>
-      <div ref={boxRef} className="relative aspect-[9/16] max-h-[78svh] overflow-hidden bg-paper sm:aspect-[16/10] sm:max-h-none">
+      <div ref={boxRef} className="relative aspect-[9/16] max-h-[78svh] w-full overflow-hidden bg-paper sm:aspect-[16/10] sm:max-h-none">
         {size.ready && (
           <ShotThenLive
             key={size.w}

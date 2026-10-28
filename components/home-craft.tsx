@@ -98,7 +98,7 @@ export function OldVsNew() {
           </p>
         </div>
 
-        <div ref={boxRef} className="relative mx-auto mt-8 aspect-[9/16] max-h-[80svh] max-w-[440px] select-none overflow-hidden rounded-[28px] border-[6px] border-ink bg-white shadow-[0_24px_60px_-24px_rgb(28_27_24/0.45)] sm:aspect-[16/10] sm:max-h-none sm:max-w-none sm:rounded-xl sm:border sm:border-ink/15">
+        <div ref={boxRef} className="relative mx-auto mt-8 aspect-[9/16] max-h-[80svh] w-full max-w-[440px] select-none overflow-hidden rounded-[28px] border-[6px] border-ink bg-white shadow-[0_24px_60px_-24px_rgb(28_27_24/0.45)] sm:aspect-[16/10] sm:max-h-none sm:max-w-none sm:rounded-xl sm:border sm:border-ink/15">
           {/* Ours: the carpenter example itself, live and sharp, at phone or computer width. */}
           {size.ready && (
             <ShotThenLive
