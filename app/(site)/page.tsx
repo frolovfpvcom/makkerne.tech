@@ -1,4 +1,4 @@
-import { CinematicHero } from "@/components/cinematic-hero";
+import { CraftHero } from "@/components/craft-hero";
 import { AboutSection } from "@/components/pages";
 import { Contact, Examples, Footer } from "@/components/sections";
 
@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <main>
-        <CinematicHero />
+        <CraftHero />
         <Examples />
         <AboutSection withTitle />
         <Contact people={false} />

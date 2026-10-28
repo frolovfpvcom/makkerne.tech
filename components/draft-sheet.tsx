@@ -13,9 +13,9 @@ import { setDraft, useDraft } from "./draft-store";
  * The contact fields only fold out when the visitor asks for the draft.
  */
 
-const rule = "border-white/[0.08]";
-const on = "bg-white text-black";
-const off = "text-white/75 hover:bg-white/[0.06] hover:text-white";
+const rule = "border-ink/[0.09]";
+const on = "bg-ink text-[#f7f3ea]";
+const off = "text-ink/75 hover:bg-ink/[0.05] hover:text-ink";
 
 function useKr() {
   const { lang } = useLang();
@@ -27,7 +27,7 @@ function useKr() {
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className={`grid grid-cols-[4.75rem_minmax(0,1fr)] items-center gap-3 border-t ${rule} py-3 sm:grid-cols-[6rem_minmax(0,1fr)]`}>
-      <p className="text-[13px] font-semibold text-white/50">{label}</p>
+      <p className="text-[13px] font-semibold text-ink/55">{label}</p>
       <div className="min-w-0">{children}</div>
     </div>
   );
@@ -36,14 +36,14 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 /** One answer out of a few, as a single bar split into parts. */
 function Segments({ items, value, onPick }: { items: string[]; value: number; onPick: (i: number) => void }) {
   return (
-    <div className="flex overflow-hidden rounded-[5px] border border-white/20">
+    <div className="flex overflow-hidden rounded-[5px] border border-ink/20 bg-white">
       {items.map((label, i) => (
         <button
           key={label}
           type="button"
           aria-pressed={value === i}
           onClick={() => onPick(i)}
-          className={`min-w-0 flex-1 cursor-pointer px-1.5 py-2 text-[13px] font-semibold leading-tight transition-colors sm:text-sm ${i ? "border-l border-white/20" : ""} ${value === i ? on : off}`}
+          className={`min-w-0 flex-1 cursor-pointer px-1.5 py-2 text-[13px] font-semibold leading-tight transition-colors sm:text-sm ${i ? "border-l border-ink/20" : ""} ${value === i ? on : off}`}
         >
           {label}
         </button>
@@ -57,12 +57,12 @@ export function DraftSection({ head = true }: { head?: boolean }) {
   const { t } = useLang();
   const c = t.calc;
   return (
-    <section id="beregner" className="scroll-mt-18 bg-[#07090E] text-white">
+    <section id="beregner" className="scroll-mt-18 bg-paper text-ink">
       <div className="mx-auto max-w-[640px] px-4 py-10 sm:px-8 sm:py-20 lg:px-0">
         {head && (
           <div className="mb-8">
             <h2 className="font-cond text-3xl font-bold tracking-tight sm:text-5xl">{c.head}</h2>
-            <p className="mt-3 leading-relaxed text-white/65 sm:text-lg">{c.lead}</p>
+            <p className="mt-3 leading-relaxed text-ink/65 sm:text-lg">{c.lead}</p>
           </div>
         )}
         <DraftSheet />
@@ -136,11 +136,11 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
   };
 
   const field =
-    "mt-1 w-full rounded-[5px] border border-white/20 bg-transparent px-3 py-2.5 text-[15px] text-white focus:border-white focus:outline-none";
+    "mt-1 w-full rounded-[5px] border border-ink/20 bg-white px-3 py-2.5 text-[15px] text-ink focus:border-ink focus:outline-none";
   const visible = more ? extraNames.length : 4;
 
   return (
-    <div className={`overflow-hidden rounded-lg border border-white/15 bg-[#0B0D12] text-white ${tight ? "lg:max-w-[560px]" : ""}`}>
+    <div className={`overflow-hidden rounded-lg border border-ink/12 bg-card text-ink shadow-[0_1px_0_rgb(28_27_24/0.06),0_12px_30px_-12px_rgb(28_27_24/0.18)] ${tight ? "lg:max-w-[560px]" : ""}`}>
       <div className="px-4 pb-1 pt-4 sm:px-6 sm:pt-5">
         <p className="mb-3 font-cond text-xl font-bold tracking-tight sm:text-2xl">{q.title}</p>
 
@@ -151,7 +151,7 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
                 value={trade ?? ""}
                 onChange={(e) => pickTrade(Number(e.target.value))}
                 aria-label={q.rows.trade}
-                className={`w-full cursor-pointer appearance-none rounded-[5px] border border-white/20 bg-[#0B0D12] py-2 pl-3 pr-9 text-sm font-semibold focus:border-white focus:outline-none ${trade === null ? "text-white/50" : "text-white"}`}
+                className={`w-full cursor-pointer appearance-none rounded-[5px] border border-ink/20 bg-white py-2 pl-3 pr-9 text-sm font-semibold focus:border-ink focus:outline-none ${trade === null ? "text-ink/55" : "text-ink"}`}
               >
                 <option value="" disabled>
                   {q.tradePick}
@@ -162,7 +162,7 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
                   </option>
                 ))}
               </select>
-              <svg aria-hidden viewBox="0 0 12 8" className="pointer-events-none absolute right-3 top-1/2 h-2 w-3 -translate-y-1/2 fill-none stroke-white/60" strokeWidth="1.6">
+              <svg aria-hidden viewBox="0 0 12 8" className="pointer-events-none absolute right-3 top-1/2 h-2 w-3 -translate-y-1/2 fill-none stroke-ink/60" strokeWidth="1.6">
                 <path d="M1 1.5l5 5 5-5" />
               </svg>
             </span>
@@ -175,7 +175,7 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
                 placeholder={c.trade.write}
                 aria-label={c.trade.write}
                 autoFocus
-                className="min-w-0 flex-1 basis-32 rounded-[5px] border border-white/20 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-white focus:outline-none"
+                className="min-w-0 flex-1 basis-32 rounded-[5px] border border-ink/20 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink/40 focus:border-ink focus:outline-none"
               />
             )}
           </div>
@@ -196,14 +196,14 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
                   aria-pressed={sel}
                   onClick={() => toggleExtra(i)}
                   title={`${extraNames[i]} · +${kr(extraPrices[i])}`}
-                  className={`cursor-pointer rounded-[5px] border px-2.5 py-1.5 text-[13px] font-semibold transition-colors ${sel ? `border-white ${on}` : `border-white/20 ${off}`}`}
+                  className={`cursor-pointer rounded-[5px] border px-2.5 py-1.5 text-[13px] font-semibold transition-colors ${sel ? `border-ink ${on}` : `border-ink/20 bg-white ${off}`}`}
                 >
                   {label}
                 </button>
               );
             })}
             {!more && (
-              <button type="button" onClick={() => setMore(true)} className="cursor-pointer px-1.5 py-1.5 text-[13px] font-semibold text-white/50 underline-offset-4 hover:text-white hover:underline">
+              <button type="button" onClick={() => setMore(true)} className="cursor-pointer px-1.5 py-1.5 text-[13px] font-semibold text-ink/55 underline-offset-4 hover:text-ink hover:underline">
                 + {q.more}
               </button>
             )}
@@ -216,12 +216,12 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
       </div>
 
       {/* The total, and the way to the draft. */}
-      <div className="mt-2 border-t-2 border-[#FACC15] px-4 py-4 sm:px-6 sm:py-5">
+      <div className="mt-2 border-t-[3px] border-brand bg-paper px-4 py-4 sm:px-6 sm:py-5">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
           <p aria-live="polite" className="leading-none">
             <span className="font-cond text-[2.6rem] font-extrabold tracking-tight tabular-nums sm:text-5xl">{kr(total)}</span>
-            <span className="mt-2 block text-sm text-white/60">
-              + <span className="tabular-nums text-white">{kr(plan.monthly)}</span> {c.perMonth}
+            <span className="mt-2 block text-sm text-ink/60">
+              + <span className="tabular-nums text-ink">{kr(plan.monthly)}</span> {c.perMonth}
             </span>
           </p>
           {!open && (
@@ -232,7 +232,7 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
                 reachStage(2);
                 requestAnimationFrame(() => nameRef.current?.focus());
               }}
-              className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-[#FACC15] px-6 font-cond text-lg font-semibold text-black transition hover:bg-white"
+              className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-[#FACC15] px-6 font-cond text-lg font-semibold text-black transition hover:bg-ink hover:text-[#f7f3ea]"
             >
               {q.cta} <span aria-hidden>→</span>
             </button>
@@ -256,7 +256,7 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
               ] as const
             ).map(([key, auto, required]) => (
               <label key={key} className="min-w-0">
-                <span className="text-xs text-white/55">
+                <span className="text-xs text-ink/55">
                   {q[key]}
                   {required && " *"}
                 </span>
@@ -273,14 +273,14 @@ export function DraftSheet({ tight = false }: { tight?: boolean }) {
             ))}
             <button
               type="submit"
-              className="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#FACC15] px-6 font-cond text-lg font-semibold text-black transition hover:bg-white sm:col-span-3 sm:justify-self-start"
+              className="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#FACC15] px-6 font-cond text-lg font-semibold text-black transition hover:bg-ink hover:text-[#f7f3ea] sm:col-span-3 sm:justify-self-start"
             >
               {q.send} <span aria-hidden>→</span>
             </button>
           </form>
         )}
 
-        <p className="mt-3 text-xs text-white/40">{q.fine}</p>
+        <p className="mt-3 text-xs text-ink/50">{q.fine}</p>
       </div>
     </div>
   );
