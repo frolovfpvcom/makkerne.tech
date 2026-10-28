@@ -26,35 +26,12 @@ const STYLES = `
 export function CraftHero() {
   const { t, lang } = useLang();
   const h = t.hero;
-  const phone = useRef<HTMLDivElement>(null);
   const da = lang === "da";
 
   // The menu and the cookie note come in once the heading is up.
   useEffect(() => {
     const id = setTimeout(() => window.dispatchEvent(new Event(INTRO_DONE)), 1800);
     return () => clearTimeout(id);
-  }, []);
-
-  // On a computer the phone leans a little towards the mouse. It never holds the page still.
-  useEffect(() => {
-    if (!window.matchMedia("(min-width: 1024px) and (prefers-reduced-motion: no-preference)").matches) return;
-    let frame = 0;
-    const move = (e: MouseEvent) => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const el = phone.current;
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        const x = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / 600));
-        const y = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / 600));
-        el.style.transform = `perspective(1200px) rotateY(${x * 7}deg) rotateX(${-y * 5}deg)`;
-      });
-    };
-    window.addEventListener("mousemove", move);
-    return () => {
-      window.removeEventListener("mousemove", move);
-      cancelAnimationFrame(frame);
-    };
   }, []);
 
   return (
@@ -102,7 +79,40 @@ export function CraftHero() {
         </div>
       </section>
 
-      {/* One of our sites on a phone, beside the price card. Plain scrolling, no pinned stage. */}
+    </>
+  );
+}
+
+/** One of our sites on a phone beside the price card, on the light page. */
+export function CalcStage() {
+  const { t } = useLang();
+  const h = t.hero;
+  const phone = useRef<HTMLDivElement>(null);
+
+  // On a computer the phone leans a little towards the mouse. It never holds the page still.
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 1024px) and (prefers-reduced-motion: no-preference)").matches) return;
+    let frame = 0;
+    const move = (e: MouseEvent) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const el = phone.current;
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const x = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / 600));
+        const y = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / 600));
+        el.style.transform = `perspective(1200px) rotateY(${x * 7}deg) rotateX(${-y * 5}deg)`;
+      });
+    };
+    window.addEventListener("mousemove", move);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  // Plain scrolling, no pinned stage.
+  return (
       <section id="beregner" className="scroll-mt-20 bg-paper py-12 sm:py-20">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-14">
           <div className="lg:col-span-2">
@@ -119,6 +129,5 @@ export function CraftHero() {
           </div>
         </div>
       </section>
-    </>
   );
 }
